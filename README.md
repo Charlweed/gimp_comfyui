@@ -115,8 +115,8 @@ final folders yourself.
 The installer.py script is in the root of this project directory. It is best launched from the command line, and has
 "optional" options: "--gimp_scripts_dir" "--stable_diffusion_data_dir" and "--comfyui_custom_nodes_dir". If you do not 
 use these options, the installer will try to open a TK directory chooser. Failing that, the installer will prompt you 
-type in both values. If you don't launch the installer from the command line, and your python cannot access TK, the 
-installer will seem to silently fail.
+type in both values. **If you don't launch the installer from the command line, and your python cannot access TK, the 
+installer will seem to silently fail**.
 
 For Gimp 2.99, the plug-ins is folders are platform-dependent, for example:
 `~/AppData/Roaming/Gimp/2.99/plug-ins/Gimp-comfyui` or `~/.config/Gimp/2.99/plug-ins/Gimp-comfyui`. For ComfyUI, the
@@ -131,13 +131,13 @@ Assuming Gimp 2.99 and ComfyUI are installed and working:
 `~/AppData/Roaming/Gimp/2.99/plug-ins` for Windows, or `~/.config/Gimp/2.99/plug-ins` on linux, `"~/Library/Application Support/GIMP/2.99/plug-ins"` on MacOS. Replace the ~ with your home directory.
 3) Locate your ComfyUI folder, and find the `custom_nodes` folder in it.
 4) Locate or choose your StableDiffusion data folder, which is the parent dir to `models`. Typically, this will be 
-`ComfyUI`, the same as above, but does not need to be. It must have a "models" directory, so create that if you are using a
-temporary or dummy directory.
+`ComfyUI`, the same as above, but does not need to be. **It must have a "models" directory, so create that if you are using a
+temporary or dummy directory.**
 5) Locate, or choose, an install-time python installation. You can choose the python bundled with Gimp, as discussed 
 above in Pre-Installation, but Gimp's python does not have TK installed, so you will need to use the command line 
-interface. Installing TK in Gimp's python does not work, at least not of this writing in 2024/07/31
+interface. **Installing TK in Gimp's python does not work, at least not of this writing in 2024/07/31**
 6) In a terminal/console, execute ``<your-python> <this-project>/installer.py`` if you are providing command-line 
-options, put each directoy name in quotes, to avoid problems with spaces.
+options, put each directory name in quotes, to avoid problems with spaces.
 
 If a dialog opens:
 7) Choose your account's Gimp plug-in folder, i.e. ``~/AppData/Roaming/Gimp/2.99/plug-ins`` and click "Ok"
@@ -156,7 +156,8 @@ If a dialog does not open:
 Installation will proceed and finish.
 
 # After Installation
-- On macOS and Linux, ensure the execute bit is set on each .py file by running  
+- On macOS and Linux, **the plug-in and custom node will silently fail if they are not executable.** Ensure the execute 
+bit is set on each .py file by running  
 `find <plug-in-dir> -iname '*.py' -exec chmod -v a+x {} \;` and
 `find <custom-nodes-dir>/image_transceiver -iname '*.py' -exec chmod -v a+x {} \; `
 - *Permanently* set the environment variable "STABLE_DIFF_PREF_ROOT" to the parent of your StableDiffusion "models" 
@@ -165,14 +166,14 @@ If the environment variable STABLE_DIFF_PREF_ROOT is unset, the plugin will use 
 "&lt;USERHOME&gt;/data/stable_diffusion/", which is probably not what you want, if you have a local stable diffusion.
 The procedure for permanently setting environment variables for your system is out-of-scope of this document.
 - Restart ComfyUI, read the logs, and ensure that the Custom node(s) were loaded correctly.
-- Restart Gimp, and you will see a GimpComfyUI menu item
+- Restart Gimp, and you will see a GimpComfyUI menu item.
 - Configure connection properties via `GimpComfyUI ➳ Config` and set the ComfyUI API connection URL
 -- (`http://localhost:8188/` by default) and the ImageTransceiver connection URL (`http://localhost:8765/` by default)
 
 
 # Usage
-Before starting Gimp, start the ComfyUI server.  The plugin checks connectivity whenever you invoke a procedure. If 
-GimpComfyUI cannot connect to ComfyUI, it will fail, and the only indication will be in the logs. To monitor the 
+Before starting Gimp, start the ComfyUI server.  The plugin checks connectivity whenever you invoke a procedure. **If 
+GimpComfyUI cannot connect to ComfyUI, it will fail, and the only indication will be in the logs.** To monitor the 
 progress of ComfyUI, it is best to start it in Console mode. This also allows you to watch the console to ensure there 
 are no errors.  NOTE: If you are running your own ComfyUI, but on a different host then "localhost", then you need to 
 start ComfyUI with the additional option `--listen 0.0.0.0`, otherwise ComfyUI will reject connections from your Gimp 
@@ -226,6 +227,11 @@ generates. Sometimes your manipulations will yield exactly what you might expect
 prompt-crafting issues are in play, but lower "denoise" strengthens how much the Gimp image comes through to the final
 image.
 
+# Known Issues
+The python web-socket library on Windows is inexplicably slow, especially for localhost. The dialogs might take seconds
+to open on even on the fastest PCs with 64gb RAM, and dozens of processors. You can run ComfyUI on your PC, connect to it 
+via your LAN with a Mac (or Linux), and everything will be 4-8 times faster than localhost on the PC. There is no 
+available fix as of 2024/08/24. 
 
 # Troubleshooting
 - Verify that whatever plugin folder you are using (~/.config/Gimp/2.99/plug-ins) is listed in the Gimp's plug-ins 
