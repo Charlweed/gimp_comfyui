@@ -14,7 +14,8 @@ NOTE: This project is an unstable alpha version, and Gimp 3 is also pre-release.
 - Access to ComfyUI via a stable URL. The preferred scenario is that the latest stable version of ComfyUI is installed on your local host.
 - To install ImageTransceiver-ComfyUI, you will need write access to ComfyUI's "custom_nodes" folder.
 - You can optionally clone the ImageTransceiver-ComfyUI project. See "Cloning" below.
-- Have ComfyUI running and reachable when you use this plugin! The plugin checks connectivity whenever you invoke a procedure. **If GimpComfyUI cannot connect to ComfyUI, it will fail, and the only indication will be in the logs**.
+- Have ComfyUI running and reachable when you use this plugin! The plugin checks connectivity whenever you invoke a 
+procedure. **If GimpComfyUI cannot connect to ComfyUI, it will fail, and the only indication will be in the logs**.
 
 
 ComfyUI's API is very workflow dependent. Any Gimp plug-in for ComfyUI will basically only work for a particular
