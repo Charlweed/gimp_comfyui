@@ -60,7 +60,7 @@ You will need to find the folder where GIMP-2.99 or GIMP-3.0 is installed. For m
 "C:\Program Files\Gimp-2.99.18" but you might have it installed somewhere else, and the version may change. In
 particular, if Gimp is installed as a "Per-User Application", you will find it under
 "C:\Users\<your username>\AppData\Local\Programs".
-Open the folders all the way down to &lt;bla&gt;\&lt;bla&gt;\Gimp-?.??.??\bin, and find the python executable files. On Windows,
+Open the folders all the way down to &lt;bla&gt;\\&lt;bla&gt;\Gimp-?.??.??\bin, and find the python executable files. On Windows,
 as of 2024, Sept 5, the file you are looking for is "python3.11", and the ".exe" on the end is probably hidden. "python3.11"
 *might* be updated to something else, that's what you are trying to verify. Once you are certain of the complete directory
 path to the exact filename, you are set to continue. If you don't know, it will probably look something like
@@ -77,15 +77,12 @@ Don't omit the quotes!
 Now, open a terminal, and navigate to this repository. In this dir, run the command ".\pre-install_windows.ps1"
 The pre-installer might print some optional instructions. You can now run the installer with Gimp's python, or your system's full python.
 ## Mac
-You will need to find the folder where GIMP-2.99 or GIMP-3.0 is installed. For most users as of 2024, Sept 5, that is 
-"C:\Program Files\Gimp-2.99.18" but you might have it installed somewhere else, and the version may change. In 
-particular, if Gimp is installed as a "Per-User Application", you will find it under 
-"C:\Users\<your username>\AppData\Local\Programs".
-Right-Click on the Gimp-2.99 icon, and select "Open in finder". Then right-click "Show Package Contents". Open the 
-folders down to Contents\MacOS, and find the python executable files. On Mac, as of 2024, Sept 6, the file you are 
-looking for is "python3.10". "python3.10" might be (hopefully has!) be updated to something else, that's what you are 
+You will need to find the folder where GIMP-2.99 or GIMP-3.0 is installed.
+Right-Click on the Gimp-2.99 icon, and select "Open in finder". Then right-click "Show Package Contents". Open the
+folders down to Contents\MacOS, and find the python executable files. On Mac, as of 2024, Sept 6, the file you are
+looking for is "python3.10". "python3.10" might be (hopefully has!) be updated to something else, that's what you are
 trying to verify. Once you are certain of complete directory path to the exact filename, you are set to continue. If you
-don't know, it will look something like "/Applications/GIMP.app/Contents/MacOS/python3.10". While right-clicking the 
+don't know, it will look something like "/Applications/GIMP.app/Contents/MacOS/python3.10". While right-clicking the
 python-executable, you can hold down the clover/option key, and select "Copy &lt;bla&gt; as Pathname".
 
 Now, you will need to edit the pre-install_windows.ps1 file, and change the lines near the top to the path you figured out above:
