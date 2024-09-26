@@ -1,7 +1,7 @@
 ﻿# Welcome to GimpComfyUI
 
-**GimpComfyUI** is a GIMP plugin to connect near-realtime image editing to AI image generation via 
-Stable Diffusion via ComfyUI's web api. It enables Gimp to connect directly to ComfyUI, and optionally send a layer
+**GimpComfyUI** is a GIMP plugin to connect near-realtime image editing to AI image generation via ComfyUI's web api.
+It enables Gimp to connect directly to ComfyUI, and optionally send a layer
 as an image as you edit it. This plugin is targeted for Gimp 3.0, which is not yet released, but 
 is scheduled for release in 2024. The current development and testing platform is Gimp 2.99+
 
