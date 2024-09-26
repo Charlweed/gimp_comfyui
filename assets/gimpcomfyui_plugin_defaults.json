@@ -1,0 +1,14 @@
+{
+  "COMFYUI_HOST": "localhost",
+  "COMFYUI_PATH": "",
+  "COMFYUI_PORT": 8188,
+  "COMFYUI_PROTOCOL": "http",
+  "DEBUG": false,
+  "LIMB_IMAGE_MENU_NAME": "<Image>/GimpComfyUI",
+  "LIMB_LAYERS_MENU_NAME": "<Layers>/GimpComfyUI",
+  "LOGGER_FORMAT_GCUI": "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s",
+  "TRANSCEIVER_HOST": "localhost",
+  "TRANSCEIVER_PATH": "",
+  "TRANSCEIVER_PORT": 8765,
+  "TRANSCEIVER_PROTOCOL": "ws"
+}

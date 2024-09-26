@@ -1,0 +1,333 @@
+{
+  "4": {
+    "inputs": {
+      "ckpt_name": "sd_xl_refiner_1.0.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Refiner Model"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Image Resolution"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "23",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "10": {
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Base Model"
+    }
+  },
+  "22": {
+    "inputs": {
+      "add_noise": "enable",
+      "noise_seed": 423,
+      "steps": 25,
+      "cfg": 7.5,
+      "sampler_name": "ddim",
+      "scheduler": "normal",
+      "start_at_step": 0,
+      "end_at_step": 20,
+      "return_with_leftover_noise": "enable",
+      "model": [
+        "10",
+        0
+      ],
+      "positive": [
+        "75",
+        0
+      ],
+      "negative": [
+        "82",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSamplerAdvanced",
+    "_meta": {
+      "title": "Base Pass"
+    }
+  },
+  "23": {
+    "inputs": {
+      "add_noise": "disable",
+      "noise_seed": 423,
+      "steps": 25,
+      "cfg": 7.5,
+      "sampler_name": "ddim",
+      "scheduler": "normal",
+      "start_at_step": 20,
+      "end_at_step": 1000,
+      "return_with_leftover_noise": "disable",
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "120",
+        0
+      ],
+      "negative": [
+        "81",
+        0
+      ],
+      "latent_image": [
+        "22",
+        0
+      ]
+    },
+    "class_type": "KSamplerAdvanced",
+    "_meta": {
+      "title": "Refiner Pass"
+    }
+  },
+  "75": {
+    "inputs": {
+      "width": 2048,
+      "height": 2048,
+      "crop_w": 0,
+      "crop_h": 0,
+      "target_width": 2048,
+      "target_height": 2048,
+      "text_g": "A head on portrait photograph of a majestic and elegant white tiger in an autumn forest full of foliage and trees at sunset",
+      "text_l": "centered, white tiger, autumn, forest, foliage, head on, looking into the camera, fujifilm, close up, bokeh, f1.8",
+      "clip": [
+        "10",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncodeSDXL",
+    "_meta": {
+      "title": "Positive Base"
+    }
+  },
+  "81": {
+    "inputs": {
+      "ascore": 2,
+      "width": 2048,
+      "height": 2048,
+      "text": "noise, grit, dull, washed out, low contrast, blurry, deep-fried, hazy, malformed, warped, deformed",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncodeSDXLRefiner",
+    "_meta": {
+      "title": "Negative Refiner"
+    }
+  },
+  "82": {
+    "inputs": {
+      "width": 2048,
+      "height": 2048,
+      "crop_w": 0,
+      "crop_h": 0,
+      "target_width": 2048,
+      "target_height": 2048,
+      "text_g": "noise, grit, dull, washed out, low contrast, blurry, deep-fried, hazy, malformed, warped, deformed",
+      "text_l": "noise, grit, dull, washed out, low contrast, blurry, deep-fried, hazy, malformed, warped, deformed",
+      "clip": [
+        "10",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncodeSDXL",
+    "_meta": {
+      "title": "Negative Base"
+    }
+  },
+  "120": {
+    "inputs": {
+      "ascore": 6,
+      "width": 2048,
+      "height": 2048,
+      "text": "centered, white tiger, autumn, forest, foliage, head on, looking into the camera, fujifilm, close up, bokeh, f1.8",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncodeSDXLRefiner",
+    "_meta": {
+      "title": "Positive Refiner"
+    }
+  },
+  "184": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Sytan Workflow"
+    }
+  },
+  "187": {
+    "inputs": {
+      "model_name": "4x-UltraSharp.pth"
+    },
+    "class_type": "UpscaleModelLoader",
+    "_meta": {
+      "title": "Upscale Model"
+    }
+  },
+  "201": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "221",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "2048x Upscale"
+    }
+  },
+  "213": {
+    "inputs": {
+      "upscale_model": [
+        "187",
+        0
+      ],
+      "image": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ImageUpscaleWithModel",
+    "_meta": {
+      "title": "Pixel Upscale x4"
+    }
+  },
+  "215": {
+    "inputs": {
+      "upscale_method": "area",
+      "scale_by": 0.5,
+      "image": [
+        "213",
+        0
+      ]
+    },
+    "class_type": "ImageScaleBy",
+    "_meta": {
+      "title": "Downscale"
+    }
+  },
+  "216": {
+    "inputs": {
+      "add_noise": "enable",
+      "noise_seed": 423,
+      "steps": 30,
+      "cfg": 7.5,
+      "sampler_name": "ddim",
+      "scheduler": "ddim_uniform",
+      "start_at_step": 20,
+      "end_at_step": 1000,
+      "return_with_leftover_noise": "disable",
+      "model": [
+        "10",
+        0
+      ],
+      "positive": [
+        "75",
+        0
+      ],
+      "negative": [
+        "82",
+        0
+      ],
+      "latent_image": [
+        "217",
+        0
+      ]
+    },
+    "class_type": "KSamplerAdvanced",
+    "_meta": {
+      "title": "Upscale Mixed Diff"
+    }
+  },
+  "217": {
+    "inputs": {
+      "pixels": [
+        "215",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE Encode"
+    }
+  },
+  "218": {
+    "inputs": {
+      "samples": [
+        "216",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "221": {
+    "inputs": {
+      "blend_factor": 0.225,
+      "blend_mode": "overlay",
+      "image1": [
+        "218",
+        0
+      ],
+      "image2": [
+        "218",
+        0
+      ]
+    },
+    "class_type": "ImageBlend",
+    "_meta": {
+      "title": "Contrast Fix"
+    }
+  }
+}

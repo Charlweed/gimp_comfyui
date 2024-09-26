@@ -1,0 +1,20 @@
+{
+  "sd_checkpoints_dir": "./models/checkpoints",
+  "sd_clip_dir": "./models/clip",
+  "sd_clip_vision_dir": "./models/clip_vision",
+  "sd_configs_dir": "./models/configs",
+  "sd_controlnet_dir": "./models/controlnets",
+  "sd_data_root": "./",
+  "sd_diffusers_dir": "./models/diffusers",
+  "sd_embeddings_dir": "./models/embeddings",
+  "sd_gligen_dir": "./models/gligen",
+  "sd_hypernetworks_dir": "./models/hypernetworks",
+  "sd_loras_dir": "./models/loras",
+  "sd_models_dir": "./models",
+  "sd_prompts_dir": "./prompts",
+  "sd_style_models_dir": "./models/style_models",
+  "sd_unet_dir": "./models/unet",
+  "sd_upscale_models_dir": "./models/upscale_models",
+  "sd_vae_dir": "./models/vae",
+  "sd_workflows_dir": "./workflows"
+}

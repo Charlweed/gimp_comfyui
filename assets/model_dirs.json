@@ -1,0 +1,20 @@
+{
+  "zzz_00_sd_checkpoints_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\checkpoints",
+  "zzz_00_sd_clip_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\clip",
+  "zzz_00_sd_clip_vision_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\clip_vision",
+  "zzz_00_sd_configs_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\configs",
+  "zzz_00_sd_controlnet_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\controlnets",
+  "zzz_00_sd_data_root": "T:\\chymes\\TEMP\\stabdiff",
+  "zzz_00_sd_diffusers_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\diffusers",
+  "zzz_00_sd_embeddings_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\embeddings",
+  "zzz_00_sd_gligen_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\gligen",
+  "zzz_00_sd_hypernetworks_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\hypernetworks",
+  "zzz_00_sd_loras_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\loras",
+  "zzz_00_sd_models_dir": "T:\\chymes\\TEMP\\stabdiff\\models",
+  "zzz_00_sd_prompts_dir": "T:\\chymes\\TEMP\\stabdiff\\prompts",
+  "zzz_00_sd_style_models_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\style_models",
+  "zzz_00_sd_unet_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\unet",
+  "zzz_00_sd_upscale_models_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\upscale_models",
+  "zzz_00_sd_vae_dir": "T:\\chymes\\TEMP\\stabdiff\\models\\vae",
+  "zzz_00_sd_workflows_dir": "T:\\chymes\\TEMP\\stabdiff\\workflows"
+}

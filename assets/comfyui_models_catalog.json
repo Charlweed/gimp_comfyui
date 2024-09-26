@@ -1,0 +1,568 @@
+{
+  "files": [
+    {
+      "type": "directory",
+      "name": "checkpoints",
+      "path": "checkpoints"
+    },
+    {
+      "type": "file",
+      "size": 5214662094,
+      "name": "512-inpainting-ema.safetensors",
+      "path": "checkpoints/512-inpainting-ema.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 2132856622,
+      "name": "DnDAi-VTTRPGResources-DnDAiAxolotl.ckpt",
+      "path": "checkpoints/DnDAi-VTTRPGResources-DnDAiAxolotl.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 2132856622,
+      "name": "DnDAi-VTTRPGResources-Mimic_Creature.ckpt",
+      "path": "checkpoints/DnDAi-VTTRPGResources-Mimic_Creature.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 6939220250,
+      "name": "dreamshaperXL_turboDPMSDE.safetensors",
+      "path": "checkpoints/dreamshaperXL_turboDPMSDE.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 6939220250,
+      "name": "dreamshaperXL_v21TurboDPMSDE.safetensors",
+      "path": "checkpoints/dreamshaperXL_v21TurboDPMSDE.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 6938068556,
+      "name": "dreamshaperXL10_alpha2Xl10.safetensors",
+      "path": "checkpoints/dreamshaperXL10_alpha2Xl10.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 4265327726,
+      "name": "dungeonsAndDiffusion_model30000.ckpt",
+      "path": "checkpoints/dungeonsAndDiffusion_model30000.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 2132650523,
+      "name": "dungeonsAndDiffusion_v3.safetensors",
+      "path": "checkpoints/dungeonsAndDiffusion_v3.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 6938078334,
+      "name": "sd_xl_base_1.0.safetensors",
+      "path": "checkpoints/sd_xl_base_1.0.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 6075981930,
+      "name": "sd_xl_refiner_1.0.safetensors",
+      "path": "checkpoints/sd_xl_refiner_1.0.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 7703807346,
+      "name": "sd-v1-4-full-ema.ckpt",
+      "path": "checkpoints/sd-v1-4-full-ema.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 4265380512,
+      "name": "sd-v1-4.ckpt",
+      "path": "checkpoints/sd-v1-4.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 4265437280,
+      "name": "sd-v1-5-inpainting.ckpt",
+      "path": "checkpoints/sd-v1-5-inpainting.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 7967306143,
+      "name": "sd21-unclip-h.ckpt",
+      "path": "checkpoints/sd21-unclip-h.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 4265380512,
+      "name": "v1-5-pruned-emaonly.ckpt",
+      "path": "checkpoints/v1-5-pruned-emaonly.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 4265146304,
+      "name": "v1-5-pruned-emaonly.safetensors",
+      "path": "checkpoints/v1-5-pruned-emaonly.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 7703807346,
+      "name": "v1-5-pruned.ckpt",
+      "path": "checkpoints/v1-5-pruned.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 7703324286,
+      "name": "v1-5-pruned.safetensors",
+      "path": "checkpoints/v1-5-pruned.safetensors"
+    },
+    {
+      "type": "directory",
+      "name": "clip",
+      "path": "clip"
+    },
+    {
+      "type": "directory",
+      "name": "clip_vision",
+      "path": "clip_vision"
+    },
+    {
+      "type": "directory",
+      "name": "Codeformer",
+      "path": "Codeformer"
+    },
+    {
+      "type": "file",
+      "size": 376637898,
+      "name": "codeformer-v0.1.0.pth",
+      "path": "Codeformer/codeformer-v0.1.0.pth"
+    },
+    {
+      "type": "directory",
+      "name": "configs",
+      "path": "configs"
+    },
+    {
+      "type": "file",
+      "size": 1933,
+      "name": "anything_v3.yaml",
+      "path": "configs/anything_v3.yaml"
+    },
+    {
+      "type": "file",
+      "size": 1956,
+      "name": "v1-inference_clip_skip_2_fp16.yaml",
+      "path": "configs/v1-inference_clip_skip_2_fp16.yaml"
+    },
+    {
+      "type": "file",
+      "size": 1933,
+      "name": "v1-inference_clip_skip_2.yaml",
+      "path": "configs/v1-inference_clip_skip_2.yaml"
+    },
+    {
+      "type": "file",
+      "size": 1896,
+      "name": "v1-inference_fp16.yaml",
+      "path": "configs/v1-inference_fp16.yaml"
+    },
+    {
+      "type": "file",
+      "size": 1873,
+      "name": "v1-inference.yaml",
+      "path": "configs/v1-inference.yaml"
+    },
+    {
+      "type": "file",
+      "size": 1992,
+      "name": "v1-inpainting-inference.yaml",
+      "path": "configs/v1-inpainting-inference.yaml"
+    },
+    {
+      "type": "file",
+      "size": 1790,
+      "name": "v2-inference_fp32.yaml",
+      "path": "configs/v2-inference_fp32.yaml"
+    },
+    {
+      "type": "file",
+      "size": 1816,
+      "name": "v2-inference-v_fp32.yaml",
+      "path": "configs/v2-inference-v_fp32.yaml"
+    },
+    {
+      "type": "file",
+      "size": 1815,
+      "name": "v2-inference-v.yaml",
+      "path": "configs/v2-inference-v.yaml"
+    },
+    {
+      "type": "file",
+      "size": 1789,
+      "name": "v2-inference.yaml",
+      "path": "configs/v2-inference.yaml"
+    },
+    {
+      "type": "file",
+      "size": 4450,
+      "name": "v2-inpainting-inference.yaml",
+      "path": "configs/v2-inpainting-inference.yaml"
+    },
+    {
+      "type": "directory",
+      "name": "controlnet",
+      "path": "controlnet"
+    },
+    {
+      "type": "directory",
+      "name": "controlnets",
+      "path": "controlnets"
+    },
+    {
+      "type": "directory",
+      "name": "deepbooru",
+      "path": "deepbooru"
+    },
+    {
+      "type": "file",
+      "size": 0,
+      "name": "Put your deepbooru release project folder here.txt",
+      "path": "deepbooru/Put your deepbooru release project folder here.txt"
+    },
+    {
+      "type": "directory",
+      "name": "diffusers",
+      "path": "diffusers"
+    },
+    {
+      "type": "directory",
+      "name": "embeddings",
+      "path": "embeddings"
+    },
+    {
+      "type": "directory",
+      "name": "ESRGAN",
+      "path": "ESRGAN"
+    },
+    {
+      "type": "directory",
+      "name": "GFPGAN",
+      "path": "GFPGAN"
+    },
+    {
+      "type": "file",
+      "size": 109497761,
+      "name": "detection_Resnet50_Final.pth",
+      "path": "GFPGAN/detection_Resnet50_Final.pth"
+    },
+    {
+      "type": "file",
+      "size": 348632874,
+      "name": "GFPGANv1.4.pth",
+      "path": "GFPGAN/GFPGANv1.4.pth"
+    },
+    {
+      "type": "file",
+      "size": 85331193,
+      "name": "parsing_parsenet.pth",
+      "path": "GFPGAN/parsing_parsenet.pth"
+    },
+    {
+      "type": "directory",
+      "name": "gligen",
+      "path": "gligen"
+    },
+    {
+      "type": "directory",
+      "name": "hypernetworks",
+      "path": "hypernetworks"
+    },
+    {
+      "type": "directory",
+      "name": "karlo",
+      "path": "karlo"
+    },
+    {
+      "type": "file",
+      "size": 7079,
+      "name": "ViT-L-14_stats.th",
+      "path": "karlo/ViT-L-14_stats.th"
+    },
+    {
+      "type": "directory",
+      "name": "LDSR",
+      "path": "LDSR"
+    },
+    {
+      "type": "directory",
+      "name": "loras",
+      "path": "loras"
+    },
+    {
+      "type": "file",
+      "size": 12965056,
+      "name": "LCMTurboMix_Euler_A_fix.safetensors",
+      "path": "loras/LCMTurboMix_Euler_A_fix.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 75619168,
+      "name": "otyugh_00-000001.safetensors",
+      "path": "loras/otyugh_00-000001.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 75619168,
+      "name": "otyugh_00-000002.safetensors",
+      "path": "loras/otyugh_00-000002.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 75619168,
+      "name": "otyugh_00-000003.safetensors",
+      "path": "loras/otyugh_00-000003.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 75619168,
+      "name": "otyugh_00-000004.safetensors",
+      "path": "loras/otyugh_00-000004.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 75619168,
+      "name": "otyugh_00-000005.safetensors",
+      "path": "loras/otyugh_00-000005.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 75619168,
+      "name": "otyugh_00-000006.safetensors",
+      "path": "loras/otyugh_00-000006.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 75619168,
+      "name": "otyugh_00.safetensors",
+      "path": "loras/otyugh_00.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 75620000,
+      "name": "otyugh_01.safetensors",
+      "path": "loras/otyugh_01.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 684523444,
+      "name": "otyugh_sdxl_02.safetensors",
+      "path": "loras/otyugh_sdxl_02.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 113368336,
+      "name": "otyugh_v15_02.safetensors",
+      "path": "loras/otyugh_v15_02.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 49553604,
+      "name": "sd_xl_offset_example-lora_1.0.safetensors",
+      "path": "loras/sd_xl_offset_example-lora_1.0.safetensors"
+    },
+    {
+      "type": "directory",
+      "name": "Stable-diffusion",
+      "path": "Stable-diffusion"
+    },
+    {
+      "type": "file",
+      "size": 5214662094,
+      "name": "512-inpainting-ema.safetensors",
+      "path": "Stable-diffusion/512-inpainting-ema.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 2132856622,
+      "name": "DnDAi-VTTRPGResources-DnDAiAxolotl.ckpt",
+      "path": "Stable-diffusion/DnDAi-VTTRPGResources-DnDAiAxolotl.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 2132856622,
+      "name": "DnDAi-VTTRPGResources-Mimic_Creature.ckpt",
+      "path": "Stable-diffusion/DnDAi-VTTRPGResources-Mimic_Creature.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 6939220250,
+      "name": "dreamshaperXL_turboDPMSDE.safetensors",
+      "path": "Stable-diffusion/dreamshaperXL_turboDPMSDE.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 6939220250,
+      "name": "dreamshaperXL_v21TurboDPMSDE.safetensors",
+      "path": "Stable-diffusion/dreamshaperXL_v21TurboDPMSDE.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 6938068556,
+      "name": "dreamshaperXL10_alpha2Xl10.safetensors",
+      "path": "Stable-diffusion/dreamshaperXL10_alpha2Xl10.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 4265327726,
+      "name": "dungeonsAndDiffusion_model30000.ckpt",
+      "path": "Stable-diffusion/dungeonsAndDiffusion_model30000.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 2132650523,
+      "name": "dungeonsAndDiffusion_v3.safetensors",
+      "path": "Stable-diffusion/dungeonsAndDiffusion_v3.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 6938078334,
+      "name": "sd_xl_base_1.0.safetensors",
+      "path": "Stable-diffusion/sd_xl_base_1.0.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 6075981930,
+      "name": "sd_xl_refiner_1.0.safetensors",
+      "path": "Stable-diffusion/sd_xl_refiner_1.0.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 7703807346,
+      "name": "sd-v1-4-full-ema.ckpt",
+      "path": "Stable-diffusion/sd-v1-4-full-ema.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 4265380512,
+      "name": "sd-v1-4.ckpt",
+      "path": "Stable-diffusion/sd-v1-4.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 4265437280,
+      "name": "sd-v1-5-inpainting.ckpt",
+      "path": "Stable-diffusion/sd-v1-5-inpainting.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 7967306143,
+      "name": "sd21-unclip-h.ckpt",
+      "path": "Stable-diffusion/sd21-unclip-h.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 4265380512,
+      "name": "v1-5-pruned-emaonly.ckpt",
+      "path": "Stable-diffusion/v1-5-pruned-emaonly.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 4265146304,
+      "name": "v1-5-pruned-emaonly.safetensors",
+      "path": "Stable-diffusion/v1-5-pruned-emaonly.safetensors"
+    },
+    {
+      "type": "file",
+      "size": 7703807346,
+      "name": "v1-5-pruned.ckpt",
+      "path": "Stable-diffusion/v1-5-pruned.ckpt"
+    },
+    {
+      "type": "file",
+      "size": 7703324286,
+      "name": "v1-5-pruned.safetensors",
+      "path": "Stable-diffusion/v1-5-pruned.safetensors"
+    },
+    {
+      "type": "directory",
+      "name": "style_models",
+      "path": "style_models"
+    },
+    {
+      "type": "directory",
+      "name": "SwinIR",
+      "path": "SwinIR"
+    },
+    {
+      "type": "directory",
+      "name": "unet",
+      "path": "unet"
+    },
+    {
+      "type": "file",
+      "size": 5135178560,
+      "name": "diffusion_pytorch_model.fp16.safetensors",
+      "path": "unet/diffusion_pytorch_model.fp16.safetensors"
+    },
+    {
+      "type": "directory",
+      "name": "upscale_models",
+      "path": "upscale_models"
+    },
+    {
+      "type": "file",
+      "size": 66957746,
+      "name": "4x_NMKD-Siax_200k.pth",
+      "path": "upscale_models/4x_NMKD-Siax_200k.pth"
+    },
+    {
+      "type": "file",
+      "size": 66958607,
+      "name": "4x_NMKD-Superscale-SP_178000_G.pth",
+      "path": "upscale_models/4x_NMKD-Superscale-SP_178000_G.pth"
+    },
+    {
+      "type": "file",
+      "size": 66961958,
+      "name": "4x-UltraSharp.pth",
+      "path": "upscale_models/4x-UltraSharp.pth"
+    },
+    {
+      "type": "file",
+      "size": 67106707,
+      "name": "8x_NMKD-Superscale_150000_G.pth",
+      "path": "upscale_models/8x_NMKD-Superscale_150000_G.pth"
+    },
+    {
+      "type": "file",
+      "size": 737232212,
+      "name": "NMKD Superscale.zip",
+      "path": "upscale_models/NMKD Superscale.zip"
+    },
+    {
+      "type": "directory",
+      "name": "vae",
+      "path": "vae"
+    },
+    {
+      "type": "file",
+      "size": 334641162,
+      "name": "sdxl_vae.safetensors",
+      "path": "vae/sdxl_vae.safetensors"
+    },
+    {
+      "type": "directory",
+      "name": "vae_approx",
+      "path": "vae_approx"
+    },
+    {
+      "type": "file",
+      "size": 213777,
+      "name": "model.pt",
+      "path": "vae_approx/model.pt"
+    },
+    {
+      "type": "file",
+      "size": 213777,
+      "name": "vaeapprox-sdxl.pt",
+      "path": "vae_approx/vaeapprox-sdxl.pt"
+    }
+  ]
+}

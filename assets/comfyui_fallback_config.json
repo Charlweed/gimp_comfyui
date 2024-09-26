@@ -1,0 +1,21 @@
+{
+  "README": "This JSON file is read as a last resort if the config file in the user directory can't be read. Currently, it is probably wrong for your setup, but you can edit it.",
+  "sd_checkpoints_dir": "C:/ComfyUI/models/checkpoints",
+  "sd_clip_dir": "C:/ComfyUI/models/clip",
+  "sd_clip_vision_dir": "C:/ComfyUI/models/clip_vision",
+  "sd_configs_dir": "C:/ComfyUI/models/configs",
+  "sd_controlnet_dir": "C:/ComfyUI/models/controlnets",
+  "sd_data_root": "C:/ComfyUI",
+  "sd_diffusers_dir": "C:/ComfyUI/models/diffusers",
+  "sd_embeddings_dir": "C:/ComfyUI/models/embeddings",
+  "sd_gligen_dir": "C:/ComfyUI/models/gligen",
+  "sd_hypernetworks_dir": "C:/ComfyUI/models/hypernetworks",
+  "sd_loras_dir": "C:/ComfyUI/models/loras",
+  "sd_models_dir": "C:/ComfyUI/models",
+  "sd_prompts_dir": "C:/ComfyUI/prompts",
+  "sd_style_models_dir": "C:/ComfyUI/models/style_models",
+  "sd_unet_dir": "C:/ComfyUI/models/unet",
+  "sd_upscale_models_dir": "C:/ComfyUI/models/upscale_models",
+  "sd_vae_dir": "C:/ComfyUI/models/vae",
+  "sd_workflows_dir": "C:/ComfyUI/workflows"
+}
