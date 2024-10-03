@@ -404,6 +404,10 @@ def write_json_files(stable_diffusion_data_dir: str):
         out_dict[key] = os.path.abspath(value.replace("DIR_TOKEN_00", f"{stable_diffusion_data_dir}/"))
     try:
         LOGGER_INSTALLER.info(f"Writing ComfyUI config to {CMFUI_CONFIG_JSON_PATH}")
+        if not os.path.exists(gsdd):
+            os.mkdir(gsdd)
+        if not os.path.exists(gsdd):
+            raise IOError(f"Could not find or create {gsdd}")
         with open(CMFUI_CONFIG_JSON_PATH, "w") as comfyui_config_json_file:
             sorted_keys = sorted(out_dict.keys())
             json.dump({i: out_dict[i] for i in sorted_keys}, comfyui_config_json_file, indent=2)
