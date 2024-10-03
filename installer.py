@@ -326,10 +326,14 @@ def _from_here_to_there(sources: Set[str], dest_dir: str, sub_dir: str | None = 
             else:
                 if os.path.exists(new_dest):
                     _remove_drek(new_dest)
+                if not os.path.exists(dest_dir):
+                    os.mkdir(dest_dir)
+                # print(f"shutil.copy({src_path}, {dest_dir})")
                 shutil.copy(src_path, dest_dir)
             LOGGER_INSTALLER.debug(f"Copied \"{src_path}\" to \"{dest_dir}\"")
         except IOError as io_err:
-            eprint(io_err)
+            eprint(f"Error at src_leaf={src_leaf}; src_path={src_path}; dest_dir={dest_dir}")
+            eprint(f"{io_err}")
             all_good = False
     return all_good
 
