@@ -77,6 +77,12 @@ Don't omit the quotes!
 
 Now, open a terminal, and navigate to this repository. In this dir, run the command ".\pre-install_windows.ps1"
 The pre-installer might print some optional instructions. You can now run the installer with Gimp's python, or your system's full python.
+## Linux
+On Linux, updating GIMP's python modules is quite complex. Here, Gimp's python installation is possibly in a virtual
+environment, and likely within a user-specific sandbox, especially if GIMP was installed with an application manager
+like flatpak. I have not yet succeeded at getting a shell to run GIMP's python, nor running get-pip.py from within
+GIMP's python. So far, GIMP's python loads the wrong libraries when started from a shell, and setting LD_LIBRARY_PATH
+does not help. Work is ongoing.
 ## Mac
 You will need to find the folder where GIMP-2.99 or GIMP-3.0 is installed.
 Right-Click on the Gimp-2.99 icon, and select "Open in finder". Then right-click "Show Package Contents". Open the
@@ -86,7 +92,7 @@ trying to verify. Once you are certain of complete directory path to the exact f
 don't know, it will look something like "/Applications/GIMP.app/Contents/MacOS/python3.10". While right-clicking the
 python-executable, you can hold down the clover/option key, and select "Copy &lt;bla&gt; as Pathname".
 
-Now, you will need to edit the pre-install_windows.ps1 file, and change the lines near the top to the path you figured out above:
+Now, you will need to edit the pre-install_macos.sh file, and change the lines near the top to the path you figured out above:
 * export GIMP_PYTHON_3_10="/Applications/GIMP.app/Contents/MacOS/python3.10"
 * export GIMP_PYTHON_3_10_HOME="/Applications/GIMP.app/Contents/MacOS"
 
