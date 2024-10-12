@@ -23,6 +23,9 @@
 """
 Registers the plug-in "GimpComfyUI" as a thin API client for ComfyUI API.
 
+GIMP plug-ins must have a python file with the exact same name as their parent directory. That is the "main" file of
+the plug-in.
+
  See ... gimp/devel-docs/GIMP3-plug-in-porting-guide/removed_functions.md etcetera.
 
  REMEMBER: This entire script is run each time the menu option is selected. That's why we don't need to restart
