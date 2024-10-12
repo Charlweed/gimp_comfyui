@@ -72,7 +72,7 @@ New-Item -ItemType Directory -Path $ENV:TMP\gimp_scripts
 New-Item -ItemType Directory -Path $ENV:TMP\stable_diffusion\models
 New-Item -ItemType Directory -Path $ENV:TMP\stable_diffusion\custom_nodes
 $ENV:GCUI_REPO=$PSScriptRoot
-# The separator inconsistancies are because the command is executed by the shell, but the arguments are parsed by python
+# The separator inconsistencies are because the command is executed by the shell, but the arguments are parsed by python
 $INSTALLER_CMD="$ENV:GCUI_REPO\installer.py --gimp_scripts_dir $ENV:TMP/gimp_scripts --stable_diffusion_data_dir $ENV:TMP/stable_diffusion --comfyui_custom_nodes_dir $ENV:TMP/stable_diffusion/custom_nodes"
 $InformationPreference="Continue"
 

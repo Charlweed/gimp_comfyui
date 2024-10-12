@@ -132,17 +132,16 @@ feature.😄
 
 ## Installation steps
 Assuming Gimp 2.99 and ComfyUI are installed and working:
-1) Locate or choose your Gimp 2.99/3.0 Gimp installation, and find `bin/python` in that Gimp installation.
-2) Locate or choose your Gimp plugins-folder. The folder in your home folder is the simplest choice:
-`~/AppData/Roaming/Gimp/2.99/plug-ins` for Windows, or `~/.config/Gimp/2.99/plug-ins` on linux, `"~/Library/Application Support/GIMP/2.99/plug-ins"` on MacOS. Replace the ~ with your home directory.
-3) Locate your ComfyUI folder, and find the `custom_nodes` folder in it.
-4) Locate or choose your StableDiffusion data folder, which is the parent dir to `models`. Typically, this will be 
+1) Locate or choose your Gimp plugins-folder. The folder in your home folder is the simplest choice:
+`~/AppData/Roaming/Gimp/2.99/plug-ins` for Windows, or `$HOME/.var/app/org.gimp.GIMP/config/GIMP/2.99/plug-ins` on linux, `"~/Library/Application Support/GIMP/2.99/plug-ins"` on MacOS. Replace the ~ with your home directory.
+2) Locate your ComfyUI folder, and find the `custom_nodes` folder in it.
+3) Locate, Create, or choose your StableDiffusion data folder, which is the parent dir to `models`. Typically, this will be 
 `ComfyUI`, the same as above, but does not need to be. **It must have a "models" directory, so create that if you are using a
 temporary or dummy directory.**
-5) Locate, or choose, an install-time python installation. You can choose the python bundled with Gimp, as discussed 
+4) Locate, or choose, an install-time python installation. You can choose the python bundled with Gimp, as discussed 
 above in Pre-Installation, but Gimp's python does not have TK installed, so you will need to use the command line 
 interface. **Installing TK in Gimp's python does not work, at least not of this writing in 2024/07/31**
-6) In a terminal/console, execute ``<your-python> <this-project>/installer.py`` if you are providing command-line 
+5) In a terminal/console, execute ``<your-python> <this-project>/installer.py`` if you are providing command-line 
 options, put each directory name in quotes, to avoid problems with spaces.
 
 If a dialog opens:

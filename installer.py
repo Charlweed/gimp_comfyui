@@ -70,7 +70,7 @@ LOGGER_INSTALLER.info(f"Installing as PLATFORM={PLATFORM}")
 
 if PLATFORM == "windows":
     DEFAULTS = {
-        "gimp_scripts_dir": "~/AppData/Roaming/GIMP/2.99/scripts",
+        "gimp_scripts_dir": "~/AppData/Roaming/GIMP/2.99/plug-ins",
         "gimp_script_data_dir": "~/AppData/Roaming/gimp_script_data",
         "comfyui_custom_nodes_dir": "~/ComfyUI/custom_nodes",
         "stable_diffusion_data_dir": "~/ComfyUI"
@@ -86,7 +86,7 @@ else:
         }
     else:
         DEFAULTS = {
-            "gimp_scripts_dir": "~/.var/app/org.gimp.GIMP/config/GIMP/2.99/scripts",
+            "gimp_scripts_dir": "~/.var/app/org.gimp.GIMP/config/GIMP/2.99/plug-ins",
             "gimp_script_data_dir": "~/.config/gimp_script_data",
             "comfyui_custom_nodes_dir": "~/ComfyUI/custom_nodes",
             "stable_diffusion_data_dir": "~/ComfyUI"
@@ -120,8 +120,7 @@ TRANSCEIVER_NODE_NAME = "image_transceiver"
 TRANSCEIVER_NODE_PROJ_NAME: str = "comfy_image_transceiver_controller"
 
 SUB_PROJ: Dict[str, str] = {
-    # TODO: Move project to github
-    TRANSCEIVER_NODE_PROJ_NAME: "git@executor.hymes-ruzicka.name:/usr/exports/repositories/git/comfy_image_transceiver_controller"  # noqa
+    TRANSCEIVER_NODE_PROJ_NAME: "https://github.com/Charlweed/image_transceiver.git"
 }
 
 
