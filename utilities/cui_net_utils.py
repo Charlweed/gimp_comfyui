@@ -19,13 +19,18 @@ import gi
 import json
 import logging
 import os
-from requests_toolbelt import MultipartEncoder  # Really wanted to avoid installing this package, into Gimp, but ...
 import sys
 import urllib
-import websocket  # Users need to install and use "websocket-client", not "websocket"
+
 
 gi.require_version("Gtk", "3.0")  # noqa E402
 gi.require_version('GdkPixbuf', '2.0')  # noqa E402
+# It is unfortunate that the requests, requests_toolbelt, and websocket-client modules are omitted from
+# Linux GIMP's python. The source of those modules are therefore included in this plugin.
+import requests_toolbelt  # This refers to the local package in this plug-in's directory
+from requests_toolbelt import MultipartEncoder  # This refers to the local package in this plug-in's directory
+import websocket  # This refers to the local package in this plug-in's directory
+from websocket import WebSocket   # This refers to the local package in this plug-in's directory
 from gi.repository import GdkPixbuf
 from http.client import HTTPResponse
 from typing import Any, Dict, List, Callable
@@ -33,7 +38,6 @@ from urllib import error
 from urllib import request
 from urllib.parse import urlencode
 from utilities.heterogeneous import strip_hetero_brand_from_root
-from websocket import WebSocket
 
 LGR_CNU = logging.getLogger("cui_net_utils")
 LGR_FMT_CNU = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
@@ -275,7 +279,7 @@ def send_workflow_data(cu_origin: str,
     :return: A (singular) list of GdkPixbuf.Pixbufs
     """
     results: List[GdkPixbuf.Pixbuf] = []
-    socket: WebSocket = websocket.WebSocket()
+    socket: WebSocket = WebSocket()
     ws_url = f"ws://{cu_origin}/ws?clientId={client_id}"
     log_message = f"send_workflow_data() opening {ws_url}"
     LGR_CNU.debug(log_message)
