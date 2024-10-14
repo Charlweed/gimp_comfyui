@@ -11,12 +11,12 @@ Data structures that power Requests.
 import collections
 
 
-class CaseInsensitiveDict(collections.MutableMapping):
+class CaseInsensitiveDict(collections.abc.MutableMapping):
     """
     A case-insensitive ``dict``-like object.
 
     Implements all methods and operations of
-    ``collections.MutableMapping`` as well as dict's ``copy``. Also
+    ``collections.abc.MutableMapping`` as well as dict's ``copy``. Also
     provides ``lower_items``.
 
     All keys are expected to be strings. The structure remembers the
