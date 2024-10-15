@@ -66,16 +66,16 @@ set +e
 cat "$TMPDIR/outdated_python_modules.txt" | xargs -n1 pip install -U
 
 # MacOS:
-mkdir -p "$TMPDIR/gimp_scripts"
+mkdir -p "$TMPDIR/gimp_plugins"
 mkdir -p "$TMPDIR/stable_diffusion/models"
 mkdir -p "$TMPDIR/stable_diffusion/custom_nodes"
 GCUI_REPO="$(dirname "$(readlink -f "$0")")"
 export GCUI_REPO
-INSTALLER_CMD="/Applications/GIMP.app/Contents/MacOS/python3.10 $GCUI_REPO/installer.py --gimp_scripts_dir $TMPDIR/gimp_scripts --stable_diffusion_data_dir $TMPDIR/stable_diffusion --comfyui_custom_nodes_dir $TMPDIR/stable_diffusion/custom_nodes"
+INSTALLER_CMD="/Applications/GIMP.app/Contents/MacOS/python3.10 $GCUI_REPO/installer.py --gimp_plugins_dir $TMPDIR/gimp_plugins --stable_diffusion_data_dir $TMPDIR/stable_diffusion --comfyui_custom_nodes_dir $TMPDIR/stable_diffusion/custom_nodes"
 
 echo "You should now be able to run this installer in cli-mode, but the GUI will not work. To test the cli, try pasting the text we just loaded into the clipboard."
-echo "When ready to actually install, you will need to choose and specify the correct --gimp_scripts_dir."
-echo "On macOS Monterey, Gimp 2.99, a working value for --gimp_scripts_dir is"
+echo "When ready to actually install, you will need to choose and specify the correct --gimp_plugins_dir."
+echo "On macOS Monterey, Gimp 2.99, a working value for --gimp_plugins_dir is"
 echo "   \"~/Library/Application Support/GIMP/2.99/plug-ins\""
 echo "This WILL change, at least when Gimp is updated."
 echo -e "On systems without local ComfyUI, the temporary directories for stable_diffusion_data_dir and comfyui_custom_nodes_dir will allow the installer to run.\n\n"

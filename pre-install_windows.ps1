@@ -68,17 +68,17 @@ foreach ($module_name in $outdated_modules) {
 }
 
 # Windows:
-New-Item -ItemType Directory -Path $ENV:TMP\gimp_scripts
+New-Item -ItemType Directory -Path $ENV:TMP\gimp_plugins
 New-Item -ItemType Directory -Path $ENV:TMP\stable_diffusion\models
 New-Item -ItemType Directory -Path $ENV:TMP\stable_diffusion\custom_nodes
 $ENV:GCUI_REPO=$PSScriptRoot
 # The separator inconsistencies are because the command is executed by the shell, but the arguments are parsed by python
-$INSTALLER_CMD="$ENV:GCUI_REPO\installer.py --gimp_scripts_dir $ENV:TMP/gimp_scripts --stable_diffusion_data_dir $ENV:TMP/stable_diffusion --comfyui_custom_nodes_dir $ENV:TMP/stable_diffusion/custom_nodes"
+$INSTALLER_CMD="$ENV:GCUI_REPO\installer.py --gimp_plugins_dir $ENV:TMP/gimp_plugins --stable_diffusion_data_dir $ENV:TMP/stable_diffusion --comfyui_custom_nodes_dir $ENV:TMP/stable_diffusion/custom_nodes"
 $InformationPreference="Continue"
 
 Write-Information "You should now be able to run the installer. To test the cli, try pasting the text we just loaded into the clipboard."
-Write-Information "When ready to actually install, you will need to choose and specify the correct --gimp_scripts_dir."
-Write-Information "On Windows, Gimp 2.99, a working value for --gimp_scripts_dir is"
+Write-Information "When ready to actually install, you will need to choose and specify the correct --gimp_plugins_dir."
+Write-Information "On Windows, Gimp 2.99, a working value for --gimp_plugins_dir is"
 Write-Information "`"~/AppData/Roaming/Gimp/2.99/plug-ins`""
 Write-Information "This WILL change, at least when Gimp is updated."
 Write-Information "On systems without local ComfyUI, the temporary directories for stable_diffusion_data_dir and comfyui_custom_nodes_dir will allow the installer to run.`n`n"

@@ -70,11 +70,11 @@ def get_temporary_dir() -> str:
 
 def get_persistent_dir_name() -> str:
     if platform.system().lower() == 'windows':
-        return path.expandvars(r'%APPDATA%\gimp_script_data')
+        return path.expandvars(r'%APPDATA%\gimp_plugin_data')
     if platform.system().lower() == 'linux':
-        return path.expandvars(r'$HOME/.config/gimp_script_data')
+        return path.expandvars(r'$HOME/.config/gimp_plugin_data')
     if platform.system().lower() == 'darwin':
-        return path.expandvars(r'$HOME/.config/gimp_script_data')
+        return path.expandvars(r'$HOME/.config/gimp_plugin_data')
     raise Exception("Unsupported platform")
 
 

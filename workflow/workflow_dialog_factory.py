@@ -45,16 +45,16 @@ class WorkflowDialogFactory(ABC):
         # Update when Gimp 3.0 is released!
         if local_platform == "windows":
             defaults = {
-                "gimp_scripts_dir": expanduser("~/AppData/Roaming/GIMP/2.99/scripts"),
-                "gimp_script_data_dir": expanduser("~/AppData/Roaming/gimp_script_data"),
+                "gimp_plugins_dir": expanduser("~/AppData/Roaming/GIMP/2.99/scripts"),
+                "gimp_plugin_data_dir": expanduser("~/AppData/Roaming/gimp_plugin_data"),
                 "comfyui_custom_nodes_dir": expanduser("~/ComfyUI/custom_nodes"),
                 "stable_diffusion_data_dir": expanduser("~/ComfyUI")
             }
         else:
             if local_platform == "darwin":
                 defaults = {
-                    "gimp_scripts_dir": expanduser("~/Library/Application Support/GIMP/2.99/plug-ins"),
-                    "gimp_script_data_dir": expanduser("~/.config/gimp_script_data"),
+                    "gimp_plugins_dir": expanduser("~/Library/Application Support/GIMP/2.99/plug-ins"),
+                    "gimp_plugin_data_dir": expanduser("~/.config/gimp_plugin_data"),
                     # Assuming no local ComfyUI
                     "comfyui_custom_nodes_dir": os.environ.get('TMPDIR', expanduser("~/")),
                     # Assuming no local stable_diffusion
@@ -62,8 +62,8 @@ class WorkflowDialogFactory(ABC):
                 }
             else:
                 defaults = {
-                    "gimp_scripts_dir": expanduser("~/.var/app/org.gimp.GIMP/config/GIMP/2.99/scripts"),
-                    "gimp_script_data_dir": expanduser("~/.config/gimp_script_data"),
+                    "gimp_plugins_dir": expanduser("~/.var/app/org.gimp.GIMP/config/GIMP/2.99/scripts"),
+                    "gimp_plugin_data_dir": expanduser("~/.config/gimp_plugin_data"),
                     "comfyui_custom_nodes_dir": expanduser("~/ComfyUI/custom_nodes"),
                     "stable_diffusion_data_dir": expanduser("~/ComfyUI")
                 }
@@ -71,7 +71,7 @@ class WorkflowDialogFactory(ABC):
 
     @classmethod
     def get_script_data_dir(cls):
-        return cls.get_metaconfig_defaults()["gimp_script_data_dir"]
+        return cls.get_metaconfig_defaults()["gimp_plugin_data_dir"]
 
     @classmethod
     def get_comfyui_config_path(cls):

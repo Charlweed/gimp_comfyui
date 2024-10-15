@@ -70,28 +70,28 @@ LOGGER_INSTALLER.info(f"Installing as PLATFORM={PLATFORM}")
 
 if PLATFORM == "windows":
     DEFAULTS = {
-        "gimp_scripts_dir": "~/AppData/Roaming/GIMP/2.99/plug-ins",
-        "gimp_script_data_dir": "~/AppData/Roaming/gimp_script_data",
+        "gimp_plugins_dir": "~/AppData/Roaming/GIMP/2.99/plug-ins",
+        "gimp_plugin_data_dir": "~/AppData/Roaming/gimp_plugin_data",
         "comfyui_custom_nodes_dir": "~/ComfyUI/custom_nodes",
         "stable_diffusion_data_dir": "~/ComfyUI"
     }
 else:
     if PLATFORM == "darwin":
         DEFAULTS = {
-            "gimp_scripts_dir": "~/Library/Application Support/GIMP/2.99/plug-ins",
-            "gimp_script_data_dir": "~/.config/gimp_script_data",
+            "gimp_plugins_dir": "~/Library/Application Support/GIMP/2.99/plug-ins",
+            "gimp_plugin_data_dir": "~/.config/gimp_plugin_data",
             "comfyui_custom_nodes_dir": os.environ.get('TMPDIR', expanduser("~/")),
             # Assuming no local stable_diffusion
             "stable_diffusion_data_dir": os.environ.get('TMPDIR', expanduser("~/"))
         }
     else:
         DEFAULTS = {
-            "gimp_scripts_dir": "~/.var/app/org.gimp.GIMP/config/GIMP/2.99/plug-ins",
-            "gimp_script_data_dir": "~/.config/gimp_script_data",
+            "gimp_plugins_dir": "~/.var/app/org.gimp.GIMP/config/GIMP/2.99/plug-ins",
+            "gimp_plugin_data_dir": "~/.config/gimp_plugin_data",
             "comfyui_custom_nodes_dir": "~/ComfyUI/custom_nodes",
             "stable_diffusion_data_dir": "~/ComfyUI"
         }
-gsdd = os.path.abspath(expanduser(DEFAULTS["gimp_script_data_dir"]))
+gsdd = os.path.abspath(expanduser(DEFAULTS["gimp_plugin_data_dir"]))
 CMFUI_CONFIG_JSON_PATH = os.path.join(gsdd, "comfyui_config.json")
 CMFUI_CONFIG_TEMPLATE = {
     "sd_checkpoints_dir": "DIR_TOKEN_00/models/checkpoints",
@@ -147,7 +147,7 @@ def _remove_git_parts(subject_dir):
 
 def _remove_duh(doomed) -> bool:
     """
-    This fails if there's a read-only file, and git repos always have read-only files. There is no fix on Windows
+    This fails if there's a read-only file, and git repos always have read-only files. There is no fix on Windows.
     :param doomed: The file or directory to delete.
     :return: True if deletion was successful.
     """
@@ -246,7 +246,7 @@ def _dirs_from_user(parameters: Dict[str, UserValueType], use_cli: bool) -> Dict
                 answer = input(f"Please provide an existing directory path for {parameter}  >").strip()
             else:
                 if not os.path.isdir(default):
-                    eprint(f"Could not find default directory for {parameter}: \"{default}\"")
+                    eprint(f"Did not find DEFAULT directory for {parameter}: \"{default}\"")
                     default = Path.home()
                 # I suspect root.directory is magic, and needs to be tickled. So keep assigning to it.
                 root.directory = filedialog.askdirectory(initialdir=default, title=f"Please Select {parameter}")  # noqa
@@ -302,6 +302,7 @@ def remove_modules():
 
 def _from_here_to_there(sources: Set[str], dest_dir: str, sub_dir: str | None = None) -> bool:
     all_good: bool = False
+    src_path: str = ""
     if not __file__:
         raise IOError("Cannot determine path to \"this\" script.")
     this_repo_dir = os.path.dirname(os.path.abspath(__file__))
@@ -337,7 +338,7 @@ def _from_here_to_there(sources: Set[str], dest_dir: str, sub_dir: str | None = 
     return all_good
 
 
-def copy_gimp_script_sources(gimp_plugin_dir: str) -> bool:
+def copy_gimp_plugin_sources(gimp_plugin_dir: str) -> bool:
     LOGGER_INSTALLER.info(f"Installing Gimp plugin {gimp_plugin_dir}")
     all_good: bool
     sources: Set[str] = {
@@ -366,20 +367,20 @@ def copy_comfyui_node_sources(comfyui_custom_nodes_dir: str) -> bool:
     return all_good
 
 
-def start_install(gimp_scripts_dir: str, comfyui_custom_nodes_dir: str, stable_diffusion_data_dir: str):
-    LOGGER_INSTALLER.info(f"Installing ... gimp_scripts_dir=\"{gimp_scripts_dir}\","
+def start_install(gimp_plugins_dir: str, comfyui_custom_nodes_dir: str, stable_diffusion_data_dir: str):
+    LOGGER_INSTALLER.info(f"Installing ... gimp_plugins_dir=\"{gimp_plugins_dir}\","
                           f" comfyui_custom_nodes_dir=\"{comfyui_custom_nodes_dir}\""
                           f" stable_diffusion_data_dir=\"{stable_diffusion_data_dir}\""
                           )
     if not __file__:
         raise IOError("Cannot determine path to \"this\" script.")
     write_json_files(stable_diffusion_data_dir=stable_diffusion_data_dir)
-    gimp_plugin_dir = os.path.join(gimp_scripts_dir, PLUGIN_DIR_NAME)
+    gimp_plugin_dir = os.path.join(gimp_plugins_dir, PLUGIN_DIR_NAME)
     if not os.path.exists(gimp_plugin_dir):
         os.mkdir(gimp_plugin_dir)
     if not os.path.isdir(gimp_plugin_dir):
         raise IOError(f"Existing file \"{gimp_plugin_dir}\" is not a directory.")
-    copy_gimp_script_sources(gimp_plugin_dir=gimp_plugin_dir)
+    copy_gimp_plugin_sources(gimp_plugin_dir=gimp_plugin_dir)
     _download_partners()
     copy_comfyui_node_sources(comfyui_custom_nodes_dir=comfyui_custom_nodes_dir)
 
@@ -421,26 +422,26 @@ def write_json_files(stable_diffusion_data_dir: str):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--gimp_scripts_dir", nargs='?')
+    parser.add_argument("--gimp_plugins_dir", nargs='?')
     parser.add_argument("--comfyui_custom_nodes_dir", nargs='?')
     parser.add_argument("--stable_diffusion_data_dir", nargs='?')
     args_p = parser.parse_args()
-    if not args_p.gimp_scripts_dir:
-        LOGGER_INSTALLER.debug("gimp_scripts_dir not specified.")
+    if not args_p.gimp_plugins_dir:
+        LOGGER_INSTALLER.debug("gimp_plugins_dir not specified.")
     if not args_p.comfyui_custom_nodes_dir:
         LOGGER_INSTALLER.debug("comfyui_custom_nodes_dir not specified.")
     if not args_p.stable_diffusion_data_dir:
         LOGGER_INSTALLER.debug("stable_diffusion_data_dir not specified.")
     sys.stdout.flush()
     sys.stderr.flush()
-    if args_p.comfyui_custom_nodes_dir and args_p.gimp_scripts_dir and args_p.stable_diffusion_data_dir:
-        start_install(gimp_scripts_dir=args_p.gimp_scripts_dir,
+    if args_p.comfyui_custom_nodes_dir and args_p.gimp_plugins_dir and args_p.stable_diffusion_data_dir:
+        start_install(gimp_plugins_dir=args_p.gimp_plugins_dir,
                       comfyui_custom_nodes_dir=args_p.comfyui_custom_nodes_dir,
                       stable_diffusion_data_dir=args_p.stable_diffusion_data_dir
                       )
     else:
         user_args: Dict[str: str] | Fault = _obtain_user_arguments({
-            "gimp_scripts_dir": UserValueType.DIRECTORY_PATH,
+            "gimp_plugins_dir": UserValueType.DIRECTORY_PATH,
             "comfyui_custom_nodes_dir": UserValueType.DIRECTORY_PATH,
             "stable_diffusion_data_dir": UserValueType.DIRECTORY_PATH
         })
@@ -448,7 +449,7 @@ def main():
             fault_name: str = user_args.name
             eprint(f"Stopping because {fault_name}")
             sys.exit(10)
-        start_install(gimp_scripts_dir=user_args["gimp_scripts_dir"],
+        start_install(gimp_plugins_dir=user_args["gimp_plugins_dir"],
                       comfyui_custom_nodes_dir=user_args["comfyui_custom_nodes_dir"],
                       stable_diffusion_data_dir=user_args["stable_diffusion_data_dir"]
                       )
@@ -459,18 +460,18 @@ if __name__ == '__main__':
 
 # This might save typing while developing. Try:
 # Windows:
-# mkdir $ENV:TMP\gimp_scripts
+# mkdir $ENV:TMP\gimp_plugins
 # mkdir $ENV:TMP\stable_diffusion\models
 # mkdir $ENV:TMP\stable_diffusion\custom_nodes
 # $ENV:GCUI_REPO=$(Get-Location)
-# python $ENV:GCUI_REPO\installer.py --gimp_scripts_dir $ENV:TMP/gimp_scripts --stable_diffusion_data_dir $ENV:TMP/stable_diffusion --comfyui_custom_nodes_dir $ENV:TMP/stable_diffusion/custom_nodes
+# python $ENV:GCUI_REPO\installer.py --gimp_plugins_dir $ENV:TMP/gimp_plugins --stable_diffusion_data_dir $ENV:TMP/stable_diffusion --comfyui_custom_nodes_dir $ENV:TMP/stable_diffusion/custom_nodes
 # and
-# python $ENV:GCUI_REPO\installer.py --gimp_scripts_dir $ENV:TMP/gimp_scripts --stable_diffusion_data_dir L:/projects/3rd_party/ComfyUI --comfyui_custom_nodes_dir L:/projects/3rd_party/ComfyUI/custom_nodes
+# python $ENV:GCUI_REPO\installer.py --gimp_plugins_dir $ENV:TMP/gimp_plugins --stable_diffusion_data_dir L:/projects/3rd_party/ComfyUI --comfyui_custom_nodes_dir L:/projects/3rd_party/ComfyUI/custom_nodes
 ##
 ##
 # MacOS:
-# mkdir -p $TMPDIR/gimp_scripts
+# mkdir -p $TMPDIR/gimp_plugins
 # mkdir -p $TMPDIR/stable_diffusion/models
 # mkdir -p $TMPDIR/stable_diffusion/custom_nodes
 # export GCUI_REPO=$(pwd)
-# /Applications/GIMP.app/Contents/MacOS/python3.10 $GCUI_REPO/installer.py --gimp_scripts_dir $TMPDIR/gimp_scripts --stable_diffusion_data_dir $TMPDIR/stable_diffusion --comfyui_custom_nodes_dir $TMPDIR/stable_diffusion/custom_nodes
+# /Applications/GIMP.app/Contents/MacOS/python3.10 $GCUI_REPO/installer.py --gimp_plugins_dir $TMPDIR/gimp_plugins --stable_diffusion_data_dir $TMPDIR/stable_diffusion --comfyui_custom_nodes_dir $TMPDIR/stable_diffusion/custom_nodes

@@ -62,7 +62,7 @@ destinations, You might first choose any reasonable destinations, and then later
 final folders yourself.
 
 The installer.py script is in the root of this project directory. It is best launched from the command line, and has
-"optional" options: "--gimp_scripts_dir" "--stable_diffusion_data_dir" and "--comfyui_custom_nodes_dir". If you do not 
+"optional" options: "--gimp_plugins_dir" "--stable_diffusion_data_dir" and "--comfyui_custom_nodes_dir". If you do not 
 use these options, the installer will try to open a TK directory chooser. Failing that, the installer will prompt you 
 type in both values. **If you don't launch the installer from the command line, and your python cannot access TK, the 
 installer will seem to silently fail**.
@@ -98,7 +98,7 @@ directories, and prints their location.
 and click "Ok". Again, even if you do not have StableDiffusion nor ComfyUI installed, pick an existing directory.
 
 If a dialog does not open:
-6) At the prompt `Please provide an existing directory path for gimp_scripts_dir`, enter your account's GIMP plug-in folder, i.e. ``~/AppData/Roaming/Gimp/2.99/plug-ins`` and press "return"
+6) At the prompt `Please provide an existing directory path for gimp_plugins_dir`, enter your account's GIMP plug-in folder, i.e. ``~/AppData/Roaming/Gimp/2.99/plug-ins`` and press "return"
 7) At the prompt `Please provide an existing directory path for comfyui_custom_nodes_dir`, enter the ComfyUI custom_nodes folder, i.e. ``~/projects/3rd_party/ComfyUI/custom_nodes`` and press "return"
 8) At the prompt `Please provide an existing directory path for stable_diffusion_data_dir`, enter your StableDiffusion data folder, i.e. `L:/data/stable_diffusion`, or `~/projects/3rd_party/ComfyUI` and press "return"
 
