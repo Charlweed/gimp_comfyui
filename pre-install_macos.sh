@@ -13,7 +13,7 @@
 set -e
 set -u
 
-# Required. You must set these values correctly for this script to work. The current values worked on macOS Monterey for Gimp 2.99
+# Required. You must set these values correctly for this script to work. The current values worked on macOS Monterey for GIMP 2.99
 export GIMP_PYTHON_3_10="/Applications/GIMP.app/Contents/MacOS/python3.10"
 export GIMP_PYTHON_3_10_HOME="/Applications/GIMP.app/Contents/MacOS"
 export GIMP_PYTHON_3_10_BIN="/Applications/GIMP.app/Contents/Resources/Library/Frameworks/Python.framework/Versions/3.10/bin"
@@ -75,9 +75,9 @@ INSTALLER_CMD="/Applications/GIMP.app/Contents/MacOS/python3.10 $GCUI_REPO/insta
 
 echo "You should now be able to run this installer in cli-mode, but the GUI will not work. To test the cli, try pasting the text we just loaded into the clipboard."
 echo "When ready to actually install, you will need to choose and specify the correct --gimp_plugins_dir."
-echo "On macOS Monterey, Gimp 2.99, a working value for --gimp_plugins_dir is"
+echo "On macOS Monterey, GIMP 2.99, a working value for --gimp_plugins_dir is"
 echo "   \"~/Library/Application Support/GIMP/2.99/plug-ins\""
-echo "This WILL change, at least when Gimp is updated."
+echo "This WILL change, at least when GIMP is updated."
 echo -e "On systems without local ComfyUI, the temporary directories for stable_diffusion_data_dir and comfyui_custom_nodes_dir will allow the installer to run.\n\n"
 echo "$INSTALLER_CMD"
 echo -n "$INSTALLER_CMD" | pbcopy

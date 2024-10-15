@@ -502,8 +502,8 @@ def open_dialog_daemon(title_in: str,
                        dialog_populator: Callable[[Gtk.Dialog, ], None] | None = None
                        ):
     """
-    Opens a Gtk.Dialog in a thread separate from the Gimp application thread and the plugin thread. This allows
-    interaction with the dialog without blocking Gimp or plug-in behavior, but creates risks of deadlocks and races.
+    Opens a Gtk.Dialog in a thread separate from the GIMP application thread and the plugin thread. This allows
+    interaction with the dialog without blocking GIMP or plug-in behavior, but creates risks of deadlocks and races.
     This dialog should be closed by the user, or programmatically, with a function like close_window_of_widget().
     If construction throws an exception, there might be a zombie thread running indefinitely.
     :param title_in: The Title for the dialog.
@@ -560,14 +560,14 @@ def open_dialog_daemon(title_in: str,
         GLib.MainLoop().run()  # Does not return, so needs new thread.
 
     my_thread: threading.Thread = threading.Thread(target=meta_fork)
-    my_thread.daemon = True  # Required so thread stops with Gimp
+    my_thread.daemon = True  # Required so thread stops with GIMP
     my_thread.start()
 
 
 def new_list_store_images() -> Gtk.ListStore:
     """
-    Returns a Gtk.ListStore of tuples image_id, index, image_name for the images open in Gimp
-    :return: a Gtk.ListStore of tuples image_id, index, image_name for the images open in Gimp
+    Returns a Gtk.ListStore of tuples image_id, index, image_name for the images open in GIMP
+    :return: a Gtk.ListStore of tuples image_id, index, image_name for the images open in GIMP
     """
     images_list_store: Gtk.ListStore = Gtk.ListStore.new(types=[int, int, str])  # image_id, index, image_name
     image: Gimp.Image
@@ -616,8 +616,8 @@ def new_list_store_models(model_type: ModelType, cu_origin: str) -> Gtk.ListStor
 
 def new_set_images() -> set[tuple[int, int, str]]:
     """
-    Returns a set of tuples image_id, index, image_name for the images open in Gimp
-    :return: a set of tuples image_id, index, image_name for the images open in Gimp
+    Returns a set of tuples image_id, index, image_name for the images open in GIMP
+    :return: a set of tuples image_id, index, image_name for the images open in GIMP
     """
     images_set: set[tuple[int, int, str]] = set()  # image_id, index, image_name
     image: Gimp.Image
@@ -637,8 +637,8 @@ def new_set_images() -> set[tuple[int, int, str]]:
 
 def new_set_image_ids() -> set[int]:
     """
-    Returns a set of image_id ints for the images open in Gimp
-    :return: a set of image_id ints for the images open in Gimp
+    Returns a set of image_id ints for the images open in GIMP
+    :return: a set of image_id ints for the images open in GIMP
     """
     images_set: set[tuple[int, int, str]] = new_set_images()
     image_ids: set[int] = set()

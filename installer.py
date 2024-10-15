@@ -282,7 +282,7 @@ def _obtain_user_arguments(parameters: Dict[str, UserValueType]) -> Dict[str, st
         eprint(f"Some gui modules are not installed. You can try to install them and re-run this installer.")
         eprint("Otherwise, you will need to run this installer exclusively from the the cli and specify "
                f"{parameters}.\n")
-        eprint(f"NOTE: Apparently, TK GUI modules cannot be installed in the python bundled with Windows Gimp 2.99.")
+        eprint(f"NOTE: Apparently, TK GUI modules cannot be installed in the python bundled with GIMP 2.99.")
         sys.stdout.flush()
         sys.stderr.flush()
         main_fault = Fault.MISSING_MODULE
@@ -339,7 +339,7 @@ def _from_here_to_there(sources: Set[str], dest_dir: str, sub_dir: str | None = 
 
 
 def copy_gimp_plugin_sources(gimp_plugin_dir: str) -> bool:
-    LOGGER_INSTALLER.info(f"Installing Gimp plugin {gimp_plugin_dir}")
+    LOGGER_INSTALLER.info(f"Installing GIMP plug-in {gimp_plugin_dir}")
     all_good: bool
     sources: Set[str] = {
         "assets",

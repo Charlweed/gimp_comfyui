@@ -11,7 +11,7 @@ Set-StrictMode -Version Latest
 $PSNativeCommandUseErrorActionPreference = $true # might be true by default
 
 # Required. You must set these values correctly for this script to work.
-# On Windows, it's most common to install Gimp in "C:\Program Files" instead of "L:\bin\gimp" like I do.
+# On Windows, it's most common to install GIMP in "C:\Program Files" instead of "L:\bin\gimp" like I do.
 # But "C:\Program Files" requires administrator priviledges, and has many, MANY other tiersome issues.
 $GIMP_PYTHON_3_11 = "L:\bin\gimp\GIMP-2.99.18\bin\python3.11.exe"
 $GIMP_PYTHON_3_11_BIN = "L:\bin\gimp\GIMP-2.99.18\bin"
@@ -78,9 +78,9 @@ $InformationPreference="Continue"
 
 Write-Information "You should now be able to run the installer. To test the cli, try pasting the text we just loaded into the clipboard."
 Write-Information "When ready to actually install, you will need to choose and specify the correct --gimp_plugins_dir."
-Write-Information "On Windows, Gimp 2.99, a working value for --gimp_plugins_dir is"
+Write-Information "On Windows, GIMP 2.99, a working value for --gimp_plugins_dir is"
 Write-Information "`"~/AppData/Roaming/Gimp/2.99/plug-ins`""
-Write-Information "This WILL change, at least when Gimp is updated."
+Write-Information "This WILL change, at least when GIMP is updated."
 Write-Information "On systems without local ComfyUI, the temporary directories for stable_diffusion_data_dir and comfyui_custom_nodes_dir will allow the installer to run.`n`n"
 Write-Information "$INSTALLER_CMD"
 Write-Information "$INSTALLER_CMD" | clip

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # The two lines above, the shebang and the encoding hint, are required!
-# Otherwise, Gimp for MacOS will fail to load this plugin. Inexplicable, hard to believe, but issue verified
-# on Gimp 2.99.18 for MacOS, Python 3.10.13 for MacOS, MacOS Monterey 12.7.6
+# Otherwise, GIMP for MacOS will fail to load this plugin. Inexplicable, hard to believe, but issue verified
+# on GIMP 2.99.18 for MacOS, Python 3.10.13 for MacOS, MacOS Monterey 12.7.6
 #  Copyright (c) 2024. Charles Hymes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -130,7 +130,7 @@ class ProcedureCategory(Enum):
 class ControllerCommand(Enum):
     """
     Commands for the Transceiver_Controller. Often, will be forwarded to ComfyUI.
-    Ideally, this would be in a single module used by both Gimp and ComfyUI.
+    Ideally, this would be in a single module used by both GIMP and ComfyUI.
     """
     # Usage: Brackets for name, parentheses for value
     ATTENTION = "command"
@@ -316,7 +316,7 @@ class GimpComfyUI(Gimp.PlugIn):
     @classmethod
     def __init_plugin(cls):
         """
-        A Gimp plugin is NOT AN APPLICATION.
+        A GIMP plugin is NOT AN APPLICATION.
         This class method is called by do_query_procedures(), and then all state is lost.
         To use the persisted state, it needs to be called whenever a procedure's function is invoked.
         :return:
@@ -597,7 +597,7 @@ class GimpComfyUI(Gimp.PlugIn):
             case GimpComfyUI.PROCEDURE_INSTALL_COMFYUI:
                 procedure = self.create_procedure(name_raw=name,
                                                   docs="Install GIMP-local ComfyUI",
-                                                  usage_hint="Install ComfyUI into gimp. This takes a while!",
+                                                  usage_hint="Install ComfyUI into GIMP. This takes a while!",
                                                   run_func_in=self.run,
                                                   is_image_optional=True,  # Redundant with SubjectType.ANYTHING
                                                   proc_category=ProcedureCategory.CONFIG,
@@ -1040,7 +1040,7 @@ class GimpComfyUI(Gimp.PlugIn):
 
 class HandleLayerChange(DrawableChangeListener):
     """
-    This will be the Gimp transmitting side of a Gimp <-> ComfyUI-CustomNode connection for images to
+    This will be the GIMP transmitting side of a GIMP <-> ComfyUI-CustomNode connection for images to
     use as latents etc.
     """
     def __init__(self, chassis: GimpComfyUI):
@@ -1102,7 +1102,7 @@ class HandleLayerChange(DrawableChangeListener):
             LOGGER_GCUI.exception(png_err)
 
 
-# Gimp 2.99.18 is using Python 3.11.8 (main, Feb 13 2024, 07:18:52)  [GCC 13.2.0 64 bit (AMD64)]
+# GIMP 2.99.18 is using Python 3.11.8 (main, Feb 13 2024, 07:18:52)  [GCC 13.2.0 64 bit (AMD64)]
 GimpComfyUI.configure_loggers()
 # For Gimp.main invocation see source gimp_world\gimp\libgimp\gimp.c and
 # https://developer.gimp.org/api/3.0/libgimp/func.main.html

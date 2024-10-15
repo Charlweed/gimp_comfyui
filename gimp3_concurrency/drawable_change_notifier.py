@@ -76,7 +76,7 @@ class NotifierLoopState(Enum):
 
 class DefaultDrawableChangeListener(DrawableChangeListener):
     """
-    Gimp plug-in procedures are started in a different thread than then main Gimp loop.
+    GIMP plug-in procedures are started in a different thread than then main GIMP loop.
     It appears that when a procedure exits, *some* threads forked from the procedure are killed.
     This makes it complicated to start any additional daemon threads, so for now, do not try.
     Instead, do all work in a loop in the plug-in's single thread, EXCEPT processing signals from GUI elements.

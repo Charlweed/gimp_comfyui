@@ -28,7 +28,7 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
             wf_data_chassis_name="InpaintingSdxl0Dot4Dialogs_wf_data",
         )
 
-    # Gimp is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
+    # GIMP is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
     def new_workflow_dialog(self, 
                             title_in: str,
                             role_in: str,

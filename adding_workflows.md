@@ -1,6 +1,6 @@
 # Adding Workflows
-Adding, or updating a new ConfyUI workflow to couple to Gimp requires some computing and python 3 skills. You need to
-complete or edit the source dode of the dialog that Gimp opens for the workflow. Also, when the nodes within
+Adding, or updating a new ConfyUI workflow to couple to GIMP requires some computing and python 3 skills. You need to
+complete or edit the source dode of the dialog that GIMP opens for the workflow. Also, when the nodes within
 ComfyUI change, i.e. if inputs or outputs are added, moved or renamed, the generated prompt might fail validation. In
 those cases, the accessors and dialogs will need to be re-generated. The difficulty depends upon the size
 and complexity of the workflow, and the datatypes that workflow processes. Basically, the steps are:
@@ -29,7 +29,7 @@ from workflow.inpainting_sdxl_0dot4_dialogs import InpaintingSdxl0Dot4Dialogs
 ```
 - Add a procedure name as a class variable for the GimpComfyUI plugin class. Use "PROCEDURE_INVOKE_" as a 
 prefix, and choose a name and value from the workflow base name. Not that the value CANNOT have underscores, 
-only hyphens/dashes. Otherwise, Gimp will flag a "assertion 'gimp_is_canonical_identifier (procedure_name)' failed" error.
+only hyphens/dashes. Otherwise, GIMP will flag a "assertion 'gimp_is_canonical_identifier (procedure_name)' failed" error.
 ```python
     PROCEDURE_INVOKE_INPAINTING_WF = "inpainting-sdxl"
 ```

@@ -149,7 +149,7 @@ def new_combo_fs(node_index_str: str,
     This function is deprecated, because it depends on ComfyUI resources being installed on the local filesystem.
     It will probably be removed in a future release.
     The @deprecated decorator is provided by the deprecation module, but that module does not seem readily available in
-     Gimp 3 python installations. Therefore, it is not used here.
+     GIMP 3 python installations. Therefore, it is not used here.
     :param node_index_str:
     :param node_title:
     :param input_name:

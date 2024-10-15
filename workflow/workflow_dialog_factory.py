@@ -42,7 +42,7 @@ class WorkflowDialogFactory(ABC):
     @staticmethod
     def get_metaconfig_defaults() -> MappingProxyType[str, str]:
         local_platform: str = platform.system().lower()
-        # Update when Gimp 3.0 is released!
+        # Update when GIMP 3.0 is released!
         if local_platform == "windows":
             defaults = {
                 "gimp_plugins_dir": expanduser("~/AppData/Roaming/GIMP/2.99/scripts"),

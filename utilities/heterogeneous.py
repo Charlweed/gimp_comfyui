@@ -133,7 +133,7 @@ def png_temp_file(subject: Gimp.Drawable | utilities.png.Image) -> str:
     """
     IMPORTANT: Repeated calls to this method will return different results for the same state, because a new
     temp file name is generated from the current time in millis.
-    :param: A Gimp Layer or png.Image to save in a temp file.
+    :param: A GIMP Layer or png.Image to save in a temp file.
     :return: The path to a tempfile created for the currently selected layer, or None
     """
     drawable: Gimp.Drawable
