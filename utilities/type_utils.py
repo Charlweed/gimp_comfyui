@@ -89,6 +89,8 @@ def bool_of(string: str, include_digits=False) -> bool:
     :param include_digits: If true "0" and "1" will be parsed as booleans.
     :return:
     """
+    if isinstance(string, bool):
+        return string
     if string.lower() in ['true', 't', 'y', 'yes', 'enable', 'enabled', 'yeah', 'yup', 'certainly', 'uh-huh']:
         return True
     if string.lower() in ['false', 'f', 'n', 'no', 'disable', 'disabled', 'nope', 'nah', 'no-way', 'nuh-uh']:
@@ -102,6 +104,8 @@ def bool_of(string: str, include_digits=False) -> bool:
 
 
 def bool_safe_of(string: str) -> bool:
+    if isinstance(string, bool):
+        return string
     try:
         if string is not None and (string.strip() != ""):
             return bool_of(string)
@@ -118,6 +122,8 @@ def float_of(datum) -> float:
 
 
 def float_or_str(datum: str) -> float | str:
+    if isinstance(datum, float):
+        return datum
     subject = datum.strip()
     if not is_numerical(subject):
         return datum
@@ -129,6 +135,8 @@ def float_or_str(datum: str) -> float | str:
 
 
 def int_or_str(datum: str) -> int | str:
+    if isinstance(datum, int):
+        return datum
     subject = datum.strip()
     if not is_numerical(subject):
         return datum

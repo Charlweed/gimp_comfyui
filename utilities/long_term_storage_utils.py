@@ -336,5 +336,9 @@ def list_from_fs(fs_path: str,
     len_filtered: int = len(filtered_listing)
     # LOGGER_PRSTU.debug(f"Found {len_filtered} matched items in {fs_path}")
     if len_filtered == 0:
-        LOGGER_PRSTU.debug("Predicate filtered out all items from listing!")
+        complaint: str = f"Predicate \"{predicate.__name__}\" filtered out all items from listing of {fs_path}!"
+        LOGGER_PRSTU.warning(complaint)
+        # Disable and enable the following exception as the situation demands.
+        if len_raw >= 2:  # USUALLY Not a problem if dir is practically empty.
+            raise IOError(complaint)
     return filtered_listing

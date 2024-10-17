@@ -703,7 +703,7 @@ class WidgetAuthor:
                                                     predicate=seems_lora)
         self._models_upscale_models: List[str] = list_from_fs(fs_path=self._config['sd_upscale_models_dir'],
                                                               predicate=seems_pytorch)
-        self._models_vae: List[str] = list_from_fs(fs_path=self._config['sd_checkpoints_dir'],
+        self._models_vae: List[str] = list_from_fs(fs_path=self._config['sd_vae_dir'],
                                                    predicate=seems_vae)
         self._prompts_base_positive: List[str] = [self._config['prompts_base_positive'], ]
         self._prompts_base_negative: List[str] = [self._config['prompts_base_negative'], ]

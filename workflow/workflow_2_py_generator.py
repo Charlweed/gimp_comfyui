@@ -44,6 +44,7 @@ ID_BREAKERS = r'!"#$%&\'()*+,-./:;<=>?@[\]^`{|}~'
 ID_BREAKERS_REGEX = "[%s]" % re.escape(ID_BREAKERS)
 INITIAL_DIGITS_PATTERN: re.Pattern = re.compile(r"^\d+")
 LOGGER_WF2PY = logging.getLogger("Workflow2PythonGenerator")
+LOGGER_WF2PY.setLevel(logging.INFO)
 LOGGER_FORMAT_WF2PY = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
 INT_MIN = -2147483648  # Local minimum to prevent API, JSON, and other errors. Python has no limit
 INT_MAX = 18446744073709519872  # Local minimum to prevent API, JSON, and other errors. Python has no limit

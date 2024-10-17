@@ -17,7 +17,7 @@ $WORKFLOWS_ALL = @(
 )
 
 $WORKFLOWS_FLUX = @(
-    "flux1_1.0",
+    "flux_1.0",
     "flux_neg_1.0"
 )
 
@@ -49,7 +49,7 @@ function Generate-Classes([String] $generator, [string[]]$SubjectWorkflows) {
     }
 }
 
-Set-Python 11
+Set-Python 11  # local profile  function that sets environment variables for the specified Python 3 version.
 $ENV:PYTHONPATH=$PSScriptRoot
 
 foreach($generator_name in @("generate_inputs_dialog.py")){

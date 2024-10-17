@@ -148,7 +148,7 @@ def seems_legit_resource(file_path: str, extensions: List[str]) -> bool:
 
 # NOTE: Several of these predicates are untested, because I don't have example files to put in the directories.
 def seems_checkpoint(file_path: str) -> bool:
-    return seems_legit_resource(file_path=file_path, extensions=[".ckpt", ".safetensors"])
+    return seems_legit_resource(file_path=file_path, extensions=[".ckpt", ".safetensors", ".sft"])
 
 
 def seems_clip(file_path: str) -> bool:
@@ -188,7 +188,7 @@ def seems_karlo(file_path: str) -> bool:
 
 
 def seems_lora(file_path: str) -> bool:
-    return seems_legit_resource(file_path=file_path, extensions=[".lora", ".safetensors"])
+    return seems_legit_resource(file_path=file_path, extensions=[".lora", ".safetensors", ".sft"])
 
 
 def seems_pytorch(file_path: str) -> bool:
@@ -200,11 +200,11 @@ def seems_style_model(file_path: str) -> bool:
 
 
 def seems_unet(file_path: str) -> bool:
-    return seems_legit_resource(file_path=file_path, extensions=[".unet", ".safetensors"])
+    return seems_legit_resource(file_path=file_path, extensions=[".unet", ".safetensors", ".sft"])
 
 
 def seems_vae(file_path: str) -> bool:
-    return seems_legit_resource(file_path=file_path, extensions=[".vae", "vae.safetensors"])
+    return seems_legit_resource(file_path=file_path, extensions=[".vae", "ae.safetensors", "vae.safetensors", ".sft"])
 
 
 def seems_vae_approx(file_path: str) -> bool:
@@ -244,7 +244,7 @@ def get_models_map(cu_origin: str) -> Dict[str, List[Dict[str, str]]]:
     meta_models: Dict[str, List[Dict[str, str]]] = {}
     models_list: List[Dict[str, str]] = request_resource_catalog(
         cu_origin=cu_origin,
-        resource_dir=ResourceDir.MODELS)['files']  # FIXME: Breaks on macOS, can't find 'files' key.
+        resource_dir=ResourceDir.MODELS)['files']
     if not models_list:
         raise SystemError("children_raw is empty")
     record: Dict[str, str]
