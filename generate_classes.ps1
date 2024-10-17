@@ -52,11 +52,11 @@ function Generate-Classes([String] $generator, [string[]]$SubjectWorkflows) {
 Set-Python 11  # local profile  function that sets environment variables for the specified Python 3 version.
 $ENV:PYTHONPATH=$PSScriptRoot
 
-foreach($generator_name in @("generate_inputs_dialog.py")){
+foreach($generator_name in $GENERATORS_ALL){
     $generator = Join-Path -Path $PSScriptRoot -ChildPath "workflow" -AdditionalChildPath @($generator_name)
-#   Generate-Classes $generator $WORKFLOWS_ALL
+    Generate-Classes $generator $WORKFLOWS_ALL
 #   Generate-Classes $generator @("sytan_sdxl_1.0")
-    Generate-Classes $generator $WORKFLOWS_FLUX
+#    Generate-Classes $generator $WORKFLOWS_FLUX
 }
 
 # Test with

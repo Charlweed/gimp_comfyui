@@ -59,12 +59,16 @@ from utilities.samples import *
 from utilities.sd_gui_utils import *
 from workflow.comfyui_default_accessor import ComfyuiDefaultAccessor
 from workflow.comfyui_default_dialogs import ComfyuiDefaultDialogs
-from workflow.sytan_sdxl_1dot0_accessor import SytanSdxl1Dot0Accessor
-from workflow.sytan_sdxl_1dot0_dialogs import SytanSdxl1Dot0Dialogs
-from workflow.inpainting_sdxl_0dot4_accessor import InpaintingSdxl0Dot4Accessor
-from workflow.inpainting_sdxl_0dot4_dialogs import InpaintingSdxl0Dot4Dialogs
+from workflow.flux_1dot0_accessor import Flux1Dot0Accessor
+from workflow.flux_1dot0_dialogs import Flux1Dot0Dialogs
+from workflow.flux_neg_1dot0_accessor import FluxNeg1Dot0Accessor
+from workflow.flux_neg_1dot0_dialogs import FluxNeg1Dot0Dialogs
 from workflow.img2img_sdxl_0dot3_accessor import Img2ImgSdxl0Dot3Accessor
 from workflow.img2img_sdxl_0dot3_dialogs import Img2ImgSdxl0Dot3Dialogs
+from workflow.inpainting_sdxl_0dot4_accessor import InpaintingSdxl0Dot4Accessor
+from workflow.inpainting_sdxl_0dot4_dialogs import InpaintingSdxl0Dot4Dialogs
+from workflow.sytan_sdxl_1dot0_accessor import SytanSdxl1Dot0Accessor
+from workflow.sytan_sdxl_1dot0_dialogs import SytanSdxl1Dot0Dialogs
 from workflow.workflow_dialog_factory import WorkflowDialogFactory
 
 # Set-up localization for your plug-in with your own text domain.
@@ -157,27 +161,31 @@ class GimpComfyUI(Gimp.PlugIn):
     HOME: str = os.path.expanduser('~')
     MESSAGE_REGISTRATION = "Registering " + __file__ + ":" + PYTHON_PLUGIN_NAME
     MESSAGE_REGISTRATION_COMPLETED = __file__ + ":" + PYTHON_PLUGIN_NAME + " returned."
-    VERSION: str = "0.7.7.3"
+    VERSION: str = "0.7.8.1"
 
     # Procedure names.
-    PROCEDURE_INSTALL_COMFYUI = PYTHON_PLUGIN_NAME + "-install-comfyUI"
     PROCEDURE_CONFIG_COMFY_SVR_CONNECTION = PYTHON_PLUGIN_NAME + "-comfyUi-Server-URL"
     PROCEDURE_CONFIG_TRANSCEIVER_CONNECTION = PYTHON_PLUGIN_NAME + "-transceiver-URL"
-    PROCEDURE_INVOKE_DEFAULT_WF = "default"
-    PROCEDURE_INVOKE_SYTAN_WF = "sytan"
-    PROCEDURE_INVOKE_INPAINTING_WF = "inpainting-sdxl"
-    PROCEDURE_INVOKE_IMG2IMG_WF = "img2img-sdxl"
     PROCEDURE_DEMO_CUI_NET = "demo-cui-net"
-    PROCEDURE_WATCH_LAYER = "Follow-in-ComfyUI"
     PROCEDURE_DEMO_IMG_N_LAYERS_TREEVIEWS = "demo-img-n-layers-treeview"
+    PROCEDURE_INSTALL_COMFYUI = PYTHON_PLUGIN_NAME + "-install-comfyUI"
+    PROCEDURE_INVOKE_DEFAULT_WF = "default"
+    PROCEDURE_INVOKE_FLUX_NEG_WF = "flux-dev-neg"
+    PROCEDURE_INVOKE_FLUX_WF = "flux-dev"
+    PROCEDURE_INVOKE_IMG2IMG_WF = "img2img-sdxl"
+    PROCEDURE_INVOKE_INPAINTING_WF = "inpainting-sdxl"
+    PROCEDURE_INVOKE_SYTAN_WF = "sytan"
+    PROCEDURE_WATCH_LAYER = "Follow-in-ComfyUI"
     PROCEDURE_NAMES = [
         PROCEDURE_CONFIG_COMFY_SVR_CONNECTION,
         PROCEDURE_CONFIG_TRANSCEIVER_CONNECTION,
         PROCEDURE_WATCH_LAYER,
         PROCEDURE_INVOKE_DEFAULT_WF,
-        PROCEDURE_INVOKE_SYTAN_WF,
-        PROCEDURE_INVOKE_INPAINTING_WF,
+        PROCEDURE_INVOKE_FLUX_NEG_WF,
+        PROCEDURE_INVOKE_FLUX_WF,
         PROCEDURE_INVOKE_IMG2IMG_WF,
+        PROCEDURE_INVOKE_INPAINTING_WF,
+        PROCEDURE_INVOKE_SYTAN_WF,
     ]
 
     # Configurable
@@ -408,6 +416,14 @@ class GimpComfyUI(Gimp.PlugIn):
         return self._default_accessor
 
     @property
+    def flux_acc(self) -> Flux1Dot0Accessor:
+        return self._flux_accessor
+
+    @property
+    def flux_neg_acc(self) -> FluxNeg1Dot0Accessor:
+        return self._flux_neg_accessor
+
+    @property
     def sdxl_acc(self) -> SytanSdxl1Dot0Accessor:
         return self._sytan_sdxl_accessor
 
@@ -437,10 +453,12 @@ class GimpComfyUI(Gimp.PlugIn):
         # New instance is created every time an operation is selected ...
         # LOGGER_GCUI.debug("__init__()")
         self._name = GimpComfyUI.PYTHON_PLUGIN_NAME_LONG
-        self._sytan_sdxl_accessor: SytanSdxl1Dot0Accessor = SytanSdxl1Dot0Accessor()
         self._default_accessor: ComfyuiDefaultAccessor = ComfyuiDefaultAccessor()
-        self._inpainting_sdxl_accessor: InpaintingSdxl0Dot4Accessor = InpaintingSdxl0Dot4Accessor()
+        self._flux_accessor: Flux1Dot0Accessor = Flux1Dot0Accessor()
+        self._flux_neg_accessor: FluxNeg1Dot0Accessor = FluxNeg1Dot0Accessor()
         self._img2img_sdxl_accessor: Img2ImgSdxl0Dot3Accessor = Img2ImgSdxl0Dot3Accessor()
+        self._inpainting_sdxl_accessor: InpaintingSdxl0Dot4Accessor = InpaintingSdxl0Dot4Accessor()
+        self._sytan_sdxl_accessor: SytanSdxl1Dot0Accessor = SytanSdxl1Dot0Accessor()
         if os.environ.get('skip_comfyui'):
             self.skip_comfyui = True
             LOGGER_GCUI.warning("Disabling connection attempts to ComfyUI")
@@ -571,7 +589,7 @@ class GimpComfyUI(Gimp.PlugIn):
         # Documentation states "query happens only once in the life of a plug-in (right after installation or update)."
         # First action is to remove temporary data from previous sessions.
         remove_temporary_dictionary(plugin_name_long=GimpComfyUI.PYTHON_PLUGIN_NAME_LONG)
-        GimpComfyUI.__init_plugin()  # This invocation will NOT provide state by the time procedure functions are invoked.
+        GimpComfyUI.__init_plugin()  # This invocation will NOT provide state
         # This is the list of procedure names.
         return GimpComfyUI.PROCEDURE_NAMES
 
@@ -664,6 +682,22 @@ class GimpComfyUI(Gimp.PlugIn):
                                                   docs="Img2Img SDXL Workflow",
                                                   usage_hint="Keep duplicate fields synchronized. Sorry!",
                                                   run_func_in=self.img2img_workflow,
+                                                  is_image_optional=True,  # Redundant with SubjectType.ANYTHING
+                                                  proc_category=ProcedureCategory.WORKFLOW,
+                                                  subject_type=SubjectType.ANYTHING)
+            case GimpComfyUI.PROCEDURE_INVOKE_FLUX_WF:
+                procedure = self.create_procedure(name_raw=name,
+                                                  docs="Flux1 Dev 16 Workflow",
+                                                  usage_hint="Keep duplicate fields synchronized. Sorry!",
+                                                  run_func_in=self.flux_workflow,
+                                                  is_image_optional=True,  # Redundant with SubjectType.ANYTHING
+                                                  proc_category=ProcedureCategory.WORKFLOW,
+                                                  subject_type=SubjectType.ANYTHING)
+            case GimpComfyUI.PROCEDURE_INVOKE_FLUX_NEG_WF:
+                procedure = self.create_procedure(name_raw=name,
+                                                  docs="Flux1 Dev 16 with negative prompt Workflow",
+                                                  usage_hint="Keep duplicate fields synchronized. Sorry!",
+                                                  run_func_in=self.flux_neg_workflow,
                                                   is_image_optional=True,  # Redundant with SubjectType.ANYTHING
                                                   proc_category=ProcedureCategory.WORKFLOW,
                                                   subject_type=SubjectType.ANYTHING)
@@ -887,6 +921,42 @@ class GimpComfyUI(Gimp.PlugIn):
                                           )
         return ret_values
 
+    def flux_workflow(self, procedure: Gimp.ImageProcedure,
+                         run_mode,  # noqa
+                         image,  # noqa
+                         n_drawables,  # noqa
+                         drawables,  # noqa
+                         args,  # noqa
+                         run_data  # noqa
+                         ) -> Gimp.ValueArray:
+        GimpComfyUI.__init_plugin()
+        factory: Flux1Dot0Dialogs = Flux1Dot0Dialogs(accessor=self.flux_acc)
+        ret_values = self.invoke_workflow(procedure=procedure,
+                                          factory=factory,
+                                          title_in="Flux dev 16",
+                                          role_in="workflow",
+                                          blurb_in="Careful with that axe, Eugene!"
+                                          )
+        return ret_values
+
+    def flux_neg_workflow(self, procedure: Gimp.ImageProcedure,
+                      run_mode,  # noqa
+                      image,  # noqa
+                      n_drawables,  # noqa
+                      drawables,  # noqa
+                      args,  # noqa
+                      run_data  # noqa
+                      ) -> Gimp.ValueArray:
+        GimpComfyUI.__init_plugin()
+        factory: FluxNeg1Dot0Dialogs = FluxNeg1Dot0Dialogs(accessor=self.flux_acc)
+        ret_values = self.invoke_workflow(procedure=procedure,
+                                          factory=factory,
+                                          title_in="Flux dev 16",
+                                          role_in="workflow",
+                                          blurb_in="Careful with that axe, Eugene!"
+                                          )
+        return ret_values
+
     # noinspection PyMethodMayBeStatic
     def demo_cui_net(self, procedure: Gimp.ImageProcedure,
                      run_mode,  # noqa
@@ -977,10 +1047,10 @@ class GimpComfyUI(Gimp.PlugIn):
                 options=["Queue prompt Manually", "Queue prompt Automatically"],
                 handler=self.transceiver_queue_handler)
             empty_box: Gtk.Box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-            drawable_name_frame.add(widget=radio_box)
+            drawable_name_frame.add(widget=radio_box)  # noqa
             dialog_box: Gtk.Box = dialog.get_content_area()
-            dialog_box.pack_start(child=drawable_name_frame, expand=True, fill=False, padding=0)
-            dialog_box.pack_start(child=empty_box, expand=True, fill=True, padding=4)
+            dialog_box.pack_start(child=drawable_name_frame, expand=True, fill=False, padding=0)  # noqa
+            dialog_box.pack_start(child=empty_box, expand=True, fill=True, padding=4)  # noqa
 
         drawable_change_listener: DrawableChangeListener = HandleLayerChange(self)
         try:

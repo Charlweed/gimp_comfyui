@@ -1,0 +1,228 @@
+{
+  "6": {
+    "inputs": {
+      "text": "photograph of a street",
+      "clip": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "10": {
+    "inputs": {
+      "vae_name": "flux_ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "11": {
+    "inputs": {
+      "clip_name1": "t5xxl_fp16.safetensors",
+      "clip_name2": "clip_l.safetensors",
+      "type": "flux"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "DualCLIPLoader"
+    }
+  },
+  "12": {
+    "inputs": {
+      "unet_name": "flux1-dev.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Load Diffusion Model"
+    }
+  },
+  "47": {
+    "inputs": {
+      "model": [
+        "100",
+        0
+      ],
+      "clip": [
+        "11",
+        0
+      ],
+      "vae": [
+        "10",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "101",
+        0
+      ]
+    },
+    "class_type": "ToBasicPipe",
+    "_meta": {
+      "title": "ToBasicPipe"
+    }
+  },
+  "48": {
+    "inputs": {
+      "image": "$48-0",
+      "preview_method": "Latent2RGB-FLUX.1",
+      "block": false,
+      "latent": [
+        "97",
+        1
+      ],
+      "vae_opt": [
+        "97",
+        2
+      ]
+    },
+    "class_type": "PreviewBridgeLatent",
+    "_meta": {
+      "title": "Preview Bridge (Latent)"
+    }
+  },
+  "49": {
+    "inputs": {
+      "width": 1040,
+      "height": 1200,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "97": {
+    "inputs": {
+      "add_noise": false,
+      "noise_seed": 101,
+      "steps": 20,
+      "cfg": 3.5,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "start_at_step": 3,
+      "end_at_step": 10000,
+      "return_with_leftover_noise": false,
+      "basic_pipe": [
+        "103",
+        0
+      ],
+      "latent_image": [
+        "98",
+        1
+      ]
+    },
+    "class_type": "ImpactKSamplerAdvancedBasicPipe",
+    "_meta": {
+      "title": "KSampler (Advanced/pipe)"
+    }
+  },
+  "98": {
+    "inputs": {
+      "add_noise": true,
+      "noise_seed": 101,
+      "steps": 20,
+      "cfg": 3.5,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "start_at_step": 0,
+      "end_at_step": 3,
+      "return_with_leftover_noise": true,
+      "basic_pipe": [
+        "47",
+        0
+      ],
+      "latent_image": [
+        "49",
+        0
+      ]
+    },
+    "class_type": "ImpactKSamplerAdvancedBasicPipe",
+    "_meta": {
+      "title": "KSampler (Advanced/pipe)"
+    }
+  },
+  "100": {
+    "inputs": {
+      "mimic_scale": 1,
+      "threshold_percentile": 1,
+      "mimic_mode": "Sawtooth",
+      "mimic_scale_min": 0,
+      "cfg_mode": "Constant",
+      "cfg_scale_min": 0,
+      "sched_val": 1,
+      "separate_feature_channels": "enable",
+      "scaling_startpoint": "ZERO",
+      "variability_measure": "STD",
+      "interpolate_phi": 1,
+      "model": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "DynamicThresholdingFull",
+    "_meta": {
+      "title": "DynamicThresholdingFull"
+    }
+  },
+  "101": {
+    "inputs": {
+      "text": "car",
+      "clip": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "103": {
+    "inputs": {
+      "basic_pipe": [
+        "104",
+        0
+      ],
+      "model": [
+        "12",
+        0
+      ],
+      "negative": [
+        "105",
+        0
+      ]
+    },
+    "class_type": "EditBasicPipe",
+    "_meta": {
+      "title": "Edit BasicPipe"
+    }
+  },
+  "104": {
+    "inputs": {
+      "basic_pipe": [
+        "47",
+        0
+      ]
+    },
+    "class_type": "FromBasicPipe_v2",
+    "_meta": {
+      "title": "FromBasicPipe_v2"
+    }
+  },
+  "105": {
+    "inputs": {},
+    "class_type": "ImpactNegativeConditioningPlaceholder",
+    "_meta": {
+      "title": "Negative Cond Placeholder"
+    }
+  }
+}
