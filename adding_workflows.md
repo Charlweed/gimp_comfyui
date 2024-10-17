@@ -6,14 +6,19 @@ to be re-generated.
 After generation, you might need to hand edit the source code of the dialog that GIMP opens for the workflow.
 Adding or updating a new ConfyUI workflow for coupling to GIMP requires some computing and python 3 skills. The 
 difficulty of this depends upon the size and complexity of the workflow, and the datatypes that workflow processes.
-Basically, the steps are:
+**The generators will fail to generate accessors and dialogs for workflows that contain unrecognized nodes, inputs, or 
+output.** These failures will be common. Supporting new nodes, inputs and outputs are an ongoing process.
+Assuming fully supported nodes, the steps to support a workflow are:
 ## ComfyUI
 - In the Advanced Options dialog in ComfyUI, enable API mode
 -  Open, create or customize the workflow in ComfyUI.
 -  Choose the base name of workflow. Use lowercase, and underscores. For example "inpainting_sdxl_0.2" No hyphens/dashes.
 -  Save the workflow json file in **api mode** into the "assets" directory of this project
--  Rename the workflow json file your basename plus the suffix "*_workflow_api.json*":
+-  Rename the workflow json file as your basename plus the suffix "*_workflow_api.json*":
 ≪your_base_name≫_workflow_api.json. For example "inpainting_sdxl_0.2_workflow_api.json"
+This project includes a "generate_classes.ps1" powershell script that you might find useful or informative. It automates
+the next three steps, given that you have included your workflow basename in an array such as `WORKFLOWS_ALL`. 
+Otherwise, the steps are:
 - In a terminal, set the `PYTHONPATH` environment variable to this project directory: ``$ENV:PYTHONPATH="L:\\projects\\gimp_comfyui"``
 - In the same terminal, run the python program "workflow/generate_node_accessor.py" with your workflow json file as the
 argument. This will create a new python source file in the "workflow" directory. The file name will be ≪your_base_name≫,
@@ -24,6 +29,7 @@ with a suffix of "*_accessor.py*", munged into a form that's a bit safer for mac
 the argument. This will create a new python source file in the "workflow" directory. The file name will be ≪your_base_name≫,
    with a suffix of "*_inputs_dialog.py*", again, munged into a form that's a bit safer for machine processing. For example,
    "inpainting_sdxl_0dot4_inputs_dialog.py"
+
 ## Updating gimp_comfyui.py
 -  In the main plugin source file "*gimp_comfyui.py*" add imports for your new workflows. i.e.
 ```python

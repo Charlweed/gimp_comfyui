@@ -9,9 +9,16 @@ Set-StrictMode -Version Latest
 
 $WORKFLOWS_ALL = @(
     "comfyui_default",
+    "flux_1.0",
+    "flux_neg_1.0",
     "img2img_sdxl_0.3",
     "inpainting_sdxl_0.4",
     "sytan_sdxl_1.0"
+)
+
+$WORKFLOWS_FLUX = @(
+    "flux1_1.0",
+    "flux_neg_1.0"
 )
 
 $GENERATORS_ALL = @(
@@ -47,8 +54,9 @@ $ENV:PYTHONPATH=$PSScriptRoot
 
 foreach($generator_name in @("generate_inputs_dialog.py")){
     $generator = Join-Path -Path $PSScriptRoot -ChildPath "workflow" -AdditionalChildPath @($generator_name)
-   Generate-Classes $generator $WORKFLOWS_ALL
+#   Generate-Classes $generator $WORKFLOWS_ALL
 #   Generate-Classes $generator @("sytan_sdxl_1.0")
+    Generate-Classes $generator $WORKFLOWS_FLUX
 }
 
 # Test with
