@@ -1,9 +1,12 @@
-# Adding Workflows
-Adding, or updating a new ConfyUI workflow to couple to GIMP requires some computing and python 3 skills. You need to
-complete or edit the source dode of the dialog that GIMP opens for the workflow. Also, when the nodes within
-ComfyUI change, i.e. if inputs or outputs are added, moved or renamed, the generated prompt might fail validation. In
-those cases, the accessors and dialogs will need to be re-generated. The difficulty depends upon the size
-and complexity of the workflow, and the datatypes that workflow processes. Basically, the steps are:
+# Adding or Updating Workflows
+Besides wanting the features of a new workflow, you might need to update the workflow accessors or dialogs after
+updating ComfyUI or its nodes. This is because when the nodes within ComfyUI change, i.e. if inputs or outputs are 
+added, moved or renamed, the generated prompt might fail validation. In those cases, the accessors and dialogs will need
+to be re-generated.
+After generation, you might need to hand edit the source code of the dialog that GIMP opens for the workflow.
+Adding or updating a new ConfyUI workflow for coupling to GIMP requires some computing and python 3 skills. The 
+difficulty of this depends upon the size and complexity of the workflow, and the datatypes that workflow processes.
+Basically, the steps are:
 ## ComfyUI
 - In the Advanced Options dialog in ComfyUI, enable API mode
 -  Open, create or customize the workflow in ComfyUI.
@@ -28,8 +31,9 @@ from workflow.inpainting_sdxl_0dot4_accessor import InpaintingSdxl0Dot4Accessor
 from workflow.inpainting_sdxl_0dot4_dialogs import InpaintingSdxl0Dot4Dialogs
 ```
 - Add a procedure name as a class variable for the GimpComfyUI plugin class. Use "PROCEDURE_INVOKE_" as a 
-prefix, and choose a name and value from the workflow base name. Not that the value CANNOT have underscores, 
-only hyphens/dashes. Otherwise, GIMP will flag a "assertion 'gimp_is_canonical_identifier (procedure_name)' failed" error.
+prefix, and choose a name and value from the workflow base name. Note that *this* string value *CANNOT* have
+underscores, only hyphens/dashes. Otherwise, GIMP will flag a "assertion 'gimp_is_canonical_identifier (procedure_name)'
+failed" error.
 ```python
     PROCEDURE_INVOKE_INPAINTING_WF = "inpainting-sdxl"
 ```
