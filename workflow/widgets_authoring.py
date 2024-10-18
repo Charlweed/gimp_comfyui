@@ -27,6 +27,8 @@ METAKEY_FLAG = "±"  # The unicode is deliberate.
 KEY_SUFFIX_NEWLINE: str = f"{METAKEY_FLAG}newline{METAKEY_FLAG}"  # w_text keys with this suffix are newline flags.
 KEY_SUFFIX_GRID_WIDTH: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"  # w_text keys with this suffix are the count of horizontal cells in a layout grid.
 KEY_SUFFIX_GRID_HEIGHT: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"  # w_text keys with this suffix are the count of vertical cells in a layout grid.
+NEGATIVE_PROMPT_TITLE_REGEX_PATTERN = ".*negative.*prompt.*"
+NEGATIVE_PROMPT_TITLE_REGEX = re.compile(NEGATIVE_PROMPT_TITLE_REGEX_PATTERN)
 
 
 def append_newline_suffix(original_key: str) -> str:
@@ -51,6 +53,13 @@ def indent_a(start: int, source_identifier: str, infix: str) -> str:
     infix_len: int = len(infix)
     indent: int = start + id_len + infix_len
     return " " * indent
+
+
+def probably_negative_prompt(some_string: str) -> bool:
+    if not some_string:
+        raise ValueError("some_string argument cannot be empty")
+    return bool(NEGATIVE_PROMPT_TITLE_REGEX.search(some_string.lower()))
+
 
 
 def new_checkbutton(node_index_str: str,
@@ -529,6 +538,7 @@ def new_textview(node_index_str: str,
                  ) -> Dict[str, str]:
     result: Dict[str, str] = {}
     widget_id: str = f"textview_{node_index_str}_{input_name}"
+    scrollview_id: str = f"scrolled_window_{node_index_str}_{input_name}"
     handler_id: str = f"preedit_handler_{node_index_str}_{input_name}"
     # logging.debug("Creating %s node_title=\"%s\", identifier_base=\"%s\"" % (widget_id, node_title, input_name))
     widget_declaration: str = f"{SP08}{widget_id}: Gtk.TextView = Gtk.TextView.new()\n"
@@ -542,11 +552,19 @@ def new_textview(node_index_str: str,
     # https://stackoverflow.com/questions/29985323/make-gtk-widget-fill-parent-window
     # https://docs.gtk.org/gtk3/enum.Align.html
     # https://lazka.github.io/pgi-docs/Gtk-3.0/mapping.html
-
+    scroll_window_width = 864
+    scroll_window_height = 288
+    if probably_negative_prompt(node_title):
+        scroll_window_width = 288
+        scroll_window_height = 96
     widget_config: str = (f"{SP08}{widget_id}.set_name(\"{widget_id}\")\n"
                           f"{SP08}{widget_id}.set_hexpand(True)\n"
                           f"{SP08}{widget_id}.set_vexpand({lengthy})\n"
                           f"{SP08}{widget_id}.set_valign(Gtk.Align.FILL)\n"
+                          f"{SP08}# Create a ScrolledWindow to hold the TextView\n"
+                          f"{SP08}{scrollview_id} = Gtk.ScrolledWindow()\n"
+                          f"{SP08}{scrollview_id}.add({widget_id})  # noqa\n"
+                          f"{SP08}{scrollview_id}.set_size_request({scroll_window_width}, {scroll_window_height})\n"
                           )
     widget_restrictions: str
     # LOGGER_WF2PY.info(widget_restrictions)
@@ -580,7 +598,7 @@ def new_textview(node_index_str: str,
     text += setter_code
     text += content_access
     text += widget_filling
-    result[widget_id] = text
+    result[scrollview_id] = text
     return result
 
 
@@ -687,7 +705,6 @@ class WidgetAuthor:
             self._config = dict(WidgetAuthor._DEFAULT_CONFIG)
         self._blend_modes: List[str] = self._config['blend_modes']
         self._crop_methods: List[str] = self._config['crop_methods']
-        # TODO: Review uses of list_from_fs() for installations without local ComfyUI
         self._models_checkpoints: List[str] = list_from_fs(fs_path=self._config['sd_checkpoints_dir'],
                                                            predicate=seems_checkpoint)
         self._models_configs: List[str] = list_from_fs(fs_path=self._config['sd_configs_dir'],

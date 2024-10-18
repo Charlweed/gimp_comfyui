@@ -61,8 +61,8 @@ from workflow.comfyui_default_accessor import ComfyuiDefaultAccessor
 from workflow.comfyui_default_dialogs import ComfyuiDefaultDialogs
 from workflow.flux_1dot0_accessor import Flux1Dot0Accessor
 from workflow.flux_1dot0_dialogs import Flux1Dot0Dialogs
-from workflow.flux_neg_1dot0_accessor import FluxNeg1Dot0Accessor
-from workflow.flux_neg_1dot0_dialogs import FluxNeg1Dot0Dialogs
+from workflow.flux_neg_1dot1_accessor import FluxNeg1Dot1Accessor
+from workflow.flux_neg_1dot1_dialogs import FluxNeg1Dot1Dialogs
 from workflow.img2img_sdxl_0dot3_accessor import Img2ImgSdxl0Dot3Accessor
 from workflow.img2img_sdxl_0dot3_dialogs import Img2ImgSdxl0Dot3Dialogs
 from workflow.inpainting_sdxl_0dot4_accessor import InpaintingSdxl0Dot4Accessor
@@ -420,7 +420,7 @@ class GimpComfyUI(Gimp.PlugIn):
         return self._flux_accessor
 
     @property
-    def flux_neg_acc(self) -> FluxNeg1Dot0Accessor:
+    def flux_neg_acc(self) -> FluxNeg1Dot1Accessor:
         return self._flux_neg_accessor
 
     @property
@@ -455,7 +455,7 @@ class GimpComfyUI(Gimp.PlugIn):
         self._name = GimpComfyUI.PYTHON_PLUGIN_NAME_LONG
         self._default_accessor: ComfyuiDefaultAccessor = ComfyuiDefaultAccessor()
         self._flux_accessor: Flux1Dot0Accessor = Flux1Dot0Accessor()
-        self._flux_neg_accessor: FluxNeg1Dot0Accessor = FluxNeg1Dot0Accessor()
+        self._flux_neg_accessor: FluxNeg1Dot1Accessor = FluxNeg1Dot1Accessor()
         self._img2img_sdxl_accessor: Img2ImgSdxl0Dot3Accessor = Img2ImgSdxl0Dot3Accessor()
         self._inpainting_sdxl_accessor: InpaintingSdxl0Dot4Accessor = InpaintingSdxl0Dot4Accessor()
         self._sytan_sdxl_accessor: SytanSdxl1Dot0Accessor = SytanSdxl1Dot0Accessor()
@@ -948,7 +948,7 @@ class GimpComfyUI(Gimp.PlugIn):
                       run_data  # noqa
                       ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()
-        factory: FluxNeg1Dot0Dialogs = FluxNeg1Dot0Dialogs(accessor=self.flux_acc)
+        factory: FluxNeg1Dot1Dialogs = FluxNeg1Dot1Dialogs(accessor=self.flux_acc)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
                                           title_in="Flux dev 16",
