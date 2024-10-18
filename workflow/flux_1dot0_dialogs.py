@@ -134,17 +134,26 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
             persister.store_config()
             self.put_inputs(dialog_data=dialog_data)
 
-
         # New Frame
         frame_cliptextencode_006clip_text_encode_positive_prompt: Gtk.Frame = Gtk.Frame.new(label="CLIP Text Encode (Positive Prompt)")  # noqa
         frame_cliptextencode_006clip_text_encode_positive_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_6_text: Gtk.Label = Gtk.Label.new("Text")
         textview_6_text: Gtk.TextView = Gtk.TextView.new()
-        textview_6_text.get_buffer().set_text("cute anime girl with massive fluffy fennec ears and a big fluffy tail blonde messy long hair blue eyes wearing a maid outfit with a long black gold leaf pattern dress and a white apron mouth open holding a fancy black forest cake with candles on top in the kitchen of an old dark Victorian mansion lit by candlelight with a bright window to the foggy forest and very expensive stuff everywhere")  # noqa
+        textview_6_text.get_buffer().set_text("cute anime girl with massive fluffy fennec ears and a big fluffy tail"
+                                              "\n blonde messy long hair blue eyes wearing a maid outfit"
+                                              "\n with a long black gold leaf pattern dress and a white apron"
+                                              "\n mouth open holding a fancy black forest cake with candles on top"
+                                              "\n in the kitchen of an old dark Victorian mansion lit by candlelight"
+                                              "\n with a bright window to the foggy forest"
+                                              "\n and very expensive stuff everywhere")
         textview_6_text.set_name("textview_6_text")
         textview_6_text.set_hexpand(True)
         textview_6_text.set_vexpand(True)
         textview_6_text.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_poz = Gtk.ScrolledWindow()
+        scrolled_window_poz.add(textview_6_text)  # noqa
+        scrolled_window_poz.set_size_request(864, 288)
 
         def preedit_handler_6_text(source, **args):  # noqa
             pass
@@ -164,7 +173,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         grid_6: Gtk.Grid = Gtk.Grid.new()
         grid_6.attach(label_6_text,    left=0, top=0, width=1, height=1)  # noqa
-        grid_6.attach(textview_6_text, left=1, top=0, width=2, height=1)  # noqa
+        grid_6.attach(scrolled_window_poz, left=1, top=0, width=2, height=1)  # noqa
         grid_6.set_column_homogeneous(False)
         grid_6.set_row_homogeneous(False)
         frame_cliptextencode_006clip_text_encode_positive_prompt.add(widget=grid_6)  # noqa
@@ -341,7 +350,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
         entry_17_scheduler.set_hexpand(True)
         label_17_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_17_steps.set_margin_start(8)
-        label_17_steps.set_alignment(0.95, 0)
+        label_17_steps.set_alignment(0.95, 0)  # noqa
         entry_17_steps: Gtk.Entry = Gtk.Entry.new()
         entry_17_steps.set_text(str(20))
         entry_17_steps.set_name("entry_17_steps")
@@ -365,7 +374,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         label_17_denoise: Gtk.Label = Gtk.Label.new("Denoise")
         label_17_denoise.set_margin_start(8)
-        label_17_denoise.set_alignment(0.95, 0)
+        label_17_denoise.set_alignment(0.95, 0)  # noqa
         entry_17_denoise: Gtk.Entry = Gtk.Entry.new()
         grid_17: Gtk.Grid = Gtk.Grid.new()
         grid_17.attach(label_17_scheduler, left=0, top=0, width=1, height=1)  # noqa
@@ -391,7 +400,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
         frame_randomnoise_025randomnoise.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_25_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_25_noise_seed.set_margin_start(8)
-        label_25_noise_seed.set_alignment(0.95, 0)
+        label_25_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_25_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_25_noise_seed.set_text(str(219670278747233))
         entry_25_noise_seed.set_name("entry_25_noise_seed")
@@ -438,7 +447,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
         frame_emptysd3latentimage_027emptysd3latentimage.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_27_width: Gtk.Label = Gtk.Label.new("Width")
         label_27_width.set_margin_start(8)
-        label_27_width.set_alignment(0.95, 0)
+        label_27_width.set_alignment(0.95, 0)  # noqa
         entry_27_width: Gtk.Entry = Gtk.Entry.new()
         entry_27_width.set_text(str(1024))
         entry_27_width.set_name("entry_27_width")
@@ -462,7 +471,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         label_27_height: Gtk.Label = Gtk.Label.new("Height")
         label_27_height.set_margin_start(8)
-        label_27_height.set_alignment(0.95, 0)
+        label_27_height.set_alignment(0.95, 0)  # noqa
         entry_27_height: Gtk.Entry = Gtk.Entry.new()
         entry_27_height.set_text(str(1024))
         entry_27_height.set_name("entry_27_height")
@@ -486,7 +495,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         label_27_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_27_batch_size.set_margin_start(8)
-        label_27_batch_size.set_alignment(0.95, 0)
+        label_27_batch_size.set_alignment(0.95, 0)  # noqa
         entry_27_batch_size: Gtk.Entry = Gtk.Entry.new()
         entry_27_batch_size.set_text(str(1))
         entry_27_batch_size.set_name("entry_27_batch_size")
@@ -530,7 +539,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
         entry_30_base_shift: Gtk.Entry = Gtk.Entry.new()
         label_30_width: Gtk.Label = Gtk.Label.new("Width")
         label_30_width.set_margin_start(8)
-        label_30_width.set_alignment(0.95, 0)
+        label_30_width.set_alignment(0.95, 0)  # noqa
         entry_30_width: Gtk.Entry = Gtk.Entry.new()
         entry_30_width.set_text(str(1024))
         entry_30_width.set_name("entry_30_width")
@@ -554,7 +563,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         label_30_height: Gtk.Label = Gtk.Label.new("Height")
         label_30_height.set_margin_start(8)
-        label_30_height.set_alignment(0.95, 0)
+        label_30_height.set_alignment(0.95, 0)  # noqa
         entry_30_height: Gtk.Entry = Gtk.Entry.new()
         entry_30_height.set_text(str(1024))
         entry_30_height.set_name("entry_30_height")

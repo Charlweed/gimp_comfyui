@@ -134,7 +134,6 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
             persister.store_config()
             self.put_inputs(dialog_data=dialog_data)
 
-
         # New Frame
         frame_cliptextencode_006clip_text_encode_prompt: Gtk.Frame = Gtk.Frame.new(label="CLIP Text Encode (Prompt)")  # noqa
         frame_cliptextencode_006clip_text_encode_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
@@ -145,6 +144,10 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         textview_6_text.set_hexpand(True)
         textview_6_text.set_vexpand(True)
         textview_6_text.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_poz = Gtk.ScrolledWindow()
+        scrolled_window_poz.add(textview_6_text)  # noqa
+        scrolled_window_poz.set_size_request(864, 288)
 
         def preedit_handler_6_text(source, **args):  # noqa
             pass
@@ -164,7 +167,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         grid_6: Gtk.Grid = Gtk.Grid.new()
         grid_6.attach(label_6_text,    left=0, top=0, width=1, height=1)  # noqa
-        grid_6.attach(textview_6_text, left=1, top=0, width=2, height=1)  # noqa
+        grid_6.attach(scrolled_window_poz, left=1, top=0, width=2, height=1)  # noqa
         grid_6.set_column_homogeneous(False)
         grid_6.set_row_homogeneous(False)
         frame_cliptextencode_006clip_text_encode_prompt.add(widget=grid_6)  # noqa
@@ -320,7 +323,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         frame_emptylatentimage_049empty_latent_image.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_49_width: Gtk.Label = Gtk.Label.new("Width")
         label_49_width.set_margin_start(8)
-        label_49_width.set_alignment(0.95, 0)
+        label_49_width.set_alignment(0.95, 0)  # noqa
         entry_49_width: Gtk.Entry = Gtk.Entry.new()
         entry_49_width.set_text(str(1040))
         entry_49_width.set_name("entry_49_width")
@@ -344,7 +347,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_49_height: Gtk.Label = Gtk.Label.new("Height")
         label_49_height.set_margin_start(8)
-        label_49_height.set_alignment(0.95, 0)
+        label_49_height.set_alignment(0.95, 0)  # noqa
         entry_49_height: Gtk.Entry = Gtk.Entry.new()
         entry_49_height.set_text(str(1200))
         entry_49_height.set_name("entry_49_height")
@@ -368,7 +371,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_49_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_49_batch_size.set_margin_start(8)
-        label_49_batch_size.set_alignment(0.95, 0)
+        label_49_batch_size.set_alignment(0.95, 0)  # noqa
         entry_49_batch_size: Gtk.Entry = Gtk.Entry.new()
         entry_49_batch_size.set_text(str(1))
         entry_49_batch_size.set_name("entry_49_batch_size")
@@ -419,7 +422,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_97_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_97_noise_seed.set_margin_start(8)
-        label_97_noise_seed.set_alignment(0.95, 0)
+        label_97_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_97_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_97_noise_seed.set_text(str(101))
         entry_97_noise_seed.set_name("entry_97_noise_seed")
@@ -443,7 +446,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_97_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_97_steps.set_margin_start(8)
-        label_97_steps.set_alignment(0.95, 0)
+        label_97_steps.set_alignment(0.95, 0)  # noqa
         entry_97_steps: Gtk.Entry = Gtk.Entry.new()
         entry_97_steps.set_text(str(20))
         entry_97_steps.set_name("entry_97_steps")
@@ -496,7 +499,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         entry_97_scheduler.set_hexpand(True)
         label_97_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_97_start_at_step.set_margin_start(8)
-        label_97_start_at_step.set_alignment(0.95, 0)
+        label_97_start_at_step.set_alignment(0.95, 0)  # noqa
         entry_97_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_97_start_at_step.set_text(str(3))
         entry_97_start_at_step.set_name("entry_97_start_at_step")
@@ -520,7 +523,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_97_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_97_end_at_step.set_margin_start(8)
-        label_97_end_at_step.set_alignment(0.95, 0)
+        label_97_end_at_step.set_alignment(0.95, 0)  # noqa
         entry_97_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_97_end_at_step.set_text(str(10000))
         entry_97_end_at_step.set_name("entry_97_end_at_step")
@@ -583,7 +586,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_98_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_98_noise_seed.set_margin_start(8)
-        label_98_noise_seed.set_alignment(0.95, 0)
+        label_98_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_98_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_98_noise_seed.set_text(str(101))
         entry_98_noise_seed.set_name("entry_98_noise_seed")
@@ -607,7 +610,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_98_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_98_steps.set_margin_start(8)
-        label_98_steps.set_alignment(0.95, 0)
+        label_98_steps.set_alignment(0.95, 0)  # noqa
         entry_98_steps: Gtk.Entry = Gtk.Entry.new()
         entry_98_steps.set_text(str(20))
         entry_98_steps.set_name("entry_98_steps")
@@ -660,7 +663,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         entry_98_scheduler.set_hexpand(True)
         label_98_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_98_start_at_step.set_margin_start(8)
-        label_98_start_at_step.set_alignment(0.95, 0)
+        label_98_start_at_step.set_alignment(0.95, 0)  # noqa
         entry_98_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_98_start_at_step.set_text(str(0))
         entry_98_start_at_step.set_name("entry_98_start_at_step")
@@ -684,7 +687,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_98_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_98_end_at_step.set_margin_start(8)
-        label_98_end_at_step.set_alignment(0.95, 0)
+        label_98_end_at_step.set_alignment(0.95, 0)  # noqa
         entry_98_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_98_end_at_step.set_text(str(3))
         entry_98_end_at_step.set_name("entry_98_end_at_step")
@@ -734,29 +737,29 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         frame_dynamicthresholdingfull_100dynamicthresholdingfull.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_100_mimic_scale: Gtk.Label = Gtk.Label.new("Mimic_Scale")
         label_100_mimic_scale.set_margin_start(8)
-        label_100_mimic_scale.set_alignment(0.95, 0)
+        label_100_mimic_scale.set_alignment(0.95, 0)  # noqa
         entry_100_mimic_scale: Gtk.Entry = Gtk.Entry.new()
         label_100_threshold_percentile: Gtk.Label = Gtk.Label.new("Threshold_Percentile")
         label_100_threshold_percentile.set_margin_start(8)
-        label_100_threshold_percentile.set_alignment(0.95, 0)
+        label_100_threshold_percentile.set_alignment(0.95, 0)  # noqa
         entry_100_threshold_percentile: Gtk.Entry = Gtk.Entry.new()
         label_100_mimic_mode: Gtk.Label = Gtk.Label.new("Mimic_Mode")
         entry_100_mimic_mode: Gtk.Entry = Gtk.Entry.new()
         entry_100_mimic_mode.set_hexpand(True)
         label_100_mimic_scale_min: Gtk.Label = Gtk.Label.new("Mimic_Scale_Min")
         label_100_mimic_scale_min.set_margin_start(8)
-        label_100_mimic_scale_min.set_alignment(0.95, 0)
+        label_100_mimic_scale_min.set_alignment(0.95, 0)  # noqa
         entry_100_mimic_scale_min: Gtk.Entry = Gtk.Entry.new()
         label_100_cfg_mode: Gtk.Label = Gtk.Label.new("Cfg_Mode")
         entry_100_cfg_mode: Gtk.Entry = Gtk.Entry.new()
         entry_100_cfg_mode.set_hexpand(True)
         label_100_cfg_scale_min: Gtk.Label = Gtk.Label.new("Cfg_Scale_Min")
         label_100_cfg_scale_min.set_margin_start(8)
-        label_100_cfg_scale_min.set_alignment(0.95, 0)
+        label_100_cfg_scale_min.set_alignment(0.95, 0)  # noqa
         entry_100_cfg_scale_min: Gtk.Entry = Gtk.Entry.new()
         label_100_sched_val: Gtk.Label = Gtk.Label.new("Sched_Val")
         label_100_sched_val.set_margin_start(8)
-        label_100_sched_val.set_alignment(0.95, 0)
+        label_100_sched_val.set_alignment(0.95, 0)  # noqa
         entry_100_sched_val: Gtk.Entry = Gtk.Entry.new()
         checkbutton_100_separate_feature_channels: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Separate_Feature_Channels")  # noqa
 
@@ -768,7 +771,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         entry_100_variability_measure.set_hexpand(True)
         label_100_interpolate_phi: Gtk.Label = Gtk.Label.new("Interpolate_Phi")
         label_100_interpolate_phi.set_margin_start(8)
-        label_100_interpolate_phi.set_alignment(0.95, 0)
+        label_100_interpolate_phi.set_alignment(0.95, 0)  # noqa
         entry_100_interpolate_phi: Gtk.Entry = Gtk.Entry.new()
         grid_100: Gtk.Grid = Gtk.Grid.new()
         grid_100.attach(label_100_mimic_scale,                     left=0, top=0, width=1, height=1)  # noqa
@@ -806,6 +809,10 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         textview_101_text.set_hexpand(True)
         textview_101_text.set_vexpand(True)
         textview_101_text.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_neg = Gtk.ScrolledWindow()
+        scrolled_window_neg.add(textview_101_text)  # noqa
+        scrolled_window_neg.set_size_request(288, 96)
 
         def preedit_handler_101_text(source, **args):  # noqa
             pass
@@ -825,7 +832,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         grid_101: Gtk.Grid = Gtk.Grid.new()
         grid_101.attach(label_101_text,    left=0, top=0, width=1, height=1)  # noqa
-        grid_101.attach(textview_101_text, left=1, top=0, width=2, height=1)  # noqa
+        grid_101.attach(scrolled_window_neg, left=1, top=0, width=2, height=1)  # noqa
         grid_101.set_column_homogeneous(False)
         grid_101.set_row_homogeneous(False)
         frame_cliptextencode_101clip_text_encode_prompt.add(widget=grid_101)  # noqa
