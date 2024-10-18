@@ -16,16 +16,16 @@ from workflow.node_accessor import NodesAccessor
 from workflow.workflow_dialog_factory import WorkflowDialogFactory
 
 
-class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
+class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
-    WORKFLOW_FILE = "flux_neg_1.0_workflow_api.json"
+    WORKFLOW_FILE = "flux_neg_1.1_workflow_api.json"
 
     def __init__(self, accessor: NodesAccessor):
         super().__init__(
             accessor=accessor,
-            api_workflow=FluxNeg1Dot0Dialogs.WORKFLOW_FILE,
-            dialog_config_chassis_name="FluxNeg1Dot0Dialogs_dialog_config",
-            wf_data_chassis_name="FluxNeg1Dot0Dialogs_wf_data",
+            api_workflow=FluxNeg1Dot1Dialogs.WORKFLOW_FILE,
+            dialog_config_chassis_name="FluxNeg1Dot1Dialogs_dialog_config",
+            wf_data_chassis_name="FluxNeg1Dot1Dialogs_wf_data",
         )
 
     # GIMP is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
@@ -79,7 +79,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         dialog = GimpUi.Dialog(use_header_bar=True, title=title_in, role=role_in)
         fallback_path = os.path.join(super().asset_dir, "model_dirs.json")
         persister: PersisterPetite = PersisterPetite(chassis=dialog,
-                                                     chassis_name="flux_neg_1dot0_dialog",
+                                                     chassis_name="flux_neg_1dot1_dialog",
                                                      fallback_path=fallback_path)
         dialog_data: Dict = dict(persister.load_config())
         widget_getters: Dict[str, Callable[[], Any]] = {}
@@ -135,8 +135,8 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
             self.put_inputs(dialog_data=dialog_data)
 
         # New Frame
-        frame_cliptextencode_006clip_text_encode_prompt: Gtk.Frame = Gtk.Frame.new(label="CLIP Text Encode (Prompt)")  # noqa
-        frame_cliptextencode_006clip_text_encode_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
+        frame_cliptextencode_006positive_prompt: Gtk.Frame = Gtk.Frame.new(label="Positive Prompt")  # noqa
+        frame_cliptextencode_006positive_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_6_text: Gtk.Label = Gtk.Label.new("Text")
         textview_6_text: Gtk.TextView = Gtk.TextView.new()
         textview_6_text.get_buffer().set_text("photograph of a street")  # noqa
@@ -145,9 +145,9 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         textview_6_text.set_vexpand(True)
         textview_6_text.set_valign(Gtk.Align.FILL)
         # Create a ScrolledWindow to hold the TextView
-        scrolled_window_poz = Gtk.ScrolledWindow()
-        scrolled_window_poz.add(textview_6_text)  # noqa
-        scrolled_window_poz.set_size_request(864, 288)
+        scrolled_window_6_text = Gtk.ScrolledWindow()
+        scrolled_window_6_text.add(textview_6_text)  # noqa
+        scrolled_window_6_text.set_size_request(864, 288)
 
         def preedit_handler_6_text(source, **args):  # noqa
             pass
@@ -166,11 +166,11 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         widget_setters[textview_6_text.get_name()] = setter_6_text
 
         grid_6: Gtk.Grid = Gtk.Grid.new()
-        grid_6.attach(label_6_text,    left=0, top=0, width=1, height=1)  # noqa
-        grid_6.attach(scrolled_window_poz, left=1, top=0, width=2, height=1)  # noqa
+        grid_6.attach(label_6_text,           left=0, top=0, width=1, height=1)  # noqa
+        grid_6.attach(scrolled_window_6_text, left=1, top=0, width=2, height=1)  # noqa
         grid_6.set_column_homogeneous(False)
         grid_6.set_row_homogeneous(False)
-        frame_cliptextencode_006clip_text_encode_prompt.add(widget=grid_6)  # noqa
+        frame_cliptextencode_006positive_prompt.add(widget=grid_6)  # noqa
 
         # New Frame
         frame_vaeloader_010load_vae: Gtk.Frame = Gtk.Frame.new(label="Load VAE")  # noqa
@@ -298,32 +298,11 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         frame_tobasicpipe_047tobasicpipe.add(widget=grid_47)  # noqa
 
         # New Frame
-        frame_previewbridgelatent_048preview_bridge_latent: Gtk.Frame = Gtk.Frame.new(label="Preview Bridge (Latent)")  # noqa
-        frame_previewbridgelatent_048preview_bridge_latent.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        label_48_image: Gtk.Label = Gtk.Label.new("Layer")
-        entry_48_image: Gtk.Entry = Gtk.Entry.new()
-        entry_48_image.set_hexpand(True)
-        label_48_preview_method: Gtk.Label = Gtk.Label.new("Preview_Method")
-        entry_48_preview_method: Gtk.Entry = Gtk.Entry.new()
-        entry_48_preview_method.set_hexpand(True)
-        checkbutton_48_block: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Block")  # noqa
-
-        grid_48: Gtk.Grid = Gtk.Grid.new()
-        grid_48.attach(label_48_image,          left=0, top=0, width=1, height=1)  # noqa
-        grid_48.attach(entry_48_image,          left=1, top=0, width=2, height=1)  # noqa
-        grid_48.attach(label_48_preview_method, left=0, top=1, width=1, height=1)  # noqa
-        grid_48.attach(entry_48_preview_method, left=1, top=1, width=2, height=1)  # noqa
-        grid_48.attach(checkbutton_48_block,    left=0, top=2, width=3, height=1)  # noqa
-        grid_48.set_column_homogeneous(False)
-        grid_48.set_row_homogeneous(False)
-        frame_previewbridgelatent_048preview_bridge_latent.add(widget=grid_48)  # noqa
-
-        # New Frame
         frame_emptylatentimage_049empty_latent_image: Gtk.Frame = Gtk.Frame.new(label="Empty Latent Image")  # noqa
         frame_emptylatentimage_049empty_latent_image.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_49_width: Gtk.Label = Gtk.Label.new("Width")
         label_49_width.set_margin_start(8)
-        label_49_width.set_alignment(0.95, 0)  # noqa
+        label_49_width.set_alignment(0.95, 0)
         entry_49_width: Gtk.Entry = Gtk.Entry.new()
         entry_49_width.set_text(str(1040))
         entry_49_width.set_name("entry_49_width")
@@ -347,7 +326,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_49_height: Gtk.Label = Gtk.Label.new("Height")
         label_49_height.set_margin_start(8)
-        label_49_height.set_alignment(0.95, 0)  # noqa
+        label_49_height.set_alignment(0.95, 0)
         entry_49_height: Gtk.Entry = Gtk.Entry.new()
         entry_49_height.set_text(str(1200))
         entry_49_height.set_name("entry_49_height")
@@ -371,7 +350,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_49_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_49_batch_size.set_margin_start(8)
-        label_49_batch_size.set_alignment(0.95, 0)  # noqa
+        label_49_batch_size.set_alignment(0.95, 0)
         entry_49_batch_size: Gtk.Entry = Gtk.Entry.new()
         entry_49_batch_size.set_text(str(1))
         entry_49_batch_size.set_name("entry_49_batch_size")
@@ -422,7 +401,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_97_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_97_noise_seed.set_margin_start(8)
-        label_97_noise_seed.set_alignment(0.95, 0)  # noqa
+        label_97_noise_seed.set_alignment(0.95, 0)
         entry_97_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_97_noise_seed.set_text(str(101))
         entry_97_noise_seed.set_name("entry_97_noise_seed")
@@ -446,7 +425,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_97_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_97_steps.set_margin_start(8)
-        label_97_steps.set_alignment(0.95, 0)  # noqa
+        label_97_steps.set_alignment(0.95, 0)
         entry_97_steps: Gtk.Entry = Gtk.Entry.new()
         entry_97_steps.set_text(str(20))
         entry_97_steps.set_name("entry_97_steps")
@@ -499,7 +478,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         entry_97_scheduler.set_hexpand(True)
         label_97_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_97_start_at_step.set_margin_start(8)
-        label_97_start_at_step.set_alignment(0.95, 0)  # noqa
+        label_97_start_at_step.set_alignment(0.95, 0)
         entry_97_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_97_start_at_step.set_text(str(3))
         entry_97_start_at_step.set_name("entry_97_start_at_step")
@@ -523,7 +502,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_97_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_97_end_at_step.set_margin_start(8)
-        label_97_end_at_step.set_alignment(0.95, 0)  # noqa
+        label_97_end_at_step.set_alignment(0.95, 0)
         entry_97_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_97_end_at_step.set_text(str(10000))
         entry_97_end_at_step.set_name("entry_97_end_at_step")
@@ -586,7 +565,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_98_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_98_noise_seed.set_margin_start(8)
-        label_98_noise_seed.set_alignment(0.95, 0)  # noqa
+        label_98_noise_seed.set_alignment(0.95, 0)
         entry_98_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_98_noise_seed.set_text(str(101))
         entry_98_noise_seed.set_name("entry_98_noise_seed")
@@ -610,7 +589,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_98_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_98_steps.set_margin_start(8)
-        label_98_steps.set_alignment(0.95, 0)  # noqa
+        label_98_steps.set_alignment(0.95, 0)
         entry_98_steps: Gtk.Entry = Gtk.Entry.new()
         entry_98_steps.set_text(str(20))
         entry_98_steps.set_name("entry_98_steps")
@@ -663,7 +642,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         entry_98_scheduler.set_hexpand(True)
         label_98_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_98_start_at_step.set_margin_start(8)
-        label_98_start_at_step.set_alignment(0.95, 0)  # noqa
+        label_98_start_at_step.set_alignment(0.95, 0)
         entry_98_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_98_start_at_step.set_text(str(0))
         entry_98_start_at_step.set_name("entry_98_start_at_step")
@@ -687,7 +666,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
 
         label_98_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_98_end_at_step.set_margin_start(8)
-        label_98_end_at_step.set_alignment(0.95, 0)  # noqa
+        label_98_end_at_step.set_alignment(0.95, 0)
         entry_98_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_98_end_at_step.set_text(str(3))
         entry_98_end_at_step.set_name("entry_98_end_at_step")
@@ -737,29 +716,29 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         frame_dynamicthresholdingfull_100dynamicthresholdingfull.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_100_mimic_scale: Gtk.Label = Gtk.Label.new("Mimic_Scale")
         label_100_mimic_scale.set_margin_start(8)
-        label_100_mimic_scale.set_alignment(0.95, 0)  # noqa
+        label_100_mimic_scale.set_alignment(0.95, 0)
         entry_100_mimic_scale: Gtk.Entry = Gtk.Entry.new()
         label_100_threshold_percentile: Gtk.Label = Gtk.Label.new("Threshold_Percentile")
         label_100_threshold_percentile.set_margin_start(8)
-        label_100_threshold_percentile.set_alignment(0.95, 0)  # noqa
+        label_100_threshold_percentile.set_alignment(0.95, 0)
         entry_100_threshold_percentile: Gtk.Entry = Gtk.Entry.new()
         label_100_mimic_mode: Gtk.Label = Gtk.Label.new("Mimic_Mode")
         entry_100_mimic_mode: Gtk.Entry = Gtk.Entry.new()
         entry_100_mimic_mode.set_hexpand(True)
         label_100_mimic_scale_min: Gtk.Label = Gtk.Label.new("Mimic_Scale_Min")
         label_100_mimic_scale_min.set_margin_start(8)
-        label_100_mimic_scale_min.set_alignment(0.95, 0)  # noqa
+        label_100_mimic_scale_min.set_alignment(0.95, 0)
         entry_100_mimic_scale_min: Gtk.Entry = Gtk.Entry.new()
         label_100_cfg_mode: Gtk.Label = Gtk.Label.new("Cfg_Mode")
         entry_100_cfg_mode: Gtk.Entry = Gtk.Entry.new()
         entry_100_cfg_mode.set_hexpand(True)
         label_100_cfg_scale_min: Gtk.Label = Gtk.Label.new("Cfg_Scale_Min")
         label_100_cfg_scale_min.set_margin_start(8)
-        label_100_cfg_scale_min.set_alignment(0.95, 0)  # noqa
+        label_100_cfg_scale_min.set_alignment(0.95, 0)
         entry_100_cfg_scale_min: Gtk.Entry = Gtk.Entry.new()
         label_100_sched_val: Gtk.Label = Gtk.Label.new("Sched_Val")
         label_100_sched_val.set_margin_start(8)
-        label_100_sched_val.set_alignment(0.95, 0)  # noqa
+        label_100_sched_val.set_alignment(0.95, 0)
         entry_100_sched_val: Gtk.Entry = Gtk.Entry.new()
         checkbutton_100_separate_feature_channels: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Separate_Feature_Channels")  # noqa
 
@@ -771,7 +750,7 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         entry_100_variability_measure.set_hexpand(True)
         label_100_interpolate_phi: Gtk.Label = Gtk.Label.new("Interpolate_Phi")
         label_100_interpolate_phi.set_margin_start(8)
-        label_100_interpolate_phi.set_alignment(0.95, 0)  # noqa
+        label_100_interpolate_phi.set_alignment(0.95, 0)
         entry_100_interpolate_phi: Gtk.Entry = Gtk.Entry.new()
         grid_100: Gtk.Grid = Gtk.Grid.new()
         grid_100.attach(label_100_mimic_scale,                     left=0, top=0, width=1, height=1)  # noqa
@@ -800,19 +779,19 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         frame_dynamicthresholdingfull_100dynamicthresholdingfull.add(widget=grid_100)  # noqa
 
         # New Frame
-        frame_cliptextencode_101clip_text_encode_prompt: Gtk.Frame = Gtk.Frame.new(label="CLIP Text Encode (Prompt)")  # noqa
-        frame_cliptextencode_101clip_text_encode_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
+        frame_cliptextencode_101negative_prompt: Gtk.Frame = Gtk.Frame.new(label="Negative Prompt")  # noqa
+        frame_cliptextencode_101negative_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_101_text: Gtk.Label = Gtk.Label.new("Text")
         textview_101_text: Gtk.TextView = Gtk.TextView.new()
-        textview_101_text.get_buffer().set_text("car")  # noqa
+        textview_101_text.get_buffer().set_text("car cars autos man men woman women pedestrians people")  # noqa
         textview_101_text.set_name("textview_101_text")
         textview_101_text.set_hexpand(True)
         textview_101_text.set_vexpand(True)
         textview_101_text.set_valign(Gtk.Align.FILL)
         # Create a ScrolledWindow to hold the TextView
-        scrolled_window_neg = Gtk.ScrolledWindow()
-        scrolled_window_neg.add(textview_101_text)  # noqa
-        scrolled_window_neg.set_size_request(288, 96)
+        scrolled_window_101_text = Gtk.ScrolledWindow()
+        scrolled_window_101_text.add(textview_101_text)  # noqa
+        scrolled_window_101_text.set_size_request(288, 96)
 
         def preedit_handler_101_text(source, **args):  # noqa
             pass
@@ -831,11 +810,11 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         widget_setters[textview_101_text.get_name()] = setter_101_text
 
         grid_101: Gtk.Grid = Gtk.Grid.new()
-        grid_101.attach(label_101_text,    left=0, top=0, width=1, height=1)  # noqa
-        grid_101.attach(scrolled_window_neg, left=1, top=0, width=2, height=1)  # noqa
+        grid_101.attach(label_101_text,           left=0, top=0, width=1, height=1)  # noqa
+        grid_101.attach(scrolled_window_101_text, left=1, top=0, width=2, height=1)  # noqa
         grid_101.set_column_homogeneous(False)
         grid_101.set_row_homogeneous(False)
-        frame_cliptextencode_101clip_text_encode_prompt.add(widget=grid_101)  # noqa
+        frame_cliptextencode_101negative_prompt.add(widget=grid_101)  # noqa
 
         # New Frame
         frame_editbasicpipe_103edit_basicpipe: Gtk.Frame = Gtk.Frame.new(label="Edit BasicPipe")  # noqa
@@ -852,20 +831,47 @@ class FluxNeg1Dot0Dialogs(WorkflowDialogFactory):
         grid_104.set_column_homogeneous(False)
         grid_104.set_row_homogeneous(False)
         frame_frombasicpipe_v2_104frombasicpipe_v2.add(widget=grid_104)  # noqa
+
+        # New Frame
+        frame_vaedecode_110vae_decode: Gtk.Frame = Gtk.Frame.new(label="VAE Decode")  # noqa
+        frame_vaedecode_110vae_decode.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
+        grid_110: Gtk.Grid = Gtk.Grid.new()
+        grid_110.set_column_homogeneous(False)
+        grid_110.set_row_homogeneous(False)
+        frame_vaedecode_110vae_decode.add(widget=grid_110)  # noqa
+
+        # New Frame
+        frame_saveimage_111save_image: Gtk.Frame = Gtk.Frame.new(label="Save Image")  # noqa
+        frame_saveimage_111save_image.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
+        label_111_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
+        entry_111_filename_prefix: Gtk.Entry = Gtk.Entry.new()
+        entry_111_filename_prefix.set_text("generated")
+        entry_111_filename_prefix.set_name("entry_111_filename_prefix")
+        entry_111_filename_prefix.set_hexpand(True)
+        widget_getters[entry_111_filename_prefix.get_name()] = entry_111_filename_prefix.get_text
+        widget_setters[entry_111_filename_prefix.get_name()] = entry_111_filename_prefix.set_text
+
+        grid_111: Gtk.Grid = Gtk.Grid.new()
+        grid_111.attach(label_111_filename_prefix, left=0, top=0, width=1, height=1)  # noqa
+        grid_111.attach(entry_111_filename_prefix, left=1, top=0, width=2, height=1)  # noqa
+        grid_111.set_column_homogeneous(False)
+        grid_111.set_row_homogeneous(False)
+        frame_saveimage_111save_image.add(widget=grid_111)  # noqa
         content_area: Gtk.Box = dialog.get_content_area()
-        content_area.pack_start(child=frame_cliptextencode_006clip_text_encode_prompt, expand=True, fill=True, padding=0)  # noqa
+        content_area.pack_start(child=frame_cliptextencode_006positive_prompt, expand=True, fill=True, padding=0)  # noqa
         content_area.pack_start(child=frame_vaeloader_010load_vae, expand=False, fill=False, padding=0)  # noqa
         content_area.pack_start(child=frame_dualcliploader_011dualcliploader, expand=False, fill=False, padding=0)  # noqa
         content_area.pack_start(child=frame_unetloader_012load_diffusion_model, expand=False, fill=False, padding=0)  # noqa
         content_area.pack_start(child=frame_tobasicpipe_047tobasicpipe, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_previewbridgelatent_048preview_bridge_latent, expand=False, fill=False, padding=0)  # noqa
         content_area.pack_start(child=frame_emptylatentimage_049empty_latent_image, expand=False, fill=False, padding=0)  # noqa
         content_area.pack_start(child=frame_impactksampleradvancedbasicpipe_097ksampler_advancedpipe, expand=False, fill=False, padding=0)  # noqa
         content_area.pack_start(child=frame_impactksampleradvancedbasicpipe_098ksampler_advancedpipe, expand=False, fill=False, padding=0)  # noqa
         content_area.pack_start(child=frame_dynamicthresholdingfull_100dynamicthresholdingfull, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_cliptextencode_101clip_text_encode_prompt, expand=True, fill=True, padding=0)  # noqa
+        content_area.pack_start(child=frame_cliptextencode_101negative_prompt, expand=True, fill=True, padding=0)  # noqa
         content_area.pack_start(child=frame_editbasicpipe_103edit_basicpipe, expand=False, fill=False, padding=0)  # noqa
         content_area.pack_start(child=frame_frombasicpipe_v2_104frombasicpipe_v2, expand=False, fill=False, padding=0)  # noqa
+        content_area.pack_start(child=frame_vaedecode_110vae_decode, expand=False, fill=False, padding=0)  # noqa
+        content_area.pack_start(child=frame_saveimage_111save_image, expand=False, fill=False, padding=0)  # noqa
 
         button_cancel.connect("clicked", delete_results)
         button_apply.connect("clicked", assign_results)

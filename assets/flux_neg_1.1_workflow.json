@@ -1,6 +1,6 @@
 {
-  "last_node_id": 109,
-  "last_link_id": 147,
+  "last_node_id": 111,
+  "last_link_id": 150,
   "nodes": [
     {
       "id": 6,
@@ -16,7 +16,7 @@
       "flags": {
         "pinned": false
       },
-      "order": 6,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
@@ -35,8 +35,9 @@
           "slot_index": 0
         }
       ],
+      "title": "Positive Prompt",
       "properties": {
-        "Node name for S&R": "CLIPTextEncode"
+        "Node name for S&R": "positive_prompt"
       },
       "widgets_values": [
         "photograph of a street"
@@ -105,59 +106,6 @@
       "bgcolor": "#353"
     },
     {
-      "id": 48,
-      "type": "PreviewBridgeLatent",
-      "pos": {
-        "0": 2721,
-        "1": 599
-      },
-      "size": {
-        "0": 682.7518920898438,
-        "1": 775.411865234375
-      },
-      "flags": {},
-      "order": 13,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "latent",
-          "type": "LATENT",
-          "link": 127
-        },
-        {
-          "name": "vae_opt",
-          "type": "VAE",
-          "link": 128,
-          "shape": 7
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [],
-          "slot_index": 0,
-          "shape": 3
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewBridgeLatent"
-      },
-      "widgets_values": [
-        "$48-0",
-        "Latent2RGB-FLUX.1",
-        false
-      ],
-      "color": "#223",
-      "bgcolor": "#335"
-    },
-    {
       "id": 49,
       "type": "EmptyLatentImage",
       "pos": {
@@ -192,82 +140,6 @@
       ],
       "color": "#222",
       "bgcolor": "#000"
-    },
-    {
-      "id": 97,
-      "type": "ImpactKSamplerAdvancedBasicPipe",
-      "pos": {
-        "0": 2210,
-        "1": 580
-      },
-      "size": {
-        "0": 367.79998779296875,
-        "1": 526
-      },
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "basic_pipe",
-          "type": "BASIC_PIPE",
-          "link": 146
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 132
-        },
-        {
-          "name": "scheduler_func_opt",
-          "type": "SCHEDULER_FUNC",
-          "link": null,
-          "shape": 7
-        }
-      ],
-      "outputs": [
-        {
-          "name": "BASIC_PIPE",
-          "type": "BASIC_PIPE",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            127
-          ],
-          "slot_index": 1,
-          "shape": 3
-        },
-        {
-          "name": "VAE",
-          "type": "VAE",
-          "links": [
-            128
-          ],
-          "slot_index": 2,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "ImpactKSamplerAdvancedBasicPipe"
-      },
-      "widgets_values": [
-        false,
-        101,
-        "fixed",
-        20,
-        3.5,
-        "euler",
-        "normal",
-        3,
-        10000,
-        false
-      ],
-      "color": "#323",
-      "bgcolor": "#535"
     },
     {
       "id": 98,
@@ -356,7 +228,7 @@
         "1": 300
       },
       "flags": {},
-      "order": 5,
+      "order": 7,
       "mode": 0,
       "inputs": [
         {
@@ -394,48 +266,6 @@
       ],
       "color": "#232",
       "bgcolor": "#353"
-    },
-    {
-      "id": 101,
-      "type": "CLIPTextEncode",
-      "pos": {
-        "0": 570,
-        "1": 870
-      },
-      "size": {
-        "0": 340,
-        "1": 140
-      },
-      "flags": {
-        "pinned": false
-      },
-      "order": 7,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 135
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            136
-          ],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CLIPTextEncode"
-      },
-      "widgets_values": [
-        "car"
-      ],
-      "color": "#322",
-      "bgcolor": "#533"
     },
     {
       "id": 103,
@@ -609,43 +439,6 @@
       "bgcolor": "#535"
     },
     {
-      "id": 12,
-      "type": "UNETLoader",
-      "pos": {
-        "0": 10,
-        "1": 220
-      },
-      "size": {
-        "0": 315,
-        "1": 82
-      },
-      "flags": {},
-      "order": 2,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            133,
-            147
-          ],
-          "slot_index": 0,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "UNETLoader"
-      },
-      "widgets_values": [
-        "flux1-dev.safetensors",
-        "fp8_e4m3fn"
-      ],
-      "color": "#222",
-      "bgcolor": "#000"
-    },
-    {
       "id": 10,
       "type": "VAELoader",
       "pos": {
@@ -659,7 +452,7 @@
       "flags": {
         "collapsed": false
       },
-      "order": 3,
+      "order": 2,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -694,7 +487,7 @@
         "1": 106
       },
       "flags": {},
-      "order": 4,
+      "order": 3,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -720,6 +513,229 @@
       ],
       "color": "#222",
       "bgcolor": "#000"
+    },
+    {
+      "id": 101,
+      "type": "CLIPTextEncode",
+      "pos": {
+        "0": 570,
+        "1": 870
+      },
+      "size": {
+        "0": 340,
+        "1": 140
+      },
+      "flags": {
+        "pinned": false
+      },
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 135
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            136
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Negative Prompt",
+      "properties": {
+        "Node name for S&R": "negative_prompt"
+      },
+      "widgets_values": [
+        "car cars autos man men woman women pedestrians people"
+      ],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 12,
+      "type": "UNETLoader",
+      "pos": {
+        "0": 10,
+        "1": 220
+      },
+      "size": {
+        "0": 315,
+        "1": 82
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            133,
+            147
+          ],
+          "slot_index": 0,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "flux1-dev.safetensors",
+        "default"
+      ],
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 97,
+      "type": "ImpactKSamplerAdvancedBasicPipe",
+      "pos": {
+        "0": 2312,
+        "1": 577
+      },
+      "size": {
+        "0": 367.79998779296875,
+        "1": 526
+      },
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "basic_pipe",
+          "type": "BASIC_PIPE",
+          "link": 146
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 132
+        },
+        {
+          "name": "scheduler_func_opt",
+          "type": "SCHEDULER_FUNC",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "BASIC_PIPE",
+          "type": "BASIC_PIPE",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            148
+          ],
+          "slot_index": 1,
+          "shape": 3
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            149
+          ],
+          "slot_index": 2,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImpactKSamplerAdvancedBasicPipe"
+      },
+      "widgets_values": [
+        false,
+        101,
+        "fixed",
+        20,
+        3.5,
+        "euler",
+        "normal",
+        3,
+        10000,
+        false
+      ],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 110,
+      "type": "VAEDecode",
+      "pos": {
+        "0": 2706,
+        "1": 577
+      },
+      "size": {
+        "0": 210,
+        "1": 46
+      },
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 148
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 149
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            150
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 111,
+      "type": "SaveImage",
+      "pos": {
+        "0": 2951,
+        "1": 582
+      },
+      "size": [
+        315,
+        270
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 150
+        }
+      ],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "flux_neg"
+      ]
     }
   ],
   "links": [
@@ -754,22 +770,6 @@
       47,
       3,
       "CONDITIONING"
-    ],
-    [
-      127,
-      97,
-      1,
-      48,
-      0,
-      "LATENT"
-    ],
-    [
-      128,
-      97,
-      2,
-      48,
-      1,
-      "VAE"
     ],
     [
       129,
@@ -866,21 +866,33 @@
       103,
       1,
       "MODEL"
+    ],
+    [
+      148,
+      97,
+      1,
+      110,
+      0,
+      "LATENT"
+    ],
+    [
+      149,
+      97,
+      2,
+      110,
+      1,
+      "VAE"
+    ],
+    [
+      150,
+      110,
+      0,
+      111,
+      0,
+      "IMAGE"
     ]
   ],
   "groups": [
-    {
-      "title": "(2pass) WITHOUT [negative + dynamic thresholding]",
-      "bounding": [
-        1420,
-        110,
-        834,
-        381
-      ],
-      "color": "#3f789e",
-      "font_size": 24,
-      "flags": {}
-    },
     {
       "title": "(1pass) WITH [negative + dynamic thresholding]",
       "bounding": [
@@ -892,15 +904,27 @@
       "color": "#3f789e",
       "font_size": 24,
       "flags": {}
+    },
+    {
+      "title": "(2pass) WITHOUT [negative + dynamic thresholding]",
+      "bounding": [
+        1420,
+        110,
+        834,
+        381
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
     }
   ],
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.5131581182307067,
+      "scale": 0.7513148009015777,
       "offset": [
-        -1506.2635454788283,
-        156.6755710785608
+        -1813.6283317197604,
+        -212.1207260809131
       ]
     },
     "groupNodes": {}

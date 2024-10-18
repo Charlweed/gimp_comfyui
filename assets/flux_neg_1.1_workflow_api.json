@@ -9,7 +9,7 @@
     },
     "class_type": "CLIPTextEncode",
     "_meta": {
-      "title": "CLIP Text Encode (Prompt)"
+      "title": "Positive Prompt"
     }
   },
   "10": {
@@ -68,25 +68,6 @@
     "class_type": "ToBasicPipe",
     "_meta": {
       "title": "ToBasicPipe"
-    }
-  },
-  "48": {
-    "inputs": {
-      "image": "$48-0",
-      "preview_method": "Latent2RGB-FLUX.1",
-      "block": false,
-      "latent": [
-        "97",
-        1
-      ],
-      "vae_opt": [
-        "97",
-        2
-      ]
-    },
-    "class_type": "PreviewBridgeLatent",
-    "_meta": {
-      "title": "Preview Bridge (Latent)"
     }
   },
   "49": {
@@ -175,7 +156,7 @@
   },
   "101": {
     "inputs": {
-      "text": "car",
+      "text": "car cars autos man men woman women pedestrians people",
       "clip": [
         "11",
         0
@@ -183,7 +164,7 @@
     },
     "class_type": "CLIPTextEncode",
     "_meta": {
-      "title": "CLIP Text Encode (Prompt)"
+      "title": "Negative Prompt"
     }
   },
   "103": {
@@ -223,6 +204,35 @@
     "class_type": "ImpactNegativeConditioningPlaceholder",
     "_meta": {
       "title": "Negative Cond Placeholder"
+    }
+  },
+  "110": {
+    "inputs": {
+      "samples": [
+        "97",
+        1
+      ],
+      "vae": [
+        "97",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "111": {
+    "inputs": {
+      "filename_prefix": "flux_neg",
+      "images": [
+        "110",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
     }
   }
 }
