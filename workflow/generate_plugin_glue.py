@@ -80,7 +80,7 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
         return edited_source
 
     def insert_workflow_accessor_declaration(self, plugin_source: str) -> str:
-        replacement: str = f"self._{self.base_class_name}_accessor:  {self.accessor_class_name} = {self.accessor_class_name}()\n{SP08}{WORKFLOW_ACCESSOR_DECLARATION}" # noqa
+        replacement: str = f"self._{self.base_class_name}_accessor: {self.accessor_class_name} = {self.accessor_class_name}()\n{SP08}{WORKFLOW_ACCESSOR_DECLARATION}" # noqa
         edited_source: str = plugin_source.replace(WORKFLOW_ACCESSOR_DECLARATION, replacement)
         return edited_source
 
