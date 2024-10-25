@@ -70,6 +70,7 @@ from workflow.inpainting_sdxl_0dot4_dialogs import InpaintingSdxl0Dot4Dialogs
 from workflow.sytan_sdxl_1dot0_accessor import SytanSdxl1Dot0Accessor
 from workflow.sytan_sdxl_1dot0_dialogs import SytanSdxl1Dot0Dialogs
 from workflow.workflow_dialog_factory import WorkflowDialogFactory
+# Insert WORKFLOW_IMPORTS→
 
 # Set-up localization for your plug-in with your own text domain.
 # This is complementary to the gimp_plug_in_set_translation_domain()
@@ -176,6 +177,7 @@ class GimpComfyUI(Gimp.PlugIn):
     PROCEDURE_INVOKE_INPAINTING_WF = "inpainting-sdxl"
     PROCEDURE_INVOKE_SYTAN_WF = "sytan"
     PROCEDURE_WATCH_LAYER = "Follow-in-ComfyUI"
+    # Insert PROCEDURE_NAME_VARS→
     PROCEDURE_NAMES = [
         PROCEDURE_CONFIG_COMFY_SVR_CONNECTION,
         PROCEDURE_CONFIG_TRANSCEIVER_CONNECTION,
@@ -186,6 +188,7 @@ class GimpComfyUI(Gimp.PlugIn):
         PROCEDURE_INVOKE_IMG2IMG_WF,
         PROCEDURE_INVOKE_INPAINTING_WF,
         PROCEDURE_INVOKE_SYTAN_WF,
+        # Insert PROCEDURE_NAME_ITEMS→
     ]
 
     # Configurable
@@ -435,6 +438,8 @@ class GimpComfyUI(Gimp.PlugIn):
     def img2img_accessor(self) -> Img2ImgSdxl0Dot3Accessor:
         return self._img2img_sdxl_accessor
 
+    # Insert WORKFLOW_ACCESSOR_PROPERTY→
+
     @property
     def is_server_running(self) -> bool:
         return self._is_server_running
@@ -459,6 +464,7 @@ class GimpComfyUI(Gimp.PlugIn):
         self._img2img_sdxl_accessor: Img2ImgSdxl0Dot3Accessor = Img2ImgSdxl0Dot3Accessor()
         self._inpainting_sdxl_accessor: InpaintingSdxl0Dot4Accessor = InpaintingSdxl0Dot4Accessor()
         self._sytan_sdxl_accessor: SytanSdxl1Dot0Accessor = SytanSdxl1Dot0Accessor()
+        # Insert WORKFLOW_ACCESSOR_DECLARATION→
         if os.environ.get('skip_comfyui'):
             self.skip_comfyui = True
             LOGGER_GCUI.warning("Disabling connection attempts to ComfyUI")
@@ -709,6 +715,7 @@ class GimpComfyUI(Gimp.PlugIn):
                                                   is_image_optional=True,  # Redundant with SubjectType.ANYTHING
                                                   proc_category=ProcedureCategory.TEST_ANY,
                                                   subject_type=SubjectType.ANYTHING)
+            # Insert WORKFLOW_PROCEDURE_CASE→
             case _:
                 raise NotImplementedError("Unsupported procedure name " + name)
         if GimpComfyUI.is_debugging():
@@ -956,6 +963,8 @@ class GimpComfyUI(Gimp.PlugIn):
                                           blurb_in="Careful with that axe, Eugene!"
                                           )
         return ret_values
+
+    # Insert WORKFLOW_INVOCATION_FUNCTION→
 
     # noinspection PyMethodMayBeStatic
     def demo_cui_net(self, procedure: Gimp.ImageProcedure,
