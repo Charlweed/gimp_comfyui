@@ -1080,6 +1080,8 @@ class WidgetAuthor:
                                               )
                 case "vae_name":
                     vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae)
+                    # Baked VAE is a vae that's already merged into the checkpoint model.
+                    vaes_from_fs.append("Baked VAE")
                     vae_literals = list_as_literals(vaes_from_fs)
                     combo_message = f"Looking for index of {json_value} in {vae_literals}"
                     LOGGER_WF2PY.info(combo_message)
