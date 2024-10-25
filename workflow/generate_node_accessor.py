@@ -78,7 +78,7 @@ from workflow.node_accessor import NodesAccessor"""
         # because they define the external properties
         class_name_xt = class_name_external(index_str=index_str, node_dict=node_dict)
         self.inner_clazzes[index_str] = class_name_xt
-        text: str = "    class %s:\n\n" % class_name_xt
+        text: str = f"    class {class_name_xt}:  # noqa PEP8\n\n"
         text += AccessorGenerator.INNER_XTOR
         inputs: Dict = node_dict["inputs"]
         for input_item in inputs.items():

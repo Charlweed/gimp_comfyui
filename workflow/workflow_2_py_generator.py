@@ -84,7 +84,7 @@ def class_name(in_str: str) -> str:
 
 
 def class_name_external(index_str: str, node_dict: Dict) -> str:
-    return node_dict["class_type"] + class_name(ugly_suffix(index_str=index_str, node_dict=node_dict))
+    return node_dict["class_type"].replace(" ", "") + class_name(ugly_suffix(index_str=index_str, node_dict=node_dict))
 
 
 def decode_escapes(s):
