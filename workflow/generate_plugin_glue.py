@@ -84,12 +84,46 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
         edited_source: str = plugin_source.replace(WORKFLOW_ACCESSOR_DECLARATION, replacement)
         return edited_source
 
-    def insert_workflow_procedure_case(self, plugin_source: str) -> str:
-        edited_source: str = plugin_source.replace("THISISDUMMYTEXT", "NOTEXTHEREEITER")
+    def insert_workflow_evocation_function(self, plugin_source: str) -> str:
+        shorter: str = self.workflow_filename.replace(Workflow2PythonGenerator.WORKFLOW_TAG, "")
+        f_name = fat_name(shorter)
+        replacement: str = f"""def {self.base_class_name}_workflow(self, procedure: Gimp.ImageProcedure,
+                       run_mode,  # noqa
+                       image,  # noqa
+                       n_drawables,  # noqa
+                       drawables,  # noqa
+                       args,  # noqa
+                       run_data  # noqa
+                       ) -> Gimp.ValueArray:
+        factory: {self.dialog_class_name} = {self.dialog_class_name}(accessor=self._{self.base_class_name}_accessor)  # noqa
+        ret_values = self.invoke_workflow(procedure=procedure,
+                                          factory=factory,
+                                          title_in="{f_name}",
+                                          role_in="workflow",
+                                          blurb_in="This dialog was machine-written."
+                                          )
+        return ret_values
+
+        {WORKFLOW_INVOCATION_FUNCTION}"""
+        edited_source: str = plugin_source.replace(WORKFLOW_INVOCATION_FUNCTION, replacement)
         return edited_source
 
-    def insert_workflow_evocation_function(self, plugin_source: str) -> str:
-        edited_source: str = plugin_source.replace("THISISDUMMYTEXT", "NOTEXTHEREEITER")
+    def insert_workflow_procedure_case(self, plugin_source: str) -> str:
+        undecorated: str = undecorated_raised(self.base_class_name)
+        proc_name_identifier: str = f"PROCEDURE_INVOKE_{undecorated}_WF"
+        shorter: str = self.workflow_filename.replace(Workflow2PythonGenerator.WORKFLOW_TAG, "")
+        f_name = fat_name(shorter)
+        replacement: str = f"""
+            case GimpComfyUI.{proc_name_identifier}:
+                procedure = self.create_procedure(name_raw=name,
+                                                  docs="I{f_name}",
+                                                  usage_hint="This dialog was machine-written.",
+                                                  run_func_in=self.{self.base_class_name}_workflow,
+                                                  is_image_optional=True,  # Redundant with SubjectType.ANYTHING
+                                                  proc_category=ProcedureCategory.WORKFLOW,
+                                                  subject_type=SubjectType.ANYTHING)
+            {WORKFLOW_PROCEDURE_CASE}"""
+        edited_source: str = plugin_source.replace(WORKFLOW_PROCEDURE_CASE, replacement)
         return edited_source
 
     def write_source_file(self):
@@ -104,11 +138,11 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
         plugin_source = self.insert_procedure_name_items(plugin_source)
         plugin_source = self.insert_workflow_accessor_property(plugin_source)
         plugin_source = self.insert_workflow_accessor_declaration(plugin_source)
-        # plugin_source = self.insert_workflow_procedure_case(plugin_source)
-        # plugin_source = self.insert_workflow_evocation_function(plugin_source)
-
-        LOGGER_WF2PY.info(f"Writing node accessor python source file \"{self.python_class_file_path}\"")
-        with open(self.python_class_file_path.replace(".py", "_new.py"), "w", encoding='utf-8') as plugin_source_file:
+        plugin_source = self.insert_workflow_evocation_function(plugin_source)
+        plugin_source = self.insert_workflow_procedure_case(plugin_source)
+        dest_path = self.python_class_file_path.replace(".py", "_new.py")
+        LOGGER_WF2PY.info(f"Writing node accessor python source file \"{dest_path}\"")
+        with open(dest_path, "w", encoding='utf-8') as plugin_source_file:
             plugin_source_file.write(plugin_source)
 
 

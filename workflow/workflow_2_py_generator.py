@@ -83,6 +83,15 @@ def class_name(in_str: str) -> str:
     return "".join(title_cases)
 
 
+def fat_name(in_str: str) -> str:
+    plain = in_str.replace(".", " ")
+    spaced = plain.replace("_", " ")
+    punctless = re.sub(ID_BREAKERS_REGEX, "", spaced)
+    l_cases: List[str] = punctless.split(" ")
+    title_cases: List[str] = [lc.title() for lc in l_cases]
+    return "".join(title_cases)
+
+
 def undecorated_raised(in_str: str) -> str:
     plain = in_str.replace(".", "")
     spaceless = plain.replace(" ", "_")
