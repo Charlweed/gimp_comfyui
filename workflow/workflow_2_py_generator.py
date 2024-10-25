@@ -83,6 +83,13 @@ def class_name(in_str: str) -> str:
     return "".join(title_cases)
 
 
+def undecorated_raised(in_str: str) -> str:
+    plain = in_str.replace(".", "")
+    spaceless = plain.replace(" ", "_")
+    punctless = re.sub(ID_BREAKERS_REGEX, "", spaceless)
+    return punctless.upper()
+
+
 def class_name_external(index_str: str, node_dict: Dict) -> str:
     return node_dict["class_type"].replace(" ", "") + class_name(ugly_suffix(index_str=index_str, node_dict=node_dict))
 
@@ -223,6 +230,13 @@ class Workflow2PythonGenerator(ABC):
     @property
     def dialog_class_file_path(self):
         return os.path.join(self.script_dir_path, self.dialog_class_file_name)
+
+    @property
+    def base_class_name(self) -> str:
+        mangled = self.workflow_filename.replace(Workflow2PythonGenerator.WORKFLOW_TAG, "")
+        mangled = re.sub(CRUDE_VERSION_REGEX, r"\g<1>dot\g<2>", mangled)
+        mangled = mangled.replace(".json", "")
+        return mangled
 
     @property
     def accessor_class_file_name(self) -> str:

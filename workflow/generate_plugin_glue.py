@@ -55,12 +55,15 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
         import_accessor: str = f"from workflow.{a_name} import {self.accessor_class_name}"
         import_dialog: str = f"from workflow.{d_name} import {self.dialog_class_name}"
         replacement: str = f"{import_accessor}\n{import_dialog}\n{WORKFLOW_IMPORTS}\n"
-        print(replacement)
         edited_source: str = plugin_source.replace(WORKFLOW_IMPORTS, replacement)
         return edited_source
 
     def insert_procedure_name_vars(self, plugin_source: str) -> str:
-        edited_source: str = plugin_source.replace("THISISDUMMYTEXT", "NOTEXTHEREEITER")
+        undecorated: str = undecorated_raised(self.base_class_name)
+        proc_name_identifier: str = f"PROCEDURE_INVOKE_{undecorated}_WF"
+        replacement: str = f"{proc_name_identifier} = \"{self.base_class_name}\"\n{SP04}{PROCEDURE_NAME_VARS}\n"
+        print(replacement)
+        edited_source: str = plugin_source.replace(PROCEDURE_NAME_VARS, replacement)
         return edited_source
 
     def insert_procedure_name_items(self, plugin_source: str) -> str:
@@ -91,7 +94,7 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
         if not plugin_source:
             raise IOError(f"Error reading {self.python_class_file_path}")
         plugin_source = self.insert_workflow_imports(plugin_source)
-        # plugin_source = self.insert_procedure_name_vars(plugin_source)
+        plugin_source = self.insert_procedure_name_vars(plugin_source)
         # plugin_source = self.insert_procedure_name_items(plugin_source)
         # plugin_source = self.insert_workflow_accessor_property(plugin_source)
         # plugin_source = self.insert_workflow_accessor_declaration(plugin_source)
