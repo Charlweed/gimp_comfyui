@@ -42,10 +42,7 @@ from workflow.node_accessor import NodesAccessor"""
 
     @property
     def python_class_file_name(self) -> str:
-        mangled = self.workflow_filename.replace(Workflow2PythonGenerator.WORKFLOW_TAG, "_accessor")
-        mangled = re.sub(CRUDE_VERSION_REGEX, r"\g<1>dot\g<2>", mangled)
-        mangled = mangled.replace(".json", ".py")
-        return mangled
+        return self.accessor_class_file_name
 
     def field_identifier(self, node_title: str):
         tw = re.sub(ID_BREAKERS_REGEX, "", node_title)

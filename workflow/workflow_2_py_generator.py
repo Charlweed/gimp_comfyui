@@ -101,8 +101,10 @@ def identifier(in_str: str) -> str:
 
 
 def identifier_external(index_str: str, node_dict: Dict) -> str:
-    return (node_dict["class_type"].lower() + "_" +
-            identifier(ugly_suffix(index_str=index_str, node_dict=node_dict)))
+    interim: str = (node_dict["class_type"].lower() + "_" +
+                    identifier(ugly_suffix(index_str=index_str, node_dict=node_dict)))
+    interim = interim.replace(" ", "_")
+    return interim
 
 
 def input_names(node_dict: Dict[str, Any]) -> List[str]:
@@ -201,6 +203,46 @@ class Workflow2PythonGenerator(ABC):
     @property
     def python_class_file_path(self):
         return os.path.join(self.script_dir_path, self.python_class_file_name)
+
+    @property
+    def dialog_class_file_name(self) -> str:
+        mangled = self.workflow_filename.replace(Workflow2PythonGenerator.WORKFLOW_TAG, "_dialogs")
+        mangled = re.sub(CRUDE_VERSION_REGEX, r"\g<1>dot\g<2>", mangled)
+        mangled = mangled.replace(".json", ".py")
+        return mangled
+
+    @property
+    def dialog_class_name(self) -> str:
+        plain = self.dialog_class_file_name.replace(".py", "")
+        return class_name(plain)
+
+    @property
+    def dialog_source_basename(self) -> str:
+        return self.dialog_class_file_name.replace(".py", "")
+
+    @property
+    def dialog_class_file_path(self):
+        return os.path.join(self.script_dir_path, self.dialog_class_file_name)
+
+    @property
+    def accessor_class_file_name(self) -> str:
+        mangled = self.workflow_filename.replace(Workflow2PythonGenerator.WORKFLOW_TAG, "_accessor")
+        mangled = re.sub(CRUDE_VERSION_REGEX, r"\g<1>dot\g<2>", mangled)
+        mangled = mangled.replace(".json", ".py")
+        return mangled
+
+    @property
+    def accessor_class_name(self) -> str:
+        plain = self.accessor_class_file_name.replace(".py", "")
+        return class_name(plain)
+
+    @property
+    def accessor_source_basename(self) -> str:
+        return self.accessor_class_file_name.replace(".py", "")
+
+    @property
+    def accessor_class_file_path(self):
+        return os.path.join(self.script_dir_path, self.accessor_class_file_name)
 
     @property
     def nodes_dictionary(self) -> Dict:
