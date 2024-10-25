@@ -62,16 +62,21 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
         undecorated: str = undecorated_raised(self.base_class_name)
         proc_name_identifier: str = f"PROCEDURE_INVOKE_{undecorated}_WF"
         replacement: str = f"{proc_name_identifier} = \"{self.base_class_name}\"\n{SP04}{PROCEDURE_NAME_VARS}\n"
-        print(replacement)
         edited_source: str = plugin_source.replace(PROCEDURE_NAME_VARS, replacement)
         return edited_source
 
     def insert_procedure_name_items(self, plugin_source: str) -> str:
-        edited_source: str = plugin_source.replace("THISISDUMMYTEXT", "NOTEXTHEREEITER")
+        undecorated: str = undecorated_raised(self.base_class_name)
+        proc_name_identifier: str = f"PROCEDURE_INVOKE_{undecorated}_WF"
+        replacement: str = f"{proc_name_identifier},\n{SP08}{PROCEDURE_NAME_ITEMS}"
+        edited_source: str = plugin_source.replace(PROCEDURE_NAME_ITEMS, replacement)
         return edited_source
 
     def insert_workflow_accessor_property(self, plugin_source: str) -> str:
-        edited_source: str = plugin_source.replace("THISISDUMMYTEXT", "NOTEXTHEREEITER")
+        replacement: str = (f"@property\n{SP04}def {self.base_class_name}_accessor(self) -> {self.accessor_class_name}:\n"
+                            f"{SP08}return self._{self.base_class_name}_accessor\n"
+                            f"{SP04}{WORKFLOW_ACCESSOR_PROPERTY}")
+        edited_source: str = plugin_source.replace(WORKFLOW_ACCESSOR_PROPERTY, replacement)
         return edited_source
 
     def insert_workflow_accessor_declaration(self, plugin_source: str) -> str:
@@ -95,8 +100,8 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
             raise IOError(f"Error reading {self.python_class_file_path}")
         plugin_source = self.insert_workflow_imports(plugin_source)
         plugin_source = self.insert_procedure_name_vars(plugin_source)
-        # plugin_source = self.insert_procedure_name_items(plugin_source)
-        # plugin_source = self.insert_workflow_accessor_property(plugin_source)
+        plugin_source = self.insert_procedure_name_items(plugin_source)
+        plugin_source = self.insert_workflow_accessor_property(plugin_source)
         # plugin_source = self.insert_workflow_accessor_declaration(plugin_source)
         # plugin_source = self.insert_workflow_procedure_case(plugin_source)
         # plugin_source = self.insert_workflow_evocation_function(plugin_source)
