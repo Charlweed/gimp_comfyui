@@ -73,14 +73,15 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
         return edited_source
 
     def insert_workflow_accessor_property(self, plugin_source: str) -> str:
-        replacement: str = (f"@property\n{SP04}def {self.base_class_name}_accessor(self) -> {self.accessor_class_name}:\n"
+        replacement: str = (f"@property\n{SP04}def {self.base_class_name}_accessor(self) -> {self.accessor_class_name}:\n"  # noqa
                             f"{SP08}return self._{self.base_class_name}_accessor\n"
                             f"{SP04}{WORKFLOW_ACCESSOR_PROPERTY}")
         edited_source: str = plugin_source.replace(WORKFLOW_ACCESSOR_PROPERTY, replacement)
         return edited_source
 
     def insert_workflow_accessor_declaration(self, plugin_source: str) -> str:
-        edited_source: str = plugin_source.replace("THISISDUMMYTEXT", "NOTEXTHEREEITER")
+        replacement: str = f"self._{self.base_class_name}_accessor:  {self.accessor_class_name} = {self.accessor_class_name}()\n{SP08}{WORKFLOW_ACCESSOR_DECLARATION}" # noqa
+        edited_source: str = plugin_source.replace(WORKFLOW_ACCESSOR_DECLARATION, replacement)
         return edited_source
 
     def insert_workflow_procedure_case(self, plugin_source: str) -> str:
@@ -102,7 +103,7 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
         plugin_source = self.insert_procedure_name_vars(plugin_source)
         plugin_source = self.insert_procedure_name_items(plugin_source)
         plugin_source = self.insert_workflow_accessor_property(plugin_source)
-        # plugin_source = self.insert_workflow_accessor_declaration(plugin_source)
+        plugin_source = self.insert_workflow_accessor_declaration(plugin_source)
         # plugin_source = self.insert_workflow_procedure_case(plugin_source)
         # plugin_source = self.insert_workflow_evocation_function(plugin_source)
 
