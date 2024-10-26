@@ -949,7 +949,16 @@ class WidgetAuthor:
                                                       items=WidgetAuthor._SCHEDULER_NAMES,
                                                       selected_index=sel_idx
                                                       )
-
+                case "SaveImage":
+                    match input_name:
+                        case "filename_prefix":
+                            result = new_entry_str(
+                                node_title=node_title,
+                                node_index_str=node_index_str,
+                                input_name=input_name,
+                                current="generated")
+                        case _:
+                            pass
                 case _:
                     pass
             if not result:

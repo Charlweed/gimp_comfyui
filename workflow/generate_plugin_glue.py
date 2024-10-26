@@ -61,7 +61,8 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
     def insert_procedure_name_vars(self, plugin_source: str) -> str:
         undecorated: str = undecorated_raised(self.base_class_name)
         proc_name_identifier: str = f"PROCEDURE_INVOKE_{undecorated}_WF"
-        replacement: str = f"{proc_name_identifier} = \"{self.base_class_name}\"\n{SP04}{PROCEDURE_NAME_VARS}"
+        replacement: str = (f"{proc_name_identifier} = \"{self.base_class_name.replace('_', '-')}\"\n"
+                            f"{SP04}{PROCEDURE_NAME_VARS}")
         edited_source: str = plugin_source.replace(PROCEDURE_NAME_VARS, replacement)
         return edited_source
 
@@ -95,6 +96,7 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
                        args,  # noqa
                        run_data  # noqa
                        ) -> Gimp.ValueArray:
+        GimpComfyUI.__init_plugin()
         factory: {self.dialog_class_name} = {self.dialog_class_name}(accessor=self._{self.base_class_name}_accessor)  # noqa
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
