@@ -61,7 +61,7 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
     def insert_procedure_name_vars(self, plugin_source: str) -> str:
         undecorated: str = undecorated_raised(self.base_class_name)
         proc_name_identifier: str = f"PROCEDURE_INVOKE_{undecorated}_WF"
-        replacement: str = f"{proc_name_identifier} = \"{self.base_class_name}\"\n{SP04}{PROCEDURE_NAME_VARS}\n"
+        replacement: str = f"{proc_name_identifier} = \"{self.base_class_name}\"\n{SP04}{PROCEDURE_NAME_VARS}"
         edited_source: str = plugin_source.replace(PROCEDURE_NAME_VARS, replacement)
         return edited_source
 
@@ -104,7 +104,7 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
                                           )
         return ret_values
 
-        {WORKFLOW_INVOCATION_FUNCTION}"""
+    {WORKFLOW_INVOCATION_FUNCTION}"""
         edited_source: str = plugin_source.replace(WORKFLOW_INVOCATION_FUNCTION, replacement)
         return edited_source
 
@@ -140,7 +140,8 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
         plugin_source = self.insert_workflow_accessor_declaration(plugin_source)
         plugin_source = self.insert_workflow_evocation_function(plugin_source)
         plugin_source = self.insert_workflow_procedure_case(plugin_source)
-        dest_path = self.python_class_file_path.replace(".py", "_new.py")
+        # dest_path = self.python_class_file_path.replace(".py", "_new.py")
+        dest_path = self.python_class_file_path  # change suffixes for testing.
         LOGGER_WF2PY.info(f"Writing node accessor python source file \"{dest_path}\"")
         with open(dest_path, "w", encoding='utf-8') as plugin_source_file:
             plugin_source_file.write(plugin_source)

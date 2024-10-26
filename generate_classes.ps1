@@ -11,19 +11,23 @@ $WORKFLOWS_ALL = @(
     "comfyui_default",
     "flux_1.0",
     "flux_neg_1.1",
+    "flux_neg_upscale_sdxl_0.4",
     "img2img_sdxl_0.3",
     "inpainting_sdxl_0.4",
     "sytan_sdxl_1.0"
 )
 
 $WORKFLOWS_FLUX = @(
-    "flux_1.0",
-    "flux_neg_1.1"
+    "flux_neg_upscale_sdxl_0.4"
 )
 
 $GENERATORS_ALL = @(
     "generate_node_accessor.py"
     "generate_inputs_dialog.py"
+   # This will insert glue code into gimp_confyui.py every time it is run, even if it already exists.
+   # You probably might want to leave it commented out and run it manually after the accessors and
+   # dialogs are validated as syntacticly correct.
+   # "generate_plugin_glue.py"
 )
 
 function Get-APIJsons([string[]]$SubjectWorkflows) {
