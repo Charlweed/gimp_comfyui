@@ -162,17 +162,28 @@ def get_images(cu_origin: str,
             images_output: List[bytes] = []
             if 'images' in node_output:
                 for image in node_output['images']:
-                    # ComfyUI has already stored the images to its filesystem. We are fetching them form there.
+                    # ComfyUI has already stored the images to its filesystem. We are fetching them from there.
                     # When the server is localhost, we could load them directly.
-                    image_data: bytes = get_image(cu_origin=cu_origin,
-                                                  filename=image['filename'],
-                                                  subfolder=image['subfolder'],
-                                                  folder_type=image['type']
-                                                  )
-                    if image_data:  # Don't append if result is nothing
-                        images_output.append(image_data)
-                    else:
-                        LGR_CNU.error("No bytes obtained from get_image(%s)" % image['filename'])
+                    file_name = image['filename']
+                    if "temporary_trash" in file_name.lower() or "PBL-_temp_" in file_name.lower():
+                        fetch_log_message = f"get_images() skipping \"{file_name}\""
+                        LGR_CNU.warning(fetch_log_message)
+                        continue
+                    else:  # "continue" above should make this "else" unnecessary, but logic might change.
+                        fetch_log_message = (f"get_images() cu_origin={cu_origin}"
+                                             f"; filename={file_name}"
+                                             f"; subfolder={image['subfolder']}"
+                                             f"; folder_type={image['type']}")
+                        LGR_CNU.info(fetch_log_message)
+                        image_data: bytes = get_image(cu_origin=cu_origin,
+                                                      filename=image['filename'],
+                                                      subfolder=image['subfolder'],
+                                                      folder_type=image['type']
+                                                      )
+                        if image_data:  # Don't append if result is nothing
+                            images_output.append(image_data)
+                        else:
+                            LGR_CNU.error("No bytes obtained from get_image(%s)" % image['filename'])
             output_images[node_id] = images_output
     return output_images
 

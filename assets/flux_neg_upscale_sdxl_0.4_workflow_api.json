@@ -1,0 +1,372 @@
+{
+  "6": {
+    "inputs": {
+      "text": "photograph of a street",
+      "clip": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Positive Prompt"
+    }
+  },
+  "10": {
+    "inputs": {
+      "vae_name": "flux_ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "11": {
+    "inputs": {
+      "clip_name1": "t5xxl_fp16.safetensors",
+      "clip_name2": "clip_l.safetensors",
+      "type": "flux"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "DualCLIPLoader"
+    }
+  },
+  "12": {
+    "inputs": {
+      "unet_name": "flux1-dev.safetensors",
+      "weight_dtype": "fp8_e4m3fn"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Load Diffusion Model"
+    }
+  },
+  "47": {
+    "inputs": {
+      "model": [
+        "100",
+        0
+      ],
+      "clip": [
+        "11",
+        0
+      ],
+      "vae": [
+        "10",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "101",
+        0
+      ]
+    },
+    "class_type": "ToBasicPipe",
+    "_meta": {
+      "title": "ToBasicPipe"
+    }
+  },
+  "49": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "97": {
+    "inputs": {
+      "add_noise": false,
+      "noise_seed": 197,
+      "steps": 20,
+      "cfg": 8,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "start_at_step": 3,
+      "end_at_step": 10000,
+      "return_with_leftover_noise": false,
+      "basic_pipe": [
+        "103",
+        0
+      ],
+      "latent_image": [
+        "98",
+        1
+      ]
+    },
+    "class_type": "ImpactKSamplerAdvancedBasicPipe",
+    "_meta": {
+      "title": "KSampler Pass2 (Advanced/pipe)"
+    }
+  },
+  "98": {
+    "inputs": {
+      "add_noise": true,
+      "noise_seed": 197,
+      "steps": 20,
+      "cfg": 8,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "start_at_step": 0,
+      "end_at_step": 3,
+      "return_with_leftover_noise": true,
+      "basic_pipe": [
+        "47",
+        0
+      ],
+      "latent_image": [
+        "49",
+        0
+      ]
+    },
+    "class_type": "ImpactKSamplerAdvancedBasicPipe",
+    "_meta": {
+      "title": "KSampler Pass1 (Advanced/pipe)"
+    }
+  },
+  "100": {
+    "inputs": {
+      "mimic_scale": 1,
+      "threshold_percentile": 1,
+      "mimic_mode": "Sawtooth",
+      "mimic_scale_min": 0,
+      "cfg_mode": "Constant",
+      "cfg_scale_min": 0,
+      "sched_val": 1,
+      "separate_feature_channels": "enable",
+      "scaling_startpoint": "ZERO",
+      "variability_measure": "STD",
+      "interpolate_phi": 1,
+      "model": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "DynamicThresholdingFull",
+    "_meta": {
+      "title": "DynamicThresholdingFull"
+    }
+  },
+  "101": {
+    "inputs": {
+      "text": "car, cars, autos",
+      "clip": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Negative Prompt"
+    }
+  },
+  "103": {
+    "inputs": {
+      "basic_pipe": [
+        "104",
+        0
+      ],
+      "model": [
+        "12",
+        0
+      ],
+      "negative": [
+        "105",
+        0
+      ]
+    },
+    "class_type": "EditBasicPipe",
+    "_meta": {
+      "title": "Edit BasicPipe"
+    }
+  },
+  "104": {
+    "inputs": {
+      "basic_pipe": [
+        "47",
+        0
+      ]
+    },
+    "class_type": "FromBasicPipe_v2",
+    "_meta": {
+      "title": "FromBasicPipe_v2"
+    }
+  },
+  "105": {
+    "inputs": {},
+    "class_type": "ImpactNegativeConditioningPlaceholder",
+    "_meta": {
+      "title": "Negative Cond Placeholder"
+    }
+  },
+  "111": {
+    "inputs": {
+      "samples": [
+        "97",
+        1
+      ],
+      "vae": [
+        "97",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "121": {
+    "inputs": {
+      "scale_ratio": 1.5,
+      "noise_augmentation": 0.35000000000000003,
+      "images": [
+        "111",
+        0
+      ],
+      "positive": [
+        "122",
+        1
+      ],
+      "negative": [
+        "122",
+        2
+      ]
+    },
+    "class_type": "SD_4XUpscale_Conditioning",
+    "_meta": {
+      "title": "SD_4XUpscale_Conditioning"
+    }
+  },
+  "122": {
+    "inputs": {
+      "ckpt_name": "realvisxlV40_v40LightningBakedvae.safetensors",
+      "vae_name": "Baked VAE",
+      "clip_skip": -1,
+      "lora_name": "None",
+      "lora_model_strength": 1,
+      "lora_clip_strength": 1,
+      "positive": "high quality photography",
+      "negative": "(octane render, render, drawing, anime, bad photo, bad photography:1.3), (worst quality, low quality, blurry:1.2), (bad teeth, deformed teeth, deformed lips), (bad anatomy, bad proportions:1.1), (deformed iris, deformed pupils), (deformed eyes, bad eyes), (deformed face, ugly face, bad face), (deformed hands, bad hands, fused fingers), morbid, mutilated, mutation, disfigured",
+      "token_normalization": "none",
+      "weight_interpretation": "comfy",
+      "empty_latent_width": 512,
+      "empty_latent_height": 512,
+      "batch_size": 1
+    },
+    "class_type": "Efficient Loader",
+    "_meta": {
+      "title": "Efficient Loader"
+    }
+  },
+  "123": {
+    "inputs": {
+      "upscale_by": 2,
+      "seed": 36588465989153,
+      "steps": 10,
+      "cfg": 2,
+      "sampler_name": "dpmpp_2m_sde_gpu",
+      "scheduler": "sgm_uniform",
+      "denoise": 0.2,
+      "mode_type": "Chess",
+      "tile_width": [
+        "125",
+        1
+      ],
+      "tile_height": [
+        "125",
+        2
+      ],
+      "mask_blur": 8,
+      "tile_padding": 32,
+      "seam_fix_mode": "None",
+      "seam_fix_denoise": 1,
+      "seam_fix_width": 64,
+      "seam_fix_mask_blur": 8,
+      "seam_fix_padding": 16,
+      "force_uniform_tiles": true,
+      "tiled_decode": false,
+      "image": [
+        "125",
+        0
+      ],
+      "model": [
+        "122",
+        0
+      ],
+      "positive": [
+        "121",
+        0
+      ],
+      "negative": [
+        "121",
+        1
+      ],
+      "vae": [
+        "122",
+        4
+      ],
+      "upscale_model": [
+        "124",
+        0
+      ]
+    },
+    "class_type": "UltimateSDUpscale",
+    "_meta": {
+      "title": "Ultimate SD Upscale"
+    }
+  },
+  "124": {
+    "inputs": {
+      "model_name": "4x-UltraSharp.pth"
+    },
+    "class_type": "UpscaleModelLoader",
+    "_meta": {
+      "title": "Load Upscale Model"
+    }
+  },
+  "125": {
+    "inputs": {
+      "image": [
+        "111",
+        0
+      ]
+    },
+    "class_type": "GetImageSizeAndCount",
+    "_meta": {
+      "title": "Get Image Size & Count"
+    }
+  },
+  "128": {
+    "inputs": {
+      "filename_prefix": "SDXL_Upscale/ComfyUI",
+      "images": [
+        "123",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "129": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "111",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  }
+}

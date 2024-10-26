@@ -70,7 +70,10 @@ from workflow.inpainting_sdxl_0dot4_dialogs import InpaintingSdxl0Dot4Dialogs
 from workflow.sytan_sdxl_1dot0_accessor import SytanSdxl1Dot0Accessor
 from workflow.sytan_sdxl_1dot0_dialogs import SytanSdxl1Dot0Dialogs
 from workflow.workflow_dialog_factory import WorkflowDialogFactory
+from workflow.flux_neg_upscale_sdxl_0dot4_accessor import FluxNegUpscaleSdxl0Dot4Accessor
+from workflow.flux_neg_upscale_sdxl_0dot4_dialogs import FluxNegUpscaleSdxl0Dot4Dialogs
 # Insert WORKFLOW_IMPORTS→
+
 
 # Set-up localization for your plug-in with your own text domain.
 # This is complementary to the gimp_plug_in_set_translation_domain()
@@ -177,6 +180,7 @@ class GimpComfyUI(Gimp.PlugIn):
     PROCEDURE_INVOKE_INPAINTING_WF = "inpainting-sdxl"
     PROCEDURE_INVOKE_SYTAN_WF = "sytan"
     PROCEDURE_WATCH_LAYER = "Follow-in-ComfyUI"
+    PROCEDURE_INVOKE_FLUX_NEG_UPSCALE_SDXL_0DOT4_WF = "flux_neg_upscale_sdxl_0dot4"
     # Insert PROCEDURE_NAME_VARS→
     PROCEDURE_NAMES = [
         PROCEDURE_CONFIG_COMFY_SVR_CONNECTION,
@@ -188,6 +192,7 @@ class GimpComfyUI(Gimp.PlugIn):
         PROCEDURE_INVOKE_IMG2IMG_WF,
         PROCEDURE_INVOKE_INPAINTING_WF,
         PROCEDURE_INVOKE_SYTAN_WF,
+        PROCEDURE_INVOKE_FLUX_NEG_UPSCALE_SDXL_0DOT4_WF,
         # Insert PROCEDURE_NAME_ITEMS→
     ]
 
@@ -438,6 +443,9 @@ class GimpComfyUI(Gimp.PlugIn):
     def img2img_accessor(self) -> Img2ImgSdxl0Dot3Accessor:
         return self._img2img_sdxl_accessor
 
+    @property
+    def flux_neg_upscale_sdxl_0dot4_accessor(self) -> FluxNegUpscaleSdxl0Dot4Accessor:
+        return self._flux_neg_upscale_sdxl_0dot4_accessor
     # Insert WORKFLOW_ACCESSOR_PROPERTY→
 
     @property
@@ -464,6 +472,7 @@ class GimpComfyUI(Gimp.PlugIn):
         self._img2img_sdxl_accessor: Img2ImgSdxl0Dot3Accessor = Img2ImgSdxl0Dot3Accessor()
         self._inpainting_sdxl_accessor: InpaintingSdxl0Dot4Accessor = InpaintingSdxl0Dot4Accessor()
         self._sytan_sdxl_accessor: SytanSdxl1Dot0Accessor = SytanSdxl1Dot0Accessor()
+        self._flux_neg_upscale_sdxl_0dot4_accessor: FluxNegUpscaleSdxl0Dot4Accessor = FluxNegUpscaleSdxl0Dot4Accessor()
         # Insert WORKFLOW_ACCESSOR_DECLARATION→
         if os.environ.get('skip_comfyui'):
             self.skip_comfyui = True
@@ -715,6 +724,15 @@ class GimpComfyUI(Gimp.PlugIn):
                                                   is_image_optional=True,  # Redundant with SubjectType.ANYTHING
                                                   proc_category=ProcedureCategory.TEST_ANY,
                                                   subject_type=SubjectType.ANYTHING)
+            
+            case GimpComfyUI.PROCEDURE_INVOKE_FLUX_NEG_UPSCALE_SDXL_0DOT4_WF:
+                procedure = self.create_procedure(name_raw=name,
+                                                  docs="IFluxNegUpscaleSdxl04Json",
+                                                  usage_hint="This dialog was machine-written.",
+                                                  run_func_in=self.flux_neg_upscale_sdxl_0dot4_workflow,
+                                                  is_image_optional=True,  # Redundant with SubjectType.ANYTHING
+                                                  proc_category=ProcedureCategory.WORKFLOW,
+                                                  subject_type=SubjectType.ANYTHING)
             # Insert WORKFLOW_PROCEDURE_CASE→
             case _:
                 raise NotImplementedError("Unsupported procedure name " + name)
@@ -961,6 +979,23 @@ class GimpComfyUI(Gimp.PlugIn):
                                           title_in="Flux dev 16",
                                           role_in="workflow",
                                           blurb_in="Careful with that axe, Eugene!"
+                                          )
+        return ret_values
+
+    def flux_neg_upscale_sdxl_0dot4_workflow(self, procedure: Gimp.ImageProcedure,
+                       run_mode,  # noqa
+                       image,  # noqa
+                       n_drawables,  # noqa
+                       drawables,  # noqa
+                       args,  # noqa
+                       run_data  # noqa
+                       ) -> Gimp.ValueArray:
+        factory: FluxNegUpscaleSdxl0Dot4Dialogs = FluxNegUpscaleSdxl0Dot4Dialogs(accessor=self._flux_neg_upscale_sdxl_0dot4_accessor)  # noqa
+        ret_values = self.invoke_workflow(procedure=procedure,
+                                          factory=factory,
+                                          title_in="FluxNegUpscaleSdxl04Json",
+                                          role_in="workflow",
+                                          blurb_in="This dialog was machine-written."
                                           )
         return ret_values
 
