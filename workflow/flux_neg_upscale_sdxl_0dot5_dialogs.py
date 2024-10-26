@@ -16,16 +16,16 @@ from workflow.node_accessor import NodesAccessor
 from workflow.workflow_dialog_factory import WorkflowDialogFactory
 
 
-class FluxNegUpscaleSdxl0Dot4Dialogs(WorkflowDialogFactory):
+class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
-    WORKFLOW_FILE = "flux_neg_upscale_sdxl_0.4_workflow_api.json"
+    WORKFLOW_FILE = "flux_neg_upscale_sdxl_0.5_workflow_api.json"
 
     def __init__(self, accessor: NodesAccessor):
         super().__init__(
             accessor=accessor,
-            api_workflow=FluxNegUpscaleSdxl0Dot4Dialogs.WORKFLOW_FILE,
-            dialog_config_chassis_name="FluxNegUpscaleSdxl0Dot4Dialogs_dialog_config",
-            wf_data_chassis_name="FluxNegUpscaleSdxl0Dot4Dialogs_wf_data",
+            api_workflow=FluxNegUpscaleSdxl0Dot5Dialogs.WORKFLOW_FILE,
+            dialog_config_chassis_name="FluxNegUpscaleSdxl0Dot5Dialogs_dialog_config",
+            wf_data_chassis_name="FluxNegUpscaleSdxl0Dot5Dialogs_wf_data",
         )
 
     # GIMP is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
@@ -79,7 +79,7 @@ class FluxNegUpscaleSdxl0Dot4Dialogs(WorkflowDialogFactory):
         dialog = GimpUi.Dialog(use_header_bar=True, title=title_in, role=role_in)
         fallback_path = os.path.join(super().asset_dir, "model_dirs.json")
         persister: PersisterPetite = PersisterPetite(chassis=dialog,
-                                                     chassis_name="flux_neg_upscale_sdxl_0dot4_dialog",
+                                                     chassis_name="flux_neg_upscale_sdxl_0dot5_dialog",
                                                      fallback_path=fallback_path)
         dialog_data: Dict = dict(persister.load_config())
         widget_getters: Dict[str, Callable[[], Any]] = {}
@@ -139,7 +139,7 @@ class FluxNegUpscaleSdxl0Dot4Dialogs(WorkflowDialogFactory):
         frame_cliptextencode_006positive_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_6_text: Gtk.Label = Gtk.Label.new("Text")
         textview_6_text: Gtk.TextView = Gtk.TextView.new()
-        textview_6_text.get_buffer().set_text("photograph of a street")  # noqa
+        textview_6_text.get_buffer().set_text("photograph of a street where women ride scooters")  # noqa
         textview_6_text.set_name("textview_6_text")
         textview_6_text.set_hexpand(True)
         textview_6_text.set_vexpand(True)
@@ -785,7 +785,7 @@ class FluxNegUpscaleSdxl0Dot4Dialogs(WorkflowDialogFactory):
         frame_cliptextencode_101negative_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_101_text: Gtk.Label = Gtk.Label.new("Text")
         textview_101_text: Gtk.TextView = Gtk.TextView.new()
-        textview_101_text.get_buffer().set_text("car, cars, autos")  # noqa
+        textview_101_text.get_buffer().set_text("car, cars, autos, bicycles")  # noqa
         textview_101_text.set_name("textview_101_text")
         textview_101_text.set_hexpand(True)
         textview_101_text.set_vexpand(True)
@@ -993,7 +993,7 @@ class FluxNegUpscaleSdxl0Dot4Dialogs(WorkflowDialogFactory):
         label_123_seed.set_margin_start(8)
         label_123_seed.set_alignment(0.95, 0)
         entry_123_seed: Gtk.Entry = Gtk.Entry.new()
-        entry_123_seed.set_text(str(36588465989153))
+        entry_123_seed.set_text(str(587444286529169))
         entry_123_seed.set_name("entry_123_seed")
         entry_123_seed.set_hexpand(True)
         validate_in_bounds(entry_widget=entry_123_seed,
@@ -1163,8 +1163,8 @@ class FluxNegUpscaleSdxl0Dot4Dialogs(WorkflowDialogFactory):
         frame_getimagesizeandcount_125get_image_size__count.add(widget=grid_125)  # noqa
 
         # New Frame
-        frame_saveimage_128save_image: Gtk.Frame = Gtk.Frame.new(label="Save Image")  # noqa
-        frame_saveimage_128save_image.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
+        frame_saveimage_128save_upscaled: Gtk.Frame = Gtk.Frame.new(label="Save Upscaled")  # noqa
+        frame_saveimage_128save_upscaled.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_128_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
         entry_128_filename_prefix: Gtk.Entry = Gtk.Entry.new()
         entry_128_filename_prefix.set_text("generated")
@@ -1178,11 +1178,11 @@ class FluxNegUpscaleSdxl0Dot4Dialogs(WorkflowDialogFactory):
         grid_128.attach(entry_128_filename_prefix, left=1, top=0, width=2, height=1)  # noqa
         grid_128.set_column_homogeneous(False)
         grid_128.set_row_homogeneous(False)
-        frame_saveimage_128save_image.add(widget=grid_128)  # noqa
+        frame_saveimage_128save_upscaled.add(widget=grid_128)  # noqa
 
         # New Frame
-        frame_saveimage_129save_image: Gtk.Frame = Gtk.Frame.new(label="Save Image")  # noqa
-        frame_saveimage_129save_image.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
+        frame_saveimage_129save_original_scale: Gtk.Frame = Gtk.Frame.new(label="Save Original Scale")  # noqa
+        frame_saveimage_129save_original_scale.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_129_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
         entry_129_filename_prefix: Gtk.Entry = Gtk.Entry.new()
         entry_129_filename_prefix.set_text("generated")
@@ -1196,7 +1196,7 @@ class FluxNegUpscaleSdxl0Dot4Dialogs(WorkflowDialogFactory):
         grid_129.attach(entry_129_filename_prefix, left=1, top=0, width=2, height=1)  # noqa
         grid_129.set_column_homogeneous(False)
         grid_129.set_row_homogeneous(False)
-        frame_saveimage_129save_image.add(widget=grid_129)  # noqa
+        frame_saveimage_129save_original_scale.add(widget=grid_129)  # noqa
         content_area: Gtk.Box = dialog.get_content_area()
         content_area.pack_start(child=frame_cliptextencode_006positive_prompt, expand=True, fill=True, padding=0)  # noqa
         content_area.pack_start(child=frame_vaeloader_010load_vae, expand=False, fill=False, padding=0)  # noqa
@@ -1216,8 +1216,8 @@ class FluxNegUpscaleSdxl0Dot4Dialogs(WorkflowDialogFactory):
         content_area.pack_start(child=frame_ultimatesdupscale_123ultimate_sd_upscale, expand=False, fill=False, padding=0)  # noqa
         content_area.pack_start(child=frame_upscalemodelloader_124load_upscale_model, expand=False, fill=False, padding=0)  # noqa
         content_area.pack_start(child=frame_getimagesizeandcount_125get_image_size__count, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_saveimage_128save_image, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_saveimage_129save_image, expand=False, fill=False, padding=0)  # noqa
+        content_area.pack_start(child=frame_saveimage_128save_upscaled, expand=False, fill=False, padding=0)  # noqa
+        content_area.pack_start(child=frame_saveimage_129save_original_scale, expand=False, fill=False, padding=0)  # noqa
 
         button_cancel.connect("clicked", delete_results)
         button_apply.connect("clicked", assign_results)

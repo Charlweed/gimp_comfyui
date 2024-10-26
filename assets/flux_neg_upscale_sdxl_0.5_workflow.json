@@ -456,7 +456,7 @@
       },
       "widgets_values": [
         2,
-        36588465989153,
+        587444286529169,
         "randomize",
         10,
         2,
@@ -589,92 +589,6 @@
       ],
       "color": "#222",
       "bgcolor": "#000"
-    },
-    {
-      "id": 6,
-      "type": "CLIPTextEncode",
-      "pos": {
-        "0": 570,
-        "1": 660
-      },
-      "size": {
-        "0": 340,
-        "1": 140
-      },
-      "flags": {
-        "pinned": false
-      },
-      "order": 8,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 10
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            74
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Positive Prompt",
-      "properties": {
-        "Node name for S&R": "positive_prompt"
-      },
-      "widgets_values": [
-        "photograph of a street"
-      ],
-      "color": "#223",
-      "bgcolor": "#335"
-    },
-    {
-      "id": 101,
-      "type": "CLIPTextEncode",
-      "pos": {
-        "0": 570,
-        "1": 870
-      },
-      "size": {
-        "0": 340,
-        "1": 140
-      },
-      "flags": {
-        "pinned": false
-      },
-      "order": 9,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 135
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            136
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Negative Prompt",
-      "properties": {
-        "Node name for S&R": "negative_prompt"
-      },
-      "widgets_values": [
-        "car, cars, autos"
-      ],
-      "color": "#322",
-      "bgcolor": "#533"
     },
     {
       "id": 49,
@@ -890,10 +804,10 @@
         "0": 169,
         "1": 712
       },
-      "size": [
-        299.1731999999996,
-        82
-      ],
+      "size": {
+        "0": 299.1731872558594,
+        "1": 82
+      },
       "flags": {},
       "order": 7,
       "mode": 0,
@@ -928,10 +842,10 @@
         "0": 1424,
         "1": 545
       },
-      "size": [
-        370,
-        526
-      ],
+      "size": {
+        "0": 370,
+        "1": 526
+      },
       "flags": {},
       "order": 12,
       "mode": 0,
@@ -1012,10 +926,10 @@
         "0": 1847,
         "1": 542
       },
-      "size": [
-        367.79998779296875,
-        526
-      ],
+      "size": {
+        "0": 367.79998779296875,
+        "1": 526
+      },
       "flags": {},
       "order": 15,
       "mode": 0,
@@ -1135,6 +1049,92 @@
       "widgets_values": []
     },
     {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": {
+        "0": 570,
+        "1": 660
+      },
+      "size": {
+        "0": 340,
+        "1": 140
+      },
+      "flags": {
+        "pinned": false
+      },
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            74
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Positive Prompt",
+      "properties": {
+        "Node name for S&R": "positive_prompt"
+      },
+      "widgets_values": [
+        "photograph of a street where women ride scooters"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 101,
+      "type": "CLIPTextEncode",
+      "pos": {
+        "0": 570,
+        "1": 870
+      },
+      "size": {
+        "0": 340,
+        "1": 140
+      },
+      "flags": {
+        "pinned": false
+      },
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 135
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            136
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Negative Prompt",
+      "properties": {
+        "Node name for S&R": "negative_prompt"
+      },
+      "widgets_values": [
+        "car, cars, autos, bicycles"
+      ],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
       "id": 129,
       "type": "SaveImage",
       "pos": {
@@ -1156,22 +1156,23 @@
         }
       ],
       "outputs": [],
+      "title": "Save Original Scale",
       "properties": {},
       "widgets_values": [
-        "ComfyUI"
+        "generated_original"
       ]
     },
     {
       "id": 128,
       "type": "SaveImage",
       "pos": {
-        "0": 3339,
-        "1": 397
+        "0": 3347,
+        "1": 395
       },
-      "size": {
-        "0": 315,
-        "1": 270
-      },
+      "size": [
+        402,
+        285
+      ],
       "flags": {},
       "order": 21,
       "mode": 0,
@@ -1183,9 +1184,10 @@
         }
       ],
       "outputs": [],
+      "title": "Save Upscaled",
       "properties": {},
       "widgets_values": [
-        "SDXL_Upscale/ComfyUI"
+        "sdxl_upscale/generated_upscaled"
       ]
     }
   ],
@@ -1504,10 +1506,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.8264462809917354,
+      "scale": 1,
       "offset": [
-        -1305.0732000000053,
-        -67.31450000000095
+        -1788,
+        -128
       ]
     },
     "groupNodes": {}

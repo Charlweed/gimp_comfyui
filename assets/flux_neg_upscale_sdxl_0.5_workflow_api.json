@@ -1,7 +1,7 @@
 {
   "6": {
     "inputs": {
-      "text": "photograph of a street",
+      "text": "photograph of a street where women ride scooters",
       "clip": [
         "11",
         0
@@ -156,7 +156,7 @@
   },
   "101": {
     "inputs": {
-      "text": "car, cars, autos",
+      "text": "car, cars, autos, bicycles",
       "clip": [
         "11",
         0
@@ -268,7 +268,7 @@
   "123": {
     "inputs": {
       "upscale_by": 2,
-      "seed": 36588465989153,
+      "seed": 587444286529169,
       "steps": 10,
       "cfg": 2,
       "sampler_name": "dpmpp_2m_sde_gpu",
@@ -345,7 +345,7 @@
   },
   "128": {
     "inputs": {
-      "filename_prefix": "SDXL_Upscale/ComfyUI",
+      "filename_prefix": "sdxl_upscale/generated_upscaled",
       "images": [
         "123",
         0
@@ -353,12 +353,12 @@
     },
     "class_type": "SaveImage",
     "_meta": {
-      "title": "Save Image"
+      "title": "Save Upscaled"
     }
   },
   "129": {
     "inputs": {
-      "filename_prefix": "ComfyUI",
+      "filename_prefix": "generated_original",
       "images": [
         "111",
         0
@@ -366,7 +366,7 @@
     },
     "class_type": "SaveImage",
     "_meta": {
-      "title": "Save Image"
+      "title": "Save Original Scale"
     }
   }
 }

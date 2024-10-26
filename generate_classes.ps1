@@ -18,14 +18,14 @@ $WORKFLOWS_ALL = @(
 )
 
 $WORKFLOWS_FLUX = @(
-    "flux_neg_upscale_sdxl_0.4"
+    "flux_neg_upscale_sdxl_0.5"
 )
 
 $GENERATORS_ALL = @(
     "generate_node_accessor.py"
     "generate_inputs_dialog.py"
    # This will insert glue code into gimp_confyui.py every time it is run, even if it already exists.
-   # You probably might want to leave it commented out and run it manually after the accessors and
+   # You probably want to leave it commented out and run it manually after the accessors and
    # dialogs are validated as syntacticly correct.
    # "generate_plugin_glue.py"
 )
