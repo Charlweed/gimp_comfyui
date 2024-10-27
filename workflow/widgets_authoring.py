@@ -25,8 +25,10 @@ from workflow.workflow_2_py_generator import *
 
 METAKEY_FLAG = "±"  # The unicode is deliberate.
 KEY_SUFFIX_NEWLINE: str = f"{METAKEY_FLAG}newline{METAKEY_FLAG}"  # w_text keys with this suffix are newline flags.
-KEY_SUFFIX_GRID_WIDTH: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"  # w_text keys with this suffix are the count of horizontal cells in a layout grid.
-KEY_SUFFIX_GRID_HEIGHT: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"  # w_text keys with this suffix are the count of vertical cells in a layout grid.
+# w_text keys with this suffix are the count of horizontal cells in a layout grid.
+KEY_SUFFIX_GRID_WIDTH: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"
+# w_text keys with this suffix are the count of vertical cells in a layout grid.
+KEY_SUFFIX_GRID_HEIGHT: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"
 NEGATIVE_PROMPT_TITLE_REGEX_PATTERN = ".*negative.*prompt.*"
 NEGATIVE_PROMPT_TITLE_REGEX = re.compile(NEGATIVE_PROMPT_TITLE_REGEX_PATTERN)
 
@@ -59,7 +61,6 @@ def probably_negative_prompt(some_string: str) -> bool:
     if not some_string:
         raise ValueError("some_string argument cannot be empty")
     return bool(NEGATIVE_PROMPT_TITLE_REGEX.search(some_string.lower()))
-
 
 
 def new_checkbutton(node_index_str: str,
@@ -741,6 +742,391 @@ class WidgetAuthor:
     def store_config(self):
         WidgetAuthor.write_authoring_config(self._config)
 
+    def text_from_input_name(
+            self,
+            node_class_name: str,  # noqa
+            node_index_str: str,
+            node_title: str,
+            input_name: str,
+            json_value: str,
+            change_handler_body_txt: str,  # noqa
+            model_type: ModelType,  # noqa
+            # selected_index: int = 0,  # noqa
+            newline: bool = True,
+    ) -> Dict[str, str]:
+        result: Dict[str, str] | None = None
+        match input_name:
+            case "add_noise":
+                result = new_checkbutton(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    toggled_handler_body_txt="pass",
+                    current=bool_of(json_value)
+                )
+                # Disable newline.
+                newline = False  # Re-using parameters is generally bad practice, but exceptions must be made.
+            case "ascore":
+                result = new_entry_int(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    change_handler_body_txt="pass",
+                    current=int(json_value),
+                    bounds=(1, 10)
+                )
+            case "batch_size" | "height" | "width" | "crop_h" | "crop_w" | "target_width":
+                result = new_entry_int(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    change_handler_body_txt="pass",
+                    current=int(json_value),
+                    bounds=(1, None)
+                )
+            case "target_height":
+                result = new_entry_int(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    change_handler_body_txt="pass",
+                    current=int(json_value),
+                    bounds=(1, None)
+                )
+                # Insert newline.
+                newline = True
+            case "noise_seed" | "seed":
+                result = new_entry_int(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    change_handler_body_txt="pass",
+                    current=int(json_value),
+                    bounds=(-1, INT_MAX)
+                )
+            case "steps":
+                result = new_entry_int(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    change_handler_body_txt="pass",
+                    current=int(json_value),
+                    bounds=(1, None)
+                )
+                # Specify newline, overriding argument.
+                newline = True
+            case "start_at_step":
+                result = new_entry_int(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    change_handler_body_txt="pass",
+                    current=int(json_value),
+                    bounds=(0, None)
+                )
+                # Specify newline, overriding argument.
+                newline = False
+            case "end_at_step":
+                result = new_entry_int(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    change_handler_body_txt="pass",
+                    current=int(json_value),
+                    bounds=(0, None)
+                )
+                # Specify newline, overriding argument.
+                newline = True
+            # TODO: These inputs might have different bounds
+            case "blend_factor" | "cfg" | "scale_by":
+                result = new_entry_float(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    change_handler_body_txt="pass",
+                    current=float(json_value),
+                    bounds=(0, None)
+                )
+                # Specify newline, overriding argument.
+                newline = True
+            case "text" | "text_g" | "text_l":
+                result = new_textview(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    preedit_handler_body_txt="pass",
+                    current=json_value,
+                    lengthy=True
+                )
+            case "blend_mode":
+                sel_idx: int = self._blend_modes.index(json_value)
+                result = new_combo_static(node_title=node_title,
+                                          node_index_str=node_index_str,
+                                          input_name=input_name,
+                                          change_handler_body_txt="pass",
+                                          items=self._blend_modes,
+                                          selected_index=sel_idx
+                                          )
+            case "upscale_method":
+                sel_idx: int = self._upscale_methods.index(json_value)
+                result = new_combo_static(node_title=node_title,
+                                          node_index_str=node_index_str,
+                                          input_name=input_name,
+                                          items=self._upscale_methods,
+                                          selected_index=sel_idx
+                                          )
+            case "vae_name":
+                vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae)
+                # Baked VAE is a vae that's already merged into the checkpoint model.
+                vaes_from_fs.append("Baked VAE")
+                vae_literals = list_as_literals(vaes_from_fs)
+                combo_message = f"Looking for index of {json_value} in {vae_literals}"
+                LOGGER_WF2PY.info(combo_message)
+                sel_idx: int = vaes_from_fs.index(json_value)  # Should be 1
+                result = new_combo_models(node_title=node_title,
+                                          node_index_str=node_index_str,
+                                          input_name=input_name,
+                                          change_handler_body_txt="pass",
+                                          selected_index=sel_idx,
+                                          model_type=ModelType.VAE
+                                          )
+            case _:
+                pass
+        # If widget text was written for this input, insert a new entry storing the newline flag.
+        if result:
+            metakey = append_newline_suffix(input_name)
+            nls = str(newline)
+            # if not newline:
+            #     log_msg: str = f"Inserting result[{metakey}]={nls}"
+            #     LOGGER_WF2PY.warning(log_msg)
+            result[metakey] = nls
+        return result
+
+    def text_from_node_class_name(
+            self,
+            node_class_name: str,
+            node_index_str: str,
+            node_title: str,
+            input_name: str,
+            json_value: str,
+            newline: bool = True, # noqa
+    ) -> Dict[str, str]:
+        result: Dict[str, str] | None = None
+        match node_class_name:
+            case "CheckpointLoaderSimple":
+                sel_idx: int = self._models_checkpoints.index(json_value)
+                result = new_combo_models(node_title=node_title,
+                                          node_index_str=node_index_str,
+                                          input_name=input_name,
+                                          change_handler_body_txt="pass",
+                                          selected_index=sel_idx,
+                                          model_type=ModelType.CHECKPOINTS
+                                          )
+            case "KSampler" | "KSamplerAdvanced":
+                match input_name:
+                    case "cfg":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=1,
+                            upper=25,
+                            step_increment=0.1,
+                            page_increment=2
+                        )
+                    case "denoise":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current=float(json_value),
+                            lower=0.0,
+                            upper=1.0,
+                            step_increment=0.001,
+                            page_increment=0.01
+                        )
+                    case "sampler_name":
+                        sel_idx: int = WidgetAuthor._SAMPLER_NAMES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._SAMPLER_NAMES,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "scheduler":
+                        sel_idx: int = WidgetAuthor._SCHEDULER_NAMES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._SCHEDULER_NAMES,
+                                                  selected_index=sel_idx
+                                                  )
+            case "SaveImage":
+                match input_name:
+                    case "filename_prefix":
+                        result = new_entry_str(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current="generated")
+                    case _:
+                        pass
+            case _:
+                pass
+        if not result:
+            message = ("No known widget class for node_class_name=\"%s\", node_title=\"%s\", input_name=\"%s\""
+                       % (node_class_name, node_title, input_name))
+            logging.warning(message)
+        return result
+
+    def text_from_node_title(
+            self,
+            node_class_name: str,  # noqa
+            node_index_str: str,
+            node_title: str,
+            input_name: str,
+            json_value: str,
+            change_handler_body_txt: str,  # noqa
+            newline: bool = True,  # noqa
+    ) -> Dict[str, str]:
+        result: Dict[str, str] | None = None
+        match node_title:
+            case "Base Model" | "Refiner Model":
+                match input_name:
+                    case "ckpt_name":
+                        checkpoints_from_fs = list_from_fs(fs_path=self._config['sd_checkpoints_dir'],
+                                                           predicate=seems_checkpoint)
+                        checkpoint_literals = list_as_literals(checkpoints_from_fs)
+                        combo_message = f"Looking for index of {json_value} in {checkpoint_literals}"
+                        LOGGER_WF2PY.debug(combo_message)
+                        sel_idx: int = checkpoints_from_fs.index(json_value)
+                        result = new_combo_models(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  selected_index=sel_idx,
+                                                  model_type=ModelType.CHECKPOINTS
+                                                  )
+                    case _:
+                        pass
+            case "2048x Upscale":
+                match input_name:
+                    case "filename_prefix":
+                        result = new_entry_str(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current="generated_upscaled")
+                    case _:
+                        pass
+            case "Load Image" | "Base Image" | "Mask Image":
+                match input_name:
+                    case "image":
+                        result = new_treeview_layer(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                        )
+                    case "upload" | "Upload":
+                        result = new_null_widget(node_index_str=node_index_str, input_name=input_name)
+                    case _:
+                        pass
+            case "Load VAE":
+                match input_name:
+                    case "vae_name":
+                        vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae)
+                        vae_literals = list_as_literals(vaes_from_fs)
+                        combo_message = f"Looking for index of {json_value} in {vae_literals}"
+                        LOGGER_WF2PY.debug(combo_message)
+                        sel_idx: int = vaes_from_fs.index(json_value)  # Should be 1
+                        result = new_combo_models(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  selected_index=sel_idx,
+                                                  model_type=ModelType.VAE
+                                                  )
+                    case _:
+                        pass
+            case "Save Image":
+                match input_name:
+                    case "filename_prefix":
+                        result = new_entry_str(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current="generated")
+                    case _:
+                        pass
+                pass
+            case "Sytan Workflow":
+                match input_name:
+                    case "filename_prefix":
+                        result = new_entry_str(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current="generated")
+                    case _:
+                        pass
+            case "UNETLoader" | "Load Diffusion Model":
+                match input_name:
+                    case "unet_name":
+                        unets_from_fs = list_from_fs(fs_path=self._config['sd_unet_dir'], predicate=seems_unet)
+                        unet_literals = list_as_literals(unets_from_fs)
+                        combo_message = f"Looking for index of {json_value} in {unet_literals}"
+                        LOGGER_WF2PY.debug(combo_message)
+                        sel_idx: int = unets_from_fs.index(json_value)  # Should be 0
+                        result = new_combo_models(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  selected_index=sel_idx,
+                                                  model_type=ModelType.UNET
+                                                  )
+                    case "weight_dtype":
+                        weight_dtype_literals = ["default", "fp8_e4m3fn", "fp8_e5m2"]
+                        combo_message = f"Looking for index of {json_value} in {weight_dtype_literals}"
+                        LOGGER_WF2PY.debug(combo_message)
+                        sel_idx: int = weight_dtype_literals.index(json_value)  # Should be 0
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=weight_dtype_literals,
+                                                  selected_index=sel_idx
+                                                  )
+            case "Upscale Image":
+                match input_name:
+                    case "crop":
+                        sel_idx: int = self._crop_methods.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=self._crop_methods,
+                                                  selected_index=sel_idx
+                                                  )
+                    case _:
+                        pass
+            case "Upscale Model":
+                sel_idx: int = self._models_upscale_models.index(json_value)
+                result = new_combo_models(node_title=node_title,
+                                          node_index_str=node_index_str,
+                                          input_name=input_name,
+                                          change_handler_body_txt="pass",
+                                          selected_index=sel_idx,
+                                          model_type=ModelType.UPSCALE_MODELS
+                                          )
+            case _:
+                pass
+
+        return result
+
     def widget_text_for(self,
                         node_class_name: str,
                         node_index_str: str,
@@ -762,210 +1148,25 @@ class WidgetAuthor:
         result: Dict[str, str] = {}
         json_value: str = kwargs["json_value"]
         if not result:
-            match node_title:
-                case "Base Model" | "Refiner Model":
-                    match input_name:
-                        case "ckpt_name":
-                            checkpoints_from_fs = list_from_fs(fs_path=self._config['sd_checkpoints_dir'],
-                                                               predicate=seems_checkpoint)
-                            checkpoint_literals = list_as_literals(checkpoints_from_fs)
-                            combo_message = f"Looking for index of {json_value} in {checkpoint_literals}"
-                            LOGGER_WF2PY.debug(combo_message)
-                            sel_idx: int = checkpoints_from_fs.index(json_value)
-                            result = new_combo_models(node_title=node_title,
-                                                      node_index_str=node_index_str,
-                                                      input_name=input_name,
-                                                      change_handler_body_txt="pass",
-                                                      selected_index=sel_idx,
-                                                      model_type=ModelType.CHECKPOINTS
-                                                      )
-                        case _:
-                            pass
-                case "2048x Upscale":
-                    match input_name:
-                        case "filename_prefix":
-                            result = new_entry_str(
-                                node_title=node_title,
-                                node_index_str=node_index_str,
-                                input_name=input_name,
-                                current="generated_upscaled")
-                        case _:
-                            pass
-                case "Load Image" | "Base Image" | "Mask Image":
-                    match input_name:
-                        case "image":
-                            result = new_treeview_layer(
-                                node_title=node_title,
-                                node_index_str=node_index_str,
-                                input_name=input_name,
-                            )
-                        case "upload" | "Upload":
-                            result = new_null_widget(node_index_str=node_index_str, input_name=input_name)
-                        case _:
-                            pass
-                case "Load VAE":
-                    match input_name:
-                        case "vae_name":
-                            vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae)
-                            vae_literals = list_as_literals(vaes_from_fs)
-                            combo_message = f"Looking for index of {json_value} in {vae_literals}"
-                            LOGGER_WF2PY.debug(combo_message)
-                            sel_idx: int = vaes_from_fs.index(json_value)  # Should be 1
-                            result = new_combo_models(node_title=node_title,
-                                                      node_index_str=node_index_str,
-                                                      input_name=input_name,
-                                                      change_handler_body_txt="pass",
-                                                      selected_index=sel_idx,
-                                                      model_type=ModelType.VAE
-                                                      )
-                        case _:
-                            pass
-                case "Save Image":
-                    match input_name:
-                        case "filename_prefix":
-                            result = new_entry_str(
-                                node_title=node_title,
-                                node_index_str=node_index_str,
-                                input_name=input_name,
-                                current="generated")
-                        case _:
-                            pass
-                    pass
-                case "Sytan Workflow":
-                    match input_name:
-                        case "filename_prefix":
-                            result = new_entry_str(
-                                node_title=node_title,
-                                node_index_str=node_index_str,
-                                input_name=input_name,
-                                current="generated")
-                        case _:
-                            pass
-                case  "UNETLoader" | "Load Diffusion Model":
-                    match input_name:
-                        case "unet_name":
-                            unets_from_fs = list_from_fs(fs_path=self._config['sd_unet_dir'], predicate=seems_unet)
-                            unet_literals = list_as_literals(unets_from_fs)
-                            combo_message = f"Looking for index of {json_value} in {unet_literals}"
-                            LOGGER_WF2PY.debug(combo_message)
-                            sel_idx: int = unets_from_fs.index(json_value)  # Should be 0
-                            result = new_combo_models(node_title=node_title,
-                                                      node_index_str=node_index_str,
-                                                      input_name=input_name,
-                                                      change_handler_body_txt="pass",
-                                                      selected_index=sel_idx,
-                                                      model_type=ModelType.UNET
-                                                      )
-                        case "weight_dtype":
-                            weight_dtype_literals = ["default", "fp8_e4m3fn", "fp8_e5m2"]
-                            combo_message = f"Looking for index of {json_value} in {weight_dtype_literals}"
-                            LOGGER_WF2PY.debug(combo_message)
-                            sel_idx: int = weight_dtype_literals.index(json_value)  # Should be 0
-                            result = new_combo_static(node_title=node_title,
-                                                      node_index_str=node_index_str,
-                                                      input_name=input_name,
-                                                      change_handler_body_txt="pass",
-                                                      items=weight_dtype_literals,
-                                                      selected_index=sel_idx
-                                                      )
-                case "Upscale Image":
-                    match input_name:
-                        case "crop":
-                            sel_idx: int = self._crop_methods.index(json_value)
-                            result = new_combo_static(node_title=node_title,
-                                                      node_index_str=node_index_str,
-                                                      input_name=input_name,
-                                                      change_handler_body_txt="pass",
-                                                      items=self._crop_methods,
-                                                      selected_index=sel_idx
-                                                      )
-                        case _:
-                            pass
-                case "Upscale Model":
-                    sel_idx: int = self._models_upscale_models.index(json_value)
-                    result = new_combo_models(node_title=node_title,
-                                              node_index_str=node_index_str,
-                                              input_name=input_name,
-                                              change_handler_body_txt="pass",
-                                              selected_index=sel_idx,
-                                              model_type=ModelType.UPSCALE_MODELS
-                                              )
-                case _:
-                    pass
+            result = self.text_from_node_title(
+                node_class_name=node_class_name,
+                node_index_str=node_index_str,
+                node_title=node_title,
+                input_name=input_name,
+                json_value=json_value,
+                change_handler_body_txt="pass",
+                newline=newline,
+            )
+
         if not result:
-            match node_class_name:
-                case "CheckpointLoaderSimple":
-                    sel_idx: int = self._models_checkpoints.index(json_value)
-                    result = new_combo_models(node_title=node_title,
-                                              node_index_str=node_index_str,
-                                              input_name=input_name,
-                                              change_handler_body_txt="pass",
-                                              selected_index=sel_idx,
-                                              model_type=ModelType.CHECKPOINTS
-                                              )
-                case "KSampler" | "KSamplerAdvanced":
-                    # logging.warning("input_name=%s" % input_name)
-                    match input_name:
-                        case "cfg":
-                            result = new_scale(
-                                node_title=node_title,
-                                node_index_str=node_index_str,
-                                input_name=input_name,
-                                change_handler_body_txt="pass",
-                                current=float(json_value),
-                                lower=1,
-                                upper=25,
-                                step_increment=0.1,
-                                page_increment=2
-                            )
-                            # Specify newline, overriding argument.
-                            newline = True
-                        case "denoise":
-                            result = new_scale(
-                                node_title=node_title,
-                                node_index_str=node_index_str,
-                                input_name=input_name,
-                                current=float(json_value),
-                                lower=0.0,
-                                upper=1.0,
-                                step_increment=0.001,
-                                page_increment=0.01
-                            )
-                        case "sampler_name":
-                            sel_idx: int = WidgetAuthor._SAMPLER_NAMES.index(json_value)
-                            result = new_combo_static(node_title=node_title,
-                                                      node_index_str=node_index_str,
-                                                      input_name=input_name,
-                                                      change_handler_body_txt="pass",
-                                                      items=WidgetAuthor._SAMPLER_NAMES,
-                                                      selected_index=sel_idx
-                                                      )
-                        case "scheduler":
-                            sel_idx: int = WidgetAuthor._SCHEDULER_NAMES.index(json_value)
-                            result = new_combo_static(node_title=node_title,
-                                                      node_index_str=node_index_str,
-                                                      input_name=input_name,
-                                                      change_handler_body_txt="pass",
-                                                      items=WidgetAuthor._SCHEDULER_NAMES,
-                                                      selected_index=sel_idx
-                                                      )
-                case "SaveImage":
-                    match input_name:
-                        case "filename_prefix":
-                            result = new_entry_str(
-                                node_title=node_title,
-                                node_index_str=node_index_str,
-                                input_name=input_name,
-                                current="generated")
-                        case _:
-                            pass
-                case _:
-                    pass
-            if not result:
-                # message = ("No known widget class for node_class_name=\"%s\", node_title=\"%s\", input_name=\"%s\""
-                #            % (node_class_name, node_title, input_name))
-                # logging.warning(message)
-                pass
+            result = self.text_from_node_class_name(
+                node_class_name=node_class_name,
+                node_index_str=node_index_str,
+                node_title=node_title,
+                input_name=input_name,
+                json_value=json_value,
+                newline=newline,
+            )
         if not result:
             match input_name:
                 case "add_noise":
