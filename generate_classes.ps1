@@ -3,9 +3,16 @@
 #
 # This powershell script is NOT for any release, and has no end-user value.
 #
+param(
+    [Switch]$SkipAccessors,
+    [Switch]$SkipDialogs,
+    # CAUTION: GenerateGlue will insert glue code for each processed workflow, even if that workflow already
+    # has glue code.
+    #
+    [Switch]$GenerateGlue
+)
 
 Set-StrictMode -Version Latest
-
 
 $WORKFLOWS_ALL = @(
     "comfyui_default",
@@ -18,16 +25,19 @@ $WORKFLOWS_ALL = @(
 )
 
 $WORKFLOWS_FLUX = @(
+    "flux_1.0",
+    "flux_neg_1.1",
     "flux_neg_upscale_sdxl_0.5"
 )
 
-$GENERATORS_ALL = @(
+$GENERATORS_ACCESSORS = @(
     "generate_node_accessor.py"
+)
+$GENERATORS_DIALOGS = @(
     "generate_inputs_dialog.py"
-   # This will insert glue code into gimp_confyui.py every time it is run, even if it already exists.
-   # You probably want to leave it commented out and run it manually after the accessors and
-   # dialogs are validated as syntacticly correct.
-   # "generate_plugin_glue.py"
+)
+$GENERATORS_GLUE = @(
+    "generate_inputs_dialog.py"
 )
 
 function Get-APIJsons([string[]]$SubjectWorkflows) {
@@ -41,7 +51,7 @@ function Get-APIJsons([string[]]$SubjectWorkflows) {
 function Get-APIJsonsMap([string[]]$SubjectWorkflows) {
     $api_jsons_map = @{}
     foreach ($workflow in $SubjectWorkflows) {
-        $api_jsons_map.add($workflow,"{0}_workflow_api.json" -f $workflow)
+        $api_jsons_map.add($workflow, "{0}_workflow_api.json" -f $workflow)
     }
     return $api_jsons_map
 }
@@ -53,14 +63,33 @@ function Generate-Classes([String] $generator, [string[]]$SubjectWorkflows) {
     }
 }
 
-Set-Python 11  # local profile  function that sets environment variables for the specified Python 3 version.
-$ENV:PYTHONPATH=$PSScriptRoot
+$GENERATORS = @()
+if (-not $SkipAccessors) {
+    $GENERATORS += $GENERATORS_ACCESSORS
+}
+else {
+    Write-Warning "Skipping generator $GENERATORS_ACCESSORS"
+}
+if (-not $SkipDialogs) {
+    $GENERATORS += $GENERATORS_DIALOGS
+}
+else {
+    Write-Warning "Skipping generator $GENERATORS_DIALOGS"
+}
+if ($GenerateGlue) {
+    Write-Warning "Inserting glue code into gimp_comfyui.py"
+    $GENERATORS += $GENERATORS_GLUE
+}
 
-foreach($generator_name in $GENERATORS_ALL){
+Set-Python 11  # local profile  function that sets environment variables for the specified Python 3 version.
+$ENV:PYTHONPATH = $PSScriptRoot
+
+foreach ($generator_name in $GENERATORS) {
     $generator = Join-Path -Path $PSScriptRoot -ChildPath "workflow" -AdditionalChildPath @($generator_name)
-    # Generate-Classes $generator $WORKFLOWS_ALL
-#   Generate-Classes $generator @("sytan_sdxl_1.0")
-   Generate-Classes $generator $WORKFLOWS_FLUX
+    Write-Information "Running generator `"$generator`"" -InformationAction Continue
+    Generate-Classes $generator $WORKFLOWS_ALL
+    #   Generate-Classes $generator @("sytan_sdxl_1.0")
+    #   Generate-Classes $generator $WORKFLOWS_FLUX
 }
 
 # Test with
