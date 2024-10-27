@@ -749,9 +749,6 @@ class WidgetAuthor:
             node_title: str,
             input_name: str,
             json_value: str,
-            change_handler_body_txt: str,  # noqa
-            model_type: ModelType,  # noqa
-            # selected_index: int = 0,  # noqa
             newline: bool = True,
     ) -> Dict[str, str]:
         result: Dict[str, str] | None = None
@@ -1157,7 +1154,6 @@ class WidgetAuthor:
                 change_handler_body_txt="pass",
                 newline=newline,
             )
-
         if not result:
             result = self.text_from_node_class_name(
                 node_class_name=node_class_name,
@@ -1168,144 +1164,15 @@ class WidgetAuthor:
                 newline=newline,
             )
         if not result:
-            match input_name:
-                case "add_noise":
-                    result = new_checkbutton(
-                        node_title=node_title,
-                        node_index_str=node_index_str,
-                        input_name=input_name,
-                        toggled_handler_body_txt="pass",
-                        current=bool_of(json_value)
-                    )
-                    # Disable newline.
-                    newline = False  # Re-using parameters is generally bad practice, but exceptions must be made.
-                case "ascore":
-                    result = new_entry_int(
-                        node_title=node_title,
-                        node_index_str=node_index_str,
-                        input_name=input_name,
-                        change_handler_body_txt="pass",
-                        current=int(json_value),
-                        bounds=(1, 10)
-                    )
-                case "batch_size" | "height" | "width" | "crop_h" | "crop_w" | "target_width":
-                    result = new_entry_int(
-                        node_title=node_title,
-                        node_index_str=node_index_str,
-                        input_name=input_name,
-                        change_handler_body_txt="pass",
-                        current=int(json_value),
-                        bounds=(1, None)
-                    )
-                case "target_height":
-                    result = new_entry_int(
-                        node_title=node_title,
-                        node_index_str=node_index_str,
-                        input_name=input_name,
-                        change_handler_body_txt="pass",
-                        current=int(json_value),
-                        bounds=(1, None)
-                    )
-                    # Insert newline.
-                    newline = True
-                case "noise_seed" | "seed":
-                    result = new_entry_int(
-                        node_title=node_title,
-                        node_index_str=node_index_str,
-                        input_name=input_name,
-                        change_handler_body_txt="pass",
-                        current=int(json_value),
-                        bounds=(-1, INT_MAX)
-                    )
-                case "steps":
-                    result = new_entry_int(
-                        node_title=node_title,
-                        node_index_str=node_index_str,
-                        input_name=input_name,
-                        change_handler_body_txt="pass",
-                        current=int(json_value),
-                        bounds=(1, None)
-                    )
-                    # Specify newline, overriding argument.
-                    newline = True
-                case "start_at_step":
-                    result = new_entry_int(
-                        node_title=node_title,
-                        node_index_str=node_index_str,
-                        input_name=input_name,
-                        change_handler_body_txt="pass",
-                        current=int(json_value),
-                        bounds=(0, None)
-                    )
-                    # Specify newline, overriding argument.
-                    newline = False
-                case "end_at_step":
-                    result = new_entry_int(
-                        node_title=node_title,
-                        node_index_str=node_index_str,
-                        input_name=input_name,
-                        change_handler_body_txt="pass",
-                        current=int(json_value),
-                        bounds=(0, None)
-                    )
-                    # Specify newline, overriding argument.
-                    newline = True
-                # TODO: These inputs might have different bounds
-                case "blend_factor" | "cfg" | "scale_by":
-                    result = new_entry_float(
-                        node_title=node_title,
-                        node_index_str=node_index_str,
-                        input_name=input_name,
-                        change_handler_body_txt="pass",
-                        current=float(json_value),
-                        bounds=(0, None)
-                    )
-                    # Specify newline, overriding argument.
-                    newline = True
-                case "text" | "text_g" | "text_l":
-                    result = new_textview(
-                        node_title=node_title,
-                        node_index_str=node_index_str,
-                        input_name=input_name,
-                        preedit_handler_body_txt="pass",
-                        current=json_value,
-                        lengthy=True
-                    )
-                case "blend_mode":
-                    sel_idx: int = self._blend_modes.index(json_value)
-                    result = new_combo_static(node_title=node_title,
-                                              node_index_str=node_index_str,
-                                              input_name=input_name,
-                                              change_handler_body_txt="pass",
-                                              items=self._blend_modes,
-                                              selected_index=sel_idx
-                                              )
-                case "upscale_method":
-                    sel_idx: int = self._upscale_methods.index(json_value)
-                    result = new_combo_static(node_title=node_title,
-                                              node_index_str=node_index_str,
-                                              input_name=input_name,
-                                              items=self._upscale_methods,
-                                              selected_index=sel_idx
-                                              )
-                case "vae_name":
-                    vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae)
-                    # Baked VAE is a vae that's already merged into the checkpoint model.
-                    vaes_from_fs.append("Baked VAE")
-                    vae_literals = list_as_literals(vaes_from_fs)
-                    combo_message = f"Looking for index of {json_value} in {vae_literals}"
-                    LOGGER_WF2PY.info(combo_message)
-                    sel_idx: int = vaes_from_fs.index(json_value)  # Should be 1
-                    result = new_combo_models(node_title=node_title,
-                                              node_index_str=node_index_str,
-                                              input_name=input_name,
-                                              change_handler_body_txt="pass",
-                                              selected_index=sel_idx,
-                                              model_type=ModelType.VAE
-                                              )
-                case _:
-                    pass
-            # If widget text was written for this input, insert a new entry storing the newline flag.
+            result = self.text_from_input_name(
+                node_class_name=node_class_name,
+                node_index_str=node_index_str,
+                node_title=node_title,
+                input_name=input_name,
+                json_value=json_value,
+                newline=newline,
+            )
+        # If widget text was written for this input, insert a new entry storing the newline flag.
         if result:
             metakey = append_newline_suffix(input_name)
             nls = str(newline)
