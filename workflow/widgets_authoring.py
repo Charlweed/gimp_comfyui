@@ -623,8 +623,10 @@ class WidgetAuthor:
     _SCALING_STARTPOINT = ["MEAN", "ZERO"]
     _SCHEDULER_NAMES = ["normal", "karras", "exponential", "sgm_uniform", "simple", "ddim_uniform"]
     _SAMPLER_NAMES = _KSAMPLER_NAMES + ["ddim", "uni_pc", "uni_pc_bh2"]
+    _TOKEN_NORMALIZATION = ["none", "mean", "length", "length+mean"]
     _UPSCALE_METHODS = ["nearest-exact", "bilinear", "area", "bicubic", "lanczos"]
     _VARIABILITY_MEASURE = ["AD", "STD"]
+    _WEIGHT_INTERPRETATION = ["comfy", "A1111", "compel", "comfy++", "down_weight"]
 
     _SD_MODELS_DIR = os.path.join(SD_DATA_ROOT, "models")
     _SD_PROMPTS_DIR = os.path.join(SD_DATA_ROOT, "prompts")
@@ -668,8 +670,10 @@ class WidgetAuthor:
                           "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_2m_sde_gpu", "dpmpp_3m_sde", "dpmpp_3m_sde_gpu", "ddpm",
                           "lcm", "ddim", "uni_pc", "uni_pc_bh2"],
         'scaling_startpoint': ["MEAN", "ZERO"],
+        'token_normalization': ["none", "mean", "length", "length+mean"],
         'upscale_methods': ["nearest-exact", "bilinear", "area", "bicubic", "lanczos"],
         'variability_measure': ["AD", "STD"],
+        'weight_interpretation': ["comfy", "A1111", "compel", "comfy++", "down_weight"],
         'sd_data_root': SD_DATA_ROOT,
         'sd_models_dir': os.path.join(SD_DATA_ROOT, "models"),
         'sd_prompts_dir': os.path.join(SD_DATA_ROOT, "prompts"),
@@ -1114,6 +1118,122 @@ class WidgetAuthor:
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
+            case "Efficient Loader":
+                match input_name:
+                    case "ckpt_name":
+                        checkpoints_from_fs = list_from_fs(fs_path=self._config['sd_checkpoints_dir'],
+                                                           predicate=seems_checkpoint)
+                        sel_idx: int = checkpoints_from_fs.index(json_value)
+                        result = new_combo_models(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  selected_index=sel_idx,
+                                                  model_type=ModelType.CHECKPOINTS
+                                                  )
+                    case "vae_name":
+                        vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae)
+                        vaes_from_fs.append("Baked VAE")
+                        sel_idx: int = vaes_from_fs.index(json_value)
+                        result = new_combo_models(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  selected_index=sel_idx,
+                                                  model_type=ModelType.VAE
+                                                  )
+                    case "clip_skip":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(-1, INT_MAX)
+                        )
+                    case "lora_name":
+                        loras_from_fs = list_from_fs(fs_path=self._config['sd_loras_dir'], predicate=seems_lora)
+                        loras_from_fs.append("None")
+                        sel_idx: int = loras_from_fs.index(json_value)
+                        result = new_combo_models(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  selected_index=sel_idx,
+                                                  model_type=ModelType.LORAS
+                                                  )
+                    case "lora_model_strength":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=20,
+                            step_increment=1.0,
+                            page_increment=5.0
+                        )
+                    case "lora_clip_strength":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=20,
+                            step_increment=1.0,
+                            page_increment=5.0
+                        )
+                    case "positive" | "negative":
+                        result = new_textview(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            preedit_handler_body_txt="pass",
+                            current=json_value,
+                            lengthy=True
+                        )
+                    case "token_normalization":
+                        sel_idx: int = WidgetAuthor._TOKEN_NORMALIZATION.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._TOKEN_NORMALIZATION,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "weight_interpretation":
+                        sel_idx: int = WidgetAuthor._WEIGHT_INTERPRETATION.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._WEIGHT_INTERPRETATION,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "empty_latent_width" | "empty_latent_height":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(1, None)
+                        )
+                    case "batch_size":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(1, 256)  # Completely arbitrary.
+                        )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "ImpactKSamplerAdvancedBasicPipe":
                 match input_name:
                     case "add_noise" | "return_with_leftover_noise":
@@ -1238,6 +1358,33 @@ class WidgetAuthor:
                             node_index_str=node_index_str,
                             input_name=input_name,
                             current="generated")
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "SD_4XUpscale_Conditioning":
+                match input_name:
+                    case "scale_ratio":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current=float(json_value),
+                            lower=0.0,
+                            upper=10.0,
+                            step_increment=0.1,
+                            page_increment=1
+                        )
+                    case "noise_augmentation":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current=float(json_value),
+                            lower=0.0,
+                            upper=1.0,
+                            step_increment=0.001,
+                            page_increment=0.01
+                        )
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
