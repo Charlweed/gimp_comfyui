@@ -136,7 +136,7 @@ def new_treeview_layer(node_index_str,
         # f"{SP16}Gimp.message(message0)\n"
         "\n"
         f"{SP08}{widget_id}.get_selection().connect(\"changed\", selection_handler_{node_index_str}_{input_name})\n"
-        )
+    )
     content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {widget_id}.get_selected_png_leaf\n"
     text: str = ""
     text += widget_declaration
@@ -609,6 +609,7 @@ class WidgetAuthor:
     PYTHON_CLASS_NAME_LONG: str = PYTHON_CLASS_NAME + "_" + PYTHON_CLASS_UUID_STRING
     SD_DATA_ROOT: str = sd_root_dir(create=True)
     make_sd_data_tree(SD_DATA_ROOT)
+    _ABLEMENT = ["enable", "disable"]
     _BLEND_MODES = ["normal", "multiply", "screen", "overlay", "soft_light", "difference"]
     _CLIP_TYPE_NAMES = ["sdxl", "sd3", "flux", "sd3.5"]
     _CROP_METHODS = ["disabled", "center"]
@@ -616,9 +617,14 @@ class WidgetAuthor:
                        "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde", "dpmpp_sde_gpu",
                        "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_2m_sde_gpu", "dpmpp_3m_sde", "dpmpp_3m_sde_gpu", "ddpm",
                        "lcm"]
+    _MIMIC_MODES = ["Constant", "Linear Down", "Cosine Down", "Half Cosine Down", "Linear Up", "Cosine Up",
+                    "Half Cosine Up", "Power Up", "Power Down", "Linear Repeating", "Cosine Repeating", "Sawtooth"]
+    _CFG_MODES_DTF = _MIMIC_MODES.copy()
+    _SCALING_STARTPOINT = ["MEAN", "ZERO"]
     _SCHEDULER_NAMES = ["normal", "karras", "exponential", "sgm_uniform", "simple", "ddim_uniform"]
     _SAMPLER_NAMES = _KSAMPLER_NAMES + ["ddim", "uni_pc", "uni_pc_bh2"]
     _UPSCALE_METHODS = ["nearest-exact", "bilinear", "area", "bicubic", "lanczos"]
+    _VARIABILITY_MEASURE = ["AD", "STD"]
 
     _SD_MODELS_DIR = os.path.join(SD_DATA_ROOT, "models")
     _SD_PROMPTS_DIR = os.path.join(SD_DATA_ROOT, "prompts")
@@ -650,13 +656,20 @@ class WidgetAuthor:
                            "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde", "dpmpp_sde_gpu",
                            "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_2m_sde_gpu", "dpmpp_3m_sde", "dpmpp_3m_sde_gpu", "ddpm",
                            "lcm"],
+        'mimic_modes': ["Constant", "Linear Down", "Cosine Down", "Half Cosine Down", "Linear Up", "Cosine Up",
+                        "Half Cosine Up", "Power Up", "Power Down", "Linear Repeating", "Cosine Repeating", "Sawtooth"],
+        'cfg_modes_dtf': ["Constant", "Linear Down", "Cosine Down", "Half Cosine Down", "Linear Up", "Cosine Up",
+                          "Half Cosine Up", "Power Up", "Power Down", "Linear Repeating", "Cosine Repeating",
+                          "Sawtooth"],
         'refiner_names': [],
         'scheduler_names': ["normal", "karras", "exponential", "sgm_uniform", "simple", "ddim_uniform"],
         'sampler_names': ["euler", "euler_ancestral", "heun", "heunpp2", "dpm_2", "dpm_2_ancestral",
                           "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde", "dpmpp_sde_gpu",
                           "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_2m_sde_gpu", "dpmpp_3m_sde", "dpmpp_3m_sde_gpu", "ddpm",
                           "lcm", "ddim", "uni_pc", "uni_pc_bh2"],
+        'scaling_startpoint': ["MEAN", "ZERO"],
         'upscale_methods': ["nearest-exact", "bilinear", "area", "bicubic", "lanczos"],
+        'variability_measure': ["AD", "STD"],
         'sd_data_root': SD_DATA_ROOT,
         'sd_models_dir': os.path.join(SD_DATA_ROOT, "models"),
         'sd_prompts_dir': os.path.join(SD_DATA_ROOT, "prompts"),
@@ -944,7 +957,7 @@ class WidgetAuthor:
                                                   input_name=input_name,
                                                   change_handler_body_txt="pass",
                                                   selected_index=sel_idx,
-                                                  model_type=ModelType.CHECKPOINTS
+                                                  model_type=ModelType.CLIP
                                                   )
                     case "type":
                         sel_idx: int = WidgetAuthor._CLIP_TYPE_NAMES.index(json_value)
@@ -968,6 +981,135 @@ class WidgetAuthor:
                             change_handler_body_txt="pass",
                             current=int(json_value),
                             bounds=(1, None)
+                        )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "DummyClassDoesNotExist":
+                match input_name:
+                    case "dummy_fake_input":
+                        pass
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "DynamicThresholdingFull":
+                match input_name:
+                    case "mimic_scale":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=100,
+                            step_increment=1.0,
+                            page_increment=10.0
+                        )
+                    case "threshold_percentile":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=1.0,
+                            step_increment=0.01,
+                            page_increment=0.1
+                        )
+                    case "mimic_mode":
+                        sel_idx: int = WidgetAuthor._MIMIC_MODES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._MIMIC_MODES,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "mimic_scale_min":  # Blind guess as to scale and bounds.
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=1.0,
+                            step_increment=0.01,
+                            page_increment=0.1
+                        )
+                    case "cfg_mode":
+                        sel_idx: int = WidgetAuthor._CFG_MODES_DTF.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._CFG_MODES_DTF,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "cfg_scale_min":  # Blind guess as to scale and bounds.
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=1.0,
+                            step_increment=0.01,
+                            page_increment=0.1
+                        )
+                    case "sched_val":  # Blind guess as to scale and bounds.
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=1.0,
+                            step_increment=0.01,
+                            page_increment=0.1
+                        )
+                    case "separate_feature_channels":
+                        sel_idx: int = WidgetAuthor._ABLEMENT.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._ABLEMENT,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "scaling_startpoint":
+                        sel_idx: int = WidgetAuthor._SCALING_STARTPOINT.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._SCALING_STARTPOINT,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "variability_measure":
+                        sel_idx: int = WidgetAuthor._VARIABILITY_MEASURE.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._VARIABILITY_MEASURE,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "interpolate_phi":  # Blind guess as to scale and bounds.
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=1.0,
+                            step_increment=0.01,
+                            page_increment=0.1
                         )
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"

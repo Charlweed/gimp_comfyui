@@ -18,9 +18,13 @@
 import codecs
 import json
 import os.path
+import platform
 import re
 import sys
 from abc import ABC, abstractmethod
+from os import listdir
+from os.path import isfile, join, expanduser
+from types import MappingProxyType
 from typing import Dict
 from utilities.type_utils import *
 
@@ -164,6 +168,36 @@ def unique_id(candidate_identifier, name_list: List[str]) -> str:
     return id_out
 
 
+def get_metaconfig_defaults() -> MappingProxyType[str, str]:
+    local_platform: str = platform.system().lower()
+    # Update when GIMP 3.0 is released!
+    if local_platform == "windows":
+        defaults = {
+            "gimp_plugins_dir": expanduser("~/AppData/Roaming/GIMP/2.99/scripts"),
+            "gimp_plugin_data_dir": expanduser("~/AppData/Roaming/gimp_plugin_data"),
+            "comfyui_custom_nodes_dir": expanduser("~/ComfyUI/custom_nodes"),
+            "stable_diffusion_data_dir": expanduser("~/ComfyUI")
+        }
+    else:
+        if local_platform == "darwin":
+            defaults = {
+                "gimp_plugins_dir": expanduser("~/Library/Application Support/GIMP/2.99/plug-ins"),
+                "gimp_plugin_data_dir": expanduser("~/.config/gimp_plugin_data"),
+                # Assuming no local ComfyUI
+                "comfyui_custom_nodes_dir": os.environ.get('TMPDIR', expanduser("~/")),
+                # Assuming no local stable_diffusion
+                "stable_diffusion_data_dir": os.environ.get('TMPDIR', expanduser("~/"))
+            }
+        else:
+            defaults = {
+                "gimp_plugins_dir": expanduser("~/.var/app/org.gimp.GIMP/config/GIMP/2.99/scripts"),
+                "gimp_plugin_data_dir": expanduser("~/.config/gimp_plugin_data"),
+                "comfyui_custom_nodes_dir": expanduser("~/ComfyUI/custom_nodes"),
+                "stable_diffusion_data_dir": expanduser("~/ComfyUI")
+            }
+    return MappingProxyType(defaults)
+
+
 class Workflow2PythonGenerator(ABC):
     WORKFLOW_TAG = "_workflow_api"
     ASSET_DIR_NAME = "../assets"
@@ -297,3 +331,21 @@ class Workflow2PythonGenerator(ABC):
     @abstractmethod
     def write_source_file(self):
         pass
+
+    def clean_obsolete_persisted_data(self):
+        flag: str = class_name(self.base_class_name)
+        data_path = get_metaconfig_defaults()["gimp_plugin_data_dir"]
+        LOGGER_WF2PY.debug(f"Looking for {flag} in {data_path}")
+        all_files = [file_name for file_name in listdir(data_path) if (isfile(join(data_path, file_name)))]
+        for file_name in all_files:
+            if flag in file_name:
+                LOGGER_WF2PY.debug(f"Found {flag} in {file_name}")
+                doomed_file = join(data_path, file_name)
+                LOGGER_WF2PY.warning(f"Deleting old \"{doomed_file}\"")
+                try:
+                    os.remove(doomed_file)
+                except IOError as io_err:
+                    LOGGER_WF2PY.error(io_err)
+            else:
+                LOGGER_WF2PY.debug(f"{flag} not in {file_name}")
+

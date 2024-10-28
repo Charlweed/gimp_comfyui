@@ -41,8 +41,8 @@ $WORKFLOWS_ALL = @(
 )
 
 $WORKFLOWS_FLUX = @(
-    "flux_1.0",
-    "flux_neg_1.1",
+#    "flux_1.0",
+#    "flux_neg_1.1",
     "flux_neg_upscale_sdxl_0.5"
 )
 
@@ -108,7 +108,8 @@ $ENV:PYTHONPATH = $PSScriptRoot
 foreach ($generator_name in $GENERATORS) {
     $generator = Join-Path -Path $PSScriptRoot -ChildPath "workflow" -AdditionalChildPath @($generator_name)
     Write-Information "Running generator `"$generator`"" -InformationAction Continue
-    Generate-Classes $generator $WORKFLOWS_ALL
+#    Generate-Classes $generator $WORKFLOWS_ALL
+    Generate-Classes $generator $WORKFLOWS_FLUX
 }
 
 # Test with
