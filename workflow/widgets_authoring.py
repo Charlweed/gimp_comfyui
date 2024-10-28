@@ -706,10 +706,11 @@ class WidgetAuthor:
             self._config = dict(WidgetAuthor._DEFAULT_CONFIG)
         self._blend_modes: List[str] = self._config['blend_modes']
         self._crop_methods: List[str] = self._config['crop_methods']
+        # These predicates are in cui_resources_utils.py NOT long_term_storage_utils.py!
         self._models_checkpoints: List[str] = list_from_fs(fs_path=self._config['sd_checkpoints_dir'],
                                                            predicate=seems_checkpoint)
-        self._models_configs: List[str] = list_from_fs(fs_path=self._config['sd_configs_dir'],
-                                                       predicate=seems_config)
+        self._models_clip: List[str] = list_from_fs(fs_path=self._config['sd_clip_dir'], predicate=seems_clip)
+        self._models_configs: List[str] = list_from_fs(fs_path=self._config['sd_configs_dir'], predicate=seems_config)
         self._models_controlnet: List[str] = list_from_fs(fs_path=self._config['sd_controlnet_dir'],
                                                           predicate=seems_controlnet,
                                                           permitted_empties=["controlnets"])
@@ -721,8 +722,7 @@ class WidgetAuthor:
                                                     predicate=seems_lora)
         self._models_upscale_models: List[str] = list_from_fs(fs_path=self._config['sd_upscale_models_dir'],
                                                               predicate=seems_pytorch)
-        self._models_vae: List[str] = list_from_fs(fs_path=self._config['sd_vae_dir'],
-                                                   predicate=seems_vae)
+        self._models_vae: List[str] = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae)
         self._prompts_base_positive: List[str] = [self._config['prompts_base_positive'], ]
         self._prompts_base_negative: List[str] = [self._config['prompts_base_negative'], ]
         self._prompts_supporting_positive: List[str] = [self._config['prompts_supporting_positive'], ]
@@ -919,6 +919,34 @@ class WidgetAuthor:
                                           selected_index=sel_idx,
                                           model_type=ModelType.CHECKPOINTS
                                           )
+            case "CLIPTextEncode":
+                match input_name:
+                    case "text" | "text_g" | "text_l":
+                        result = new_textview(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            preedit_handler_body_txt="pass",
+                            current=json_value,
+                            lengthy=True
+                        )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "DualCLIPLoader":
+                match input_name:
+                    case "clip_name1" | "clip_name2":
+                        sel_idx: int = self._models_clip.index(json_value)
+                        result = new_combo_models(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  selected_index=sel_idx,
+                                                  model_type=ModelType.CHECKPOINTS
+                                                  )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "KSampler" | "KSamplerAdvanced":
                 match input_name:
                     case "cfg":
@@ -962,6 +990,9 @@ class WidgetAuthor:
                                                   items=WidgetAuthor._SCHEDULER_NAMES,
                                                   selected_index=sel_idx
                                                   )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "SaveImage":
                 match input_name:
                     case "filename_prefix":
@@ -971,9 +1002,11 @@ class WidgetAuthor:
                             input_name=input_name,
                             current="generated")
                     case _:
-                        pass
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
             case _:
-                pass
+                log_msg: str = f"Deferring node class \"{node_class_name}\""
+                LOGGER_WF2PY.warning(log_msg)
         if not result:
             message = ("No known widget class for node_class_name=\"%s\", node_title=\"%s\", input_name=\"%s\""
                        % (node_class_name, node_title, input_name))

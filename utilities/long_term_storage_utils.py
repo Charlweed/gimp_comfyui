@@ -234,13 +234,13 @@ def seems_legit_file(file_path: str, extensions: List[str] | None = None) -> boo
     return True
 
 
-# NOTE: Most of these predicates are untested, because I don't have example files to put in the directories.
+# NOTE: Several of these predicates are untested, because I don't have example files to put in the directories.
 def seems_checkpoint(file_path: str) -> bool:
-    return seems_legit_file(file_path=file_path, extensions=[".ckpt", ".safetensors"])
+    return seems_legit_file(file_path=file_path, extensions=[".ckpt", ".safetensors", ".sft"])
 
 
 def seems_clip(file_path: str) -> bool:
-    return seems_legit_file(file_path=file_path, extensions=[".clip", ".clp"])
+    return seems_legit_file(file_path=file_path, extensions=[".clip", ".clp", ".safetensors", ".sft"])
 
 
 def seems_config(file_path: str) -> bool:
@@ -272,7 +272,7 @@ def seems_json(file_path: str) -> bool:
 
 
 def seems_lora(file_path: str) -> bool:
-    return seems_legit_file(file_path=file_path, extensions=[".lora", ".safetensors"])
+    return seems_legit_file(file_path=file_path, extensions=[".lora", ".safetensors", ".sft"])
 
 
 def seems_pytorch(file_path: str) -> bool:
@@ -284,11 +284,11 @@ def seems_style_model(file_path: str) -> bool:
 
 
 def seems_unet(file_path: str) -> bool:
-    return seems_legit_file(file_path=file_path, extensions=[".unet", ".safetensors"])
+    return seems_legit_file(file_path=file_path, extensions=[".unet", ".safetensors", ".sft"])
 
 
 def seems_vae(file_path: str) -> bool:
-    return seems_legit_file(file_path=file_path, extensions=[".vae", "vae.safetensors"])
+    return seems_legit_file(file_path=file_path, extensions=[".vae", "vae.safetensors", "vae.sft"])
 
 
 def store_persistent_dictionary(plugin_name_long: str, dictionary: Dict):

@@ -152,7 +152,7 @@ def seems_checkpoint(file_path: str) -> bool:
 
 
 def seems_clip(file_path: str) -> bool:
-    return seems_legit_resource(file_path=file_path, extensions=[".clip", ".clp"])
+    return seems_legit_resource(file_path=file_path, extensions=[".clip", ".clp", ".safetensors", ".sft"])
 
 
 def seems_config(file_path: str) -> bool:
