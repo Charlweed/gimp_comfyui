@@ -958,6 +958,90 @@ class WidgetAuthor:
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
+            case "EmptyLatentImage":
+                match input_name:
+                    case "batch_size" | "height" | "width" | "crop_h" | "crop_w" | "target_width":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(1, None)
+                        )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "ImpactKSamplerAdvancedBasicPipe":
+                match input_name:
+                    case "add_noise" | "return_with_leftover_noise":
+                        result = new_checkbutton(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            toggled_handler_body_txt="pass",
+                            current=bool_of(json_value)
+                        )
+                    case "noise_seed" | "seed":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(-1, INT_MAX)
+                        )
+                    case "steps":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(1, None)
+                        )
+                    case "cfg":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=1,
+                            upper=25,
+                            step_increment=0.1,
+                            page_increment=2
+                        )
+                    case "sampler_name":
+                        sel_idx: int = WidgetAuthor._SAMPLER_NAMES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._SAMPLER_NAMES,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "scheduler":
+                        sel_idx: int = WidgetAuthor._SCHEDULER_NAMES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._SCHEDULER_NAMES,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "start_at_step" | "end_at_step":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(0, None)
+                        )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "KSampler" | "KSamplerAdvanced":
                 match input_name:
                     case "cfg":
