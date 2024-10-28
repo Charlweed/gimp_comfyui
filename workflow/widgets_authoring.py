@@ -610,6 +610,7 @@ class WidgetAuthor:
     SD_DATA_ROOT: str = sd_root_dir(create=True)
     make_sd_data_tree(SD_DATA_ROOT)
     _BLEND_MODES = ["normal", "multiply", "screen", "overlay", "soft_light", "difference"]
+    _CLIP_TYPE_NAMES = ["sdxl", "sd3", "flux", "sd3.5"]
     _CROP_METHODS = ["disabled", "center"]
     _KSAMPLER_NAMES = ["euler", "euler_ancestral", "heun", "heunpp2", "dpm_2", "dpm_2_ancestral",
                        "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde", "dpmpp_sde_gpu",
@@ -643,6 +644,7 @@ class WidgetAuthor:
         'prompts_supporting_positive': "space, stars, outer space, starship",
         'prompts_supporting_negative': "aliens, ground, dirt, trees, grass, animals, cows",
         'blend_modes': ["normal", "multiply", "screen", "overlay", "soft_light", "difference"],
+        'clip_type_names': ["sdxl", "sd3", "flux", "sd3.5"],
         'crop_methods': ["disabled", "center"],
         'ksampler_names': ["euler", "euler_ancestral", "heun", "heunpp2", "dpm_2", "dpm_2_ancestral",
                            "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde", "dpmpp_sde_gpu",
@@ -944,6 +946,15 @@ class WidgetAuthor:
                                                   selected_index=sel_idx,
                                                   model_type=ModelType.CHECKPOINTS
                                                   )
+                    case "type":
+                        sel_idx: int = WidgetAuthor._CLIP_TYPE_NAMES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._CLIP_TYPE_NAMES,
+                                                  selected_index=sel_idx
+                                                  )
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
@@ -1042,7 +1053,8 @@ class WidgetAuthor:
                                                   model_type=ModelType.CHECKPOINTS
                                                   )
                     case _:
-                        pass
+                        log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "2048x Upscale":
                 match input_name:
                     case "filename_prefix":
@@ -1052,7 +1064,8 @@ class WidgetAuthor:
                             input_name=input_name,
                             current="generated_upscaled")
                     case _:
-                        pass
+                        log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "Load Image" | "Base Image" | "Mask Image":
                 match input_name:
                     case "image":
@@ -1064,7 +1077,8 @@ class WidgetAuthor:
                     case "upload" | "Upload":
                         result = new_null_widget(node_index_str=node_index_str, input_name=input_name)
                     case _:
-                        pass
+                        log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "Load VAE":
                 match input_name:
                     case "vae_name":
@@ -1081,7 +1095,8 @@ class WidgetAuthor:
                                                   model_type=ModelType.VAE
                                                   )
                     case _:
-                        pass
+                        log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "Save Image":
                 match input_name:
                     case "filename_prefix":
@@ -1091,7 +1106,8 @@ class WidgetAuthor:
                             input_name=input_name,
                             current="generated")
                     case _:
-                        pass
+                        log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
+                        LOGGER_WF2PY.warning(log_msg)
                 pass
             case "Sytan Workflow":
                 match input_name:
@@ -1102,7 +1118,8 @@ class WidgetAuthor:
                             input_name=input_name,
                             current="generated")
                     case _:
-                        pass
+                        log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "UNETLoader" | "Load Diffusion Model":
                 match input_name:
                     case "unet_name":
@@ -1142,7 +1159,8 @@ class WidgetAuthor:
                                                   selected_index=sel_idx
                                                   )
                     case _:
-                        pass
+                        log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "Upscale Model":
                 sel_idx: int = self._models_upscale_models.index(json_value)
                 result = new_combo_models(node_title=node_title,
@@ -1153,8 +1171,11 @@ class WidgetAuthor:
                                           model_type=ModelType.UPSCALE_MODELS
                                           )
             case _:
-                pass
-
+                log_msg: str = f"Deferring node titled \"{node_title}\""
+                LOGGER_WF2PY.debug(log_msg)
+        if not result:
+            message = f"No known widget class for node_class_name=\"{node_class_name}\", node_title=\"{node_title}\""
+            logging.debug(message)
         return result
 
     def widget_text_for(self,
