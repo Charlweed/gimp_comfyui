@@ -22,7 +22,6 @@ from utilities.long_term_storage_utils import *
 from utilities.cui_resources_utils import *
 from workflow.workflow_2_py_generator import *
 
-
 METAKEY_FLAG = "±"  # The unicode is deliberate.
 KEY_SUFFIX_NEWLINE: str = f"{METAKEY_FLAG}newline{METAKEY_FLAG}"  # w_text keys with this suffix are newline flags.
 # w_text keys with this suffix are the count of horizontal cells in a layout grid.
@@ -123,20 +122,21 @@ def new_treeview_layer(node_index_str,
                           # f"{SP12}Gimp.message(message)\n"
                           "\n"
                           )
-    selection_handler: str = (f"{SP08}def selection_handler_{node_index_str}_{input_name}(selection: Gtk.TreeSelection):\n"  # noqa
-                              f"{SP12}model, treeiter = selection.get_selected()\n"
-                              f"{SP12}if treeiter is not None:\n"
-                              f"{SP16}sel_path: Gtk.TreePath = model.get_path(treeiter)\n"
-                              f"{SP16}sel_route: tuple[int, int] = treepath_to_ids(model=model, layer_path=sel_path)\n"
-                              f"{SP16}self._installation_persister.update_config({{'{widget_id}_selection_route': sel_route}})\n"  # noqa
-                              f"{SP16}self._installation_persister.store_config()\n"
-                              # f"{SP12}else:\n"
-                              # f"{SP16}message0 = \"No selected path for {widget_id}\"\n"
-                              # f"{SP16}LOGGER_SDGUIU.warning(message0)\n"
-                              # f"{SP16}Gimp.message(message0)\n"
-                              "\n"
-                              f"{SP08}{widget_id}.get_selection().connect(\"changed\", selection_handler_{node_index_str}_{input_name})\n"  # noqa
-                              )
+    selection_handler: str = (
+        f"{SP08}def selection_handler_{node_index_str}_{input_name}(selection: Gtk.TreeSelection):\n"  # noqa
+        f"{SP12}model, treeiter = selection.get_selected()\n"
+        f"{SP12}if treeiter is not None:\n"
+        f"{SP16}sel_path: Gtk.TreePath = model.get_path(treeiter)\n"
+        f"{SP16}sel_route: tuple[int, int] = treepath_to_ids(model=model, layer_path=sel_path)\n"
+        f"{SP16}self._installation_persister.update_config({{'{widget_id}_selection_route': sel_route}})\n"  # noqa
+        f"{SP16}self._installation_persister.store_config()\n"
+        # f"{SP12}else:\n"
+        # f"{SP16}message0 = \"No selected path for {widget_id}\"\n"
+        # f"{SP16}LOGGER_SDGUIU.warning(message0)\n"
+        # f"{SP16}Gimp.message(message0)\n"
+        "\n"
+        f"{SP08}{widget_id}.get_selection().connect(\"changed\", selection_handler_{node_index_str}_{input_name})\n"
+        )
     content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {widget_id}.get_selected_png_leaf\n"
     text: str = ""
     text += widget_declaration
@@ -312,12 +312,12 @@ def new_combo_static(node_index_str: str,
 
 
 def new_entry_float(node_index_str: str,
-                  node_title: str,  # noqa. Reserved
-                  input_name: str,
-                  change_handler_body_txt: str,
-                  current: float,
-                  bounds: tuple | None = None,
-                  ) -> Dict[str, str]:
+                    node_title: str,  # noqa. Reserved
+                    input_name: str,
+                    change_handler_body_txt: str,
+                    current: float,
+                    bounds: tuple | None = None,
+                    ) -> Dict[str, str]:
     result: Dict[str, str] = {}
     widget_id: str = "entry_%s_%s" % (node_index_str, input_name)
     handler_id: str = "change_handler_%s_%s" % (node_index_str, input_name)
@@ -496,7 +496,7 @@ def new_scale(node_index_str: str,
                                    "%sstep_increment=%3.3f,\n"
                                    "%spage_increment=%3.3f,\n"
                                    "%spage_size=0)\n" % (
-                                       SP08, adjustment_id, infix_str,  current,
+                                       SP08, adjustment_id, infix_str, current,
                                        arg_indent, lower,
                                        arg_indent, upper,
                                        arg_indent, step_increment,
@@ -663,7 +663,7 @@ class WidgetAuthor:
         'sd_workflows_dir': os.path.join(SD_DATA_ROOT, "workflows"),
         'sd_checkpoints_dir': os.path.join(_SD_MODELS_DIR, "checkpoints"),
         'sd_clip_dir': os.path.join(_SD_MODELS_DIR, "clip"),
-        'sd_clip_vision_dir':  os.path.join(_SD_MODELS_DIR, "clip_vision"),
+        'sd_clip_vision_dir': os.path.join(_SD_MODELS_DIR, "clip_vision"),
         'sd_configs_dir': os.path.join(_SD_MODELS_DIR, "configs"),
         'sd_controlnet_dir': os.path.join(_SD_MODELS_DIR, "controlnets"),
         'sd_diffusers_dir': os.path.join(_SD_MODELS_DIR, "diffusers"),
@@ -674,7 +674,7 @@ class WidgetAuthor:
         'sd_style_models_dir': os.path.join(_SD_MODELS_DIR, "style_models"),
         'sd_unet_dir': os.path.join(_SD_MODELS_DIR, "unet"),
         'sd_upscale_models_dir': os.path.join(_SD_MODELS_DIR, "upscale_models"),
-        'sd_vae_dir':  os.path.join(_SD_MODELS_DIR, "vae"),
+        'sd_vae_dir': os.path.join(_SD_MODELS_DIR, "vae"),
     }
 
     @classmethod
@@ -908,7 +908,7 @@ class WidgetAuthor:
             node_title: str,
             input_name: str,
             json_value: str,
-            newline: bool = True, # noqa
+            newline: bool = True,  # noqa
     ) -> Dict[str, str]:
         result: Dict[str, str] | None = None
         match node_class_name:
