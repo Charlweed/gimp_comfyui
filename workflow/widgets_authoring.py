@@ -771,6 +771,7 @@ class WidgetAuthor:
     def store_config(self):
         WidgetAuthor.write_authoring_config(self._config)
 
+    # Avoid depending on this method, because Input Names are not unique nor consistent over node classes.
     def text_from_input_name(
             self,
             node_class_name: str,  # noqa
@@ -928,6 +929,8 @@ class WidgetAuthor:
             result[metakey] = nls
         return result
 
+    # This is the preferred way to obtain widget text, as it combines the node class name and the input name. It's
+    # still not unique.
     def text_from_node_class_name(
             self,
             node_class_name: str,
@@ -1559,6 +1562,8 @@ class WidgetAuthor:
             logging.warning(message)
         return result
 
+    # Node Title might be most specific, if the workflow is designed carefully. Otherwise, Node Title is NOT UNIQUE, and
+    # there can be confusion.
     def text_from_node_title(
             self,
             node_class_name: str,  # noqa
@@ -1697,14 +1702,19 @@ class WidgetAuthor:
                         log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
                         LOGGER_WF2PY.warning(log_msg)
             case "Upscale Model":
-                sel_idx: int = self._models_upscale_models.index(json_value)
-                result = new_combo_models(node_title=node_title,
-                                          node_index_str=node_index_str,
-                                          input_name=input_name,
-                                          change_handler_body_txt="pass",
-                                          selected_index=sel_idx,
-                                          model_type=ModelType.UPSCALE_MODELS
-                                          )
+                match input_name:
+                    case "model_name":
+                        sel_idx: int = self._models_upscale_models.index(json_value)
+                        result = new_combo_models(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  selected_index=sel_idx,
+                                                  model_type=ModelType.UPSCALE_MODELS
+                                                  )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
+                        LOGGER_WF2PY.warning(log_msg)
             case _:
                 log_msg: str = f"Deferring node titled \"{node_title}\""
                 LOGGER_WF2PY.debug(log_msg)
