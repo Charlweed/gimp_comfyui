@@ -17,7 +17,6 @@
 
 import os.path
 
-from types import MappingProxyType
 from utilities.long_term_storage_utils import *
 from utilities.cui_resources_utils import *
 from workflow.workflow_2_py_generator import *
@@ -619,14 +618,20 @@ class WidgetAuthor:
                        "lcm"]
     _MIMIC_MODES = ["Constant", "Linear Down", "Cosine Down", "Half Cosine Down", "Linear Up", "Cosine Up",
                     "Half Cosine Up", "Power Up", "Power Down", "Linear Repeating", "Cosine Repeating", "Sawtooth"]
-    _CFG_MODES_DTF = _MIMIC_MODES.copy()
+    _MODE_TYPES = ["Linear", "Chess", "None"]
+    _SAMPLER_NAMES = _KSAMPLER_NAMES + ["ddim", "uni_pc", "uni_pc_bh2"]
     _SCALING_STARTPOINT = ["MEAN", "ZERO"]
     _SCHEDULER_NAMES = ["normal", "karras", "exponential", "sgm_uniform", "simple", "ddim_uniform"]
-    _SAMPLER_NAMES = _KSAMPLER_NAMES + ["ddim", "uni_pc", "uni_pc_bh2"]
+    _SEAM_FIX_MODES = ["None", "Band Pass", "Half Tile", "Half Tile + Intersections"]
     _TOKEN_NORMALIZATION = ["none", "mean", "length", "length+mean"]
     _UPSCALE_METHODS = ["nearest-exact", "bilinear", "area", "bicubic", "lanczos"]
+    _UPSCALE_MODELS = ["4x_NMKD-Siax_200k.pth", "4x_NMKD-Superscale-SP_178000_G.pth", "4x-UltraSharp.pth",
+                       "4xLexicaHAT.pth", "4xNomos2_hq_dat2.pth", "4xNomos2_hq_mosr.pth",
+                       "8x_NMKD-Superscale_150000_G.pth", "NMKD Superscale.zip"]
     _VARIABILITY_MEASURE = ["AD", "STD"]
     _WEIGHT_INTERPRETATION = ["comfy", "A1111", "compel", "comfy++", "down_weight"]
+
+    _CFG_MODES_DTF = _MIMIC_MODES.copy()
 
     _SD_MODELS_DIR = os.path.join(SD_DATA_ROOT, "models")
     _SD_PROMPTS_DIR = os.path.join(SD_DATA_ROOT, "prompts")
@@ -660,6 +665,7 @@ class WidgetAuthor:
                            "lcm"],
         'mimic_modes': ["Constant", "Linear Down", "Cosine Down", "Half Cosine Down", "Linear Up", "Cosine Up",
                         "Half Cosine Up", "Power Up", "Power Down", "Linear Repeating", "Cosine Repeating", "Sawtooth"],
+        'mode_types': ["Linear", "Chess", "None"],
         'cfg_modes_dtf': ["Constant", "Linear Down", "Cosine Down", "Half Cosine Down", "Linear Up", "Cosine Up",
                           "Half Cosine Up", "Power Up", "Power Down", "Linear Repeating", "Cosine Repeating",
                           "Sawtooth"],
@@ -670,8 +676,12 @@ class WidgetAuthor:
                           "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_2m_sde_gpu", "dpmpp_3m_sde", "dpmpp_3m_sde_gpu", "ddpm",
                           "lcm", "ddim", "uni_pc", "uni_pc_bh2"],
         'scaling_startpoint': ["MEAN", "ZERO"],
+        'seam_fix_modes': ["None", "Band Pass", "Half Tile", "Half Tile + Intersections"],
         'token_normalization': ["none", "mean", "length", "length+mean"],
         'upscale_methods': ["nearest-exact", "bilinear", "area", "bicubic", "lanczos"],
+        'upscale_models': ["4x_NMKD-Siax_200k.pth", "4x_NMKD-Superscale-SP_178000_G.pth", "4x-UltraSharp.pth",
+                           "4xLexicaHAT.pth", "4xNomos2_hq_dat2.pth", "4xNomos2_hq_mosr.pth",
+                           "8x_NMKD-Superscale_150000_G.pth", "NMKD Superscale.zip"],
         'variability_measure': ["AD", "STD"],
         'weight_interpretation': ["comfy", "A1111", "compel", "comfy++", "down_weight"],
         'sd_data_root': SD_DATA_ROOT,
@@ -989,13 +999,6 @@ class WidgetAuthor:
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
-            case "DummyClassDoesNotExist":
-                match input_name:
-                    case "dummy_fake_input":
-                        pass
-                    case _:
-                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
-                        LOGGER_WF2PY.warning(log_msg)
             case "DynamicThresholdingFull":
                 match input_name:
                     case "mimic_scale":
@@ -1260,7 +1263,7 @@ class WidgetAuthor:
                             input_name=input_name,
                             change_handler_body_txt="pass",
                             current=int(json_value),
-                            bounds=(1, None)
+                            bounds=(1, 128)
                         )
                     case "cfg":
                         result = new_scale(
@@ -1324,7 +1327,7 @@ class WidgetAuthor:
                             node_index_str=node_index_str,
                             input_name=input_name,
                             current=float(json_value),
-                            lower=0.0,
+                            lower=0.00001,
                             upper=1.0,
                             step_increment=0.001,
                             page_increment=0.01
@@ -1369,7 +1372,7 @@ class WidgetAuthor:
                             node_index_str=node_index_str,
                             input_name=input_name,
                             current=float(json_value),
-                            lower=0.0,
+                            lower=0.00001,
                             upper=10.0,
                             step_increment=0.1,
                             page_increment=1
@@ -1380,11 +1383,170 @@ class WidgetAuthor:
                             node_index_str=node_index_str,
                             input_name=input_name,
                             current=float(json_value),
-                            lower=0.0,
+                            lower=0.00001,
                             upper=1.0,
                             step_increment=0.001,
                             page_increment=0.01
                         )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "UltimateSDUpscale":
+                match input_name:
+                    case "upscale_by":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current=float(json_value),
+                            lower=0.00001,
+                            upper=10.0,
+                            step_increment=0.1,
+                            page_increment=1.0
+                        )
+                    case "seed":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(0, None)
+                        )
+                    case "steps":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(1, 128)
+                        )
+                    case "cfg":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=1,
+                            upper=25,
+                            step_increment=0.1,
+                            page_increment=2
+                        )
+                    case "sampler_name":
+                        sel_idx: int = WidgetAuthor._SAMPLER_NAMES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._SAMPLER_NAMES,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "scheduler":
+                        sel_idx: int = WidgetAuthor._SCHEDULER_NAMES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._SCHEDULER_NAMES,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "denoise":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current=float(json_value),
+                            lower=0.00001,
+                            upper=1.0,
+                            step_increment=0.001,
+                            page_increment=0.01
+                        )
+                    case "mode_type":
+                        sel_idx: int = WidgetAuthor._MODE_TYPES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._MODE_TYPES,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "mask_blur" | "tile_padding":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(0, 128)
+                        )
+                    case "seam_fix_mode":
+                        sel_idx: int = WidgetAuthor._SEAM_FIX_MODES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._SEAM_FIX_MODES,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "seam_fix_denoise":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current=float(json_value),
+                            lower=0.00001,
+                            upper=1.0,
+                            step_increment=0.001,
+                            page_increment=0.01
+                        )
+                    case "seam_fix_width" | "seam_fix_mask_blur" | "seam_fix_padding":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(0, 128)
+                        )
+                    case "force_uniform_tiles":
+                        result = new_checkbutton(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            toggled_handler_body_txt="pass",
+                            current=bool_of(json_value)
+                        )
+                    case "tiled_decode":
+                        result = new_checkbutton(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            toggled_handler_body_txt="pass",
+                            current=bool_of(json_value)
+                        )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "UpscaleModelLoader":
+                match input_name:
+                    case "model_name":
+                        sel_idx: int = self._models_upscale_models.index(json_value)
+                        result = new_combo_models(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  selected_index=sel_idx,
+                                                  model_type=ModelType.UPSCALE_MODELS
+                                                  )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "ZZZDummyClassDoesNotExist":
+                match input_name:
+                    case "zzz_dummy_fake_input":
+                        pass
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
