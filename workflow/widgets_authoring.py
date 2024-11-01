@@ -22,6 +22,7 @@ from utilities.cui_resources_utils import *
 from workflow.workflow_2_py_generator import *
 
 METAKEY_FLAG = "±"  # The unicode is deliberate.
+KEY_SUFFIX_DEBUG_LAYOUT = f"{METAKEY_FLAG}debug_layout{METAKEY_FLAG}"  # w_text keys with this suffix are newline flags.
 KEY_SUFFIX_NEWLINE: str = f"{METAKEY_FLAG}newline{METAKEY_FLAG}"  # w_text keys with this suffix are newline flags.
 # w_text keys with this suffix are the count of horizontal cells in a layout grid.
 KEY_SUFFIX_GRID_WIDTH: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"
@@ -602,6 +603,27 @@ def new_textview(node_index_str: str,
     return result
 
 
+def set_row_continuation(result: Dict[str, str], input_name: str, end_row: bool = True) -> Dict[str, str]:
+    if not result:
+        raise ValueError("results argument cannot be empty.")
+    if input_name is None:
+        raise ValueError("input_name argument cannot be None (null)")
+    if not input_name:
+        raise ValueError("input_name argument cannot be blank.")
+    metakey = append_newline_suffix(input_name)
+    nls = str(end_row)
+    result[metakey] = nls
+    return result
+
+
+def ends_row(result: Dict[str, str], input_name: str) -> Dict[str, str]:
+    return set_row_continuation(result=result, input_name=input_name, end_row=True)
+
+
+def continues_row(result: Dict[str, str], input_name: str) -> Dict[str, str]:
+    return set_row_continuation(result=result, input_name=input_name, end_row=False)
+
+
 class WidgetAuthor:
     PYTHON_CLASS_NAME: str = "WidgetAuthor"
     PYTHON_CLASS_UUID_STRING: str = "f48a906f-a13d-42a9-b21a-b288d3851187"
@@ -782,6 +804,8 @@ class WidgetAuthor:
             newline: bool = True,
     ) -> Dict[str, str]:
         result: Dict[str, str] | None = None
+        # log_msg: str = f"Using input \"{input_name}\" in node class {node_class_name}, entitled \"{node_title}\""
+        # LOGGER_WF2PY.warning(log_msg)
         match input_name:
             case "add_noise":
                 result = new_checkbutton(
@@ -924,7 +948,7 @@ class WidgetAuthor:
             metakey = append_newline_suffix(input_name)
             nls = str(newline)
             # if not newline:
-            #     log_msg: str = f"Inserting result[{metakey}]={nls}"
+            #     log_msg: str = f"text_from_input_name(): Inserting result[{metakey}]={nls}"
             #     LOGGER_WF2PY.warning(log_msg)
             result[metakey] = nls
         return result
@@ -951,6 +975,7 @@ class WidgetAuthor:
                                           selected_index=sel_idx,
                                           model_type=ModelType.CHECKPOINTS
                                           )
+                ends_row(result=result, input_name=input_name)
             case "CLIPTextEncode":
                 match input_name:
                     case "text" | "text_g" | "text_l":
@@ -962,6 +987,7 @@ class WidgetAuthor:
                             current=json_value,
                             lengthy=True
                         )
+                        ends_row(result=result, input_name=input_name)
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
@@ -976,6 +1002,7 @@ class WidgetAuthor:
                                                   selected_index=sel_idx,
                                                   model_type=ModelType.CLIP
                                                   )
+                        set_row_continuation(result=result, input_name=input_name, end_row=(input_name == "clip_name2"))
                     case "type":
                         sel_idx: int = WidgetAuthor._CLIP_TYPE_NAMES.index(json_value)
                         result = new_combo_static(node_title=node_title,
@@ -985,6 +1012,7 @@ class WidgetAuthor:
                                                   items=WidgetAuthor._CLIP_TYPE_NAMES,
                                                   selected_index=sel_idx
                                                   )
+                        ends_row(result=result, input_name=input_name)
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
@@ -999,6 +1027,7 @@ class WidgetAuthor:
                             current=int(json_value),
                             bounds=(1, None)
                         )
+                        continues_row(result=result, input_name=input_name)
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
@@ -1016,6 +1045,8 @@ class WidgetAuthor:
                             step_increment=1.0,
                             page_increment=10.0
                         )
+                        result[KEY_SUFFIX_DEBUG_LAYOUT] = "True"
+                        ends_row(result=result, input_name=input_name)
                     case "threshold_percentile":
                         result = new_scale(
                             node_title=node_title,
@@ -1028,6 +1059,8 @@ class WidgetAuthor:
                             step_increment=0.01,
                             page_increment=0.1
                         )
+                        result[KEY_SUFFIX_DEBUG_LAYOUT] = "True"
+                        ends_row(result=result, input_name=input_name)
                     case "mimic_mode":
                         sel_idx: int = WidgetAuthor._MIMIC_MODES.index(json_value)
                         result = new_combo_static(node_title=node_title,
@@ -1037,6 +1070,7 @@ class WidgetAuthor:
                                                   items=WidgetAuthor._MIMIC_MODES,
                                                   selected_index=sel_idx
                                                   )
+                        continues_row(result=result, input_name=input_name)
                     case "mimic_scale_min":  # Blind guess as to scale and bounds.
                         result = new_scale(
                             node_title=node_title,
@@ -1049,6 +1083,8 @@ class WidgetAuthor:
                             step_increment=0.01,
                             page_increment=0.1
                         )
+                        result[KEY_SUFFIX_DEBUG_LAYOUT] = "True"
+                        ends_row(result=result, input_name=input_name)
                     case "cfg_mode":
                         sel_idx: int = WidgetAuthor._CFG_MODES_DTF.index(json_value)
                         result = new_combo_static(node_title=node_title,
@@ -1058,6 +1094,7 @@ class WidgetAuthor:
                                                   items=WidgetAuthor._CFG_MODES_DTF,
                                                   selected_index=sel_idx
                                                   )
+                        continues_row(result=result, input_name=input_name)
                     case "cfg_scale_min":  # Blind guess as to scale and bounds.
                         result = new_scale(
                             node_title=node_title,
@@ -1070,6 +1107,8 @@ class WidgetAuthor:
                             step_increment=0.01,
                             page_increment=0.1
                         )
+                        result[KEY_SUFFIX_DEBUG_LAYOUT] = "True"
+                        ends_row(result=result, input_name=input_name)
                     case "sched_val":  # Blind guess as to scale and bounds.
                         result = new_scale(
                             node_title=node_title,
@@ -1082,6 +1121,7 @@ class WidgetAuthor:
                             step_increment=0.01,
                             page_increment=0.1
                         )
+                        continues_row(result=result, input_name=input_name)
                     case "separate_feature_channels":
                         sel_idx: int = WidgetAuthor._ABLEMENT.index(json_value)
                         result = new_combo_static(node_title=node_title,
@@ -1091,6 +1131,7 @@ class WidgetAuthor:
                                                   items=WidgetAuthor._ABLEMENT,
                                                   selected_index=sel_idx
                                                   )
+                        continues_row(result=result, input_name=input_name)
                     case "scaling_startpoint":
                         sel_idx: int = WidgetAuthor._SCALING_STARTPOINT.index(json_value)
                         result = new_combo_static(node_title=node_title,
@@ -1100,6 +1141,7 @@ class WidgetAuthor:
                                                   items=WidgetAuthor._SCALING_STARTPOINT,
                                                   selected_index=sel_idx
                                                   )
+                        continues_row(result=result, input_name=input_name)
                     case "variability_measure":
                         sel_idx: int = WidgetAuthor._VARIABILITY_MEASURE.index(json_value)
                         result = new_combo_static(node_title=node_title,
@@ -1109,6 +1151,7 @@ class WidgetAuthor:
                                                   items=WidgetAuthor._VARIABILITY_MEASURE,
                                                   selected_index=sel_idx
                                                   )
+                        ends_row(result=result, input_name=input_name)
                     case "interpolate_phi":  # Blind guess as to scale and bounds.
                         result = new_scale(
                             node_title=node_title,
@@ -1121,6 +1164,7 @@ class WidgetAuthor:
                             step_increment=0.01,
                             page_increment=0.1
                         )
+                        ends_row(result=result, input_name=input_name)
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
@@ -1738,9 +1782,11 @@ class WidgetAuthor:
         :param input_name:
         :param newline:  Sometimes ignored and overridden by specific cases.
         :param kwargs:
-        :return:
+        :return:  A dict that contains the source code for the input's widget(s) and metadata about the widget code.
         """
         # logging.warning("index=%s, node_class_name=%s, title=%s" % (node_index_str, node_class_name, node_title))
+        # result is a dict that contains the source code for the input's widget(s) and metadata about the widget code.
+        # in particular, the metadata might specify layout constraints.
         result: Dict[str, str] = {}
         json_value: str = kwargs["json_value"]
         if not result:
@@ -1772,13 +1818,13 @@ class WidgetAuthor:
                 newline=newline,
             )
         # If widget text was written for this input, insert a new entry storing the newline flag.
-        if result:
-            metakey = append_newline_suffix(input_name)
-            nls = str(newline)
-            # if not newline:
-            #     log_msg: str = f"Inserting result[{metakey}]={nls}"
-            #     LOGGER_WF2PY.warning(log_msg)
-            result[metakey] = nls
+        # if result:
+        #     metakey = append_newline_suffix(input_name)
+        #     nls = str(newline)
+        #     if not newline:
+        #         log_msg: str = f"Inserting result[{metakey}]={nls}"
+        #         LOGGER_WF2PY.warning(log_msg)
+        #     result[metakey] = nls
         return result
 
 
