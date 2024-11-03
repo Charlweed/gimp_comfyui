@@ -456,6 +456,33 @@ def new_entry_str(node_index_str: str,
     return result
 
 
+def new_label(node_index_str: str,
+              node_title: str,  # noqa. Reserved
+              input_name: str,
+              ) -> Dict[str, str]:
+    widgets_dict: Dict[str, str] = {}
+    widget_id: str = "label_%s_%s" % (node_index_str, input_name)
+    label_declaration = "%s%s: Gtk.Label = Gtk.Label.new(\"%s\")" % (SP08, widget_id, input_name.title())
+    margin_start: int = 8  # Should this sometimes be 2?
+    label_configuration = (f"{SP08}{widget_id}.set_margin_start({margin_start})\n"
+                           f"{SP08}{widget_id}.set_alignment(0.95, 0)"
+                           )
+    widgets_dict[widget_id] = f"{label_declaration}\n{label_configuration}"
+    return widgets_dict
+
+
+def prefix_label(node_index_str: str,
+                 node_title: str,  # noqa. Reserved
+                 input_name: str,
+                 subject_widgets_dict: Dict[str, str]
+                 ) -> Dict[str, str]:
+    label_dict: Dict[str, str] = new_label(node_index_str=node_index_str,
+                                           node_title=node_title,
+                                           input_name=input_name)
+    widgets_dict: Dict[str, str] = label_dict | subject_widgets_dict
+    return widgets_dict
+
+
 def new_null_widget(node_index_str: str,
                     input_name: str,
                     ) -> Dict[str, str]:
@@ -1121,16 +1148,21 @@ class WidgetAuthor:
                             step_increment=0.01,
                             page_increment=0.1
                         )
-                        continues_row(result=result, input_name=input_name)
+                        ends_row(result=result, input_name=input_name)
+
                     case "separate_feature_channels":
                         sel_idx: int = WidgetAuthor._ABLEMENT.index(json_value)
-                        result = new_combo_static(node_title=node_title,
-                                                  node_index_str=node_index_str,
-                                                  input_name=input_name,
-                                                  change_handler_body_txt="pass",
-                                                  items=WidgetAuthor._ABLEMENT,
-                                                  selected_index=sel_idx
-                                                  )
+                        combo_dict = new_combo_static(node_title=node_title,
+                                                      node_index_str=node_index_str,
+                                                      input_name=input_name,
+                                                      change_handler_body_txt="pass",
+                                                      items=WidgetAuthor._ABLEMENT,
+                                                      selected_index=sel_idx
+                                                      )
+                        result = prefix_label(node_title=node_title,
+                                              node_index_str=node_index_str,
+                                              input_name=input_name,
+                                              subject_widgets_dict=combo_dict)
                         continues_row(result=result, input_name=input_name)
                     case "scaling_startpoint":
                         sel_idx: int = WidgetAuthor._SCALING_STARTPOINT.index(json_value)
@@ -1324,6 +1356,7 @@ class WidgetAuthor:
                             step_increment=0.1,
                             page_increment=2
                         )
+                        ends_row(result=result, input_name=input_name)
                     case "sampler_name":
                         sel_idx: int = WidgetAuthor._SAMPLER_NAMES.index(json_value)
                         result = new_combo_static(node_title=node_title,
@@ -1342,6 +1375,7 @@ class WidgetAuthor:
                                                   items=WidgetAuthor._SCHEDULER_NAMES,
                                                   selected_index=sel_idx
                                                   )
+                        ends_row(result=result, input_name=input_name)
                     case "start_at_step" | "end_at_step":
                         result = new_entry_int(
                             node_title=node_title,
@@ -1719,6 +1753,7 @@ class WidgetAuthor:
                                                   selected_index=sel_idx,
                                                   model_type=ModelType.UNET
                                                   )
+                        continues_row(result=result, input_name=input_name)
                     case "weight_dtype":
                         weight_dtype_literals = ["default", "fp8_e4m3fn", "fp8_e5m2"]
                         combo_message = f"Looking for index of {json_value} in {weight_dtype_literals}"
@@ -1731,6 +1766,7 @@ class WidgetAuthor:
                                                   items=weight_dtype_literals,
                                                   selected_index=sel_idx
                                                   )
+                        ends_row(result=result, input_name=input_name)
             case "Upscale Image":
                 match input_name:
                     case "crop":
