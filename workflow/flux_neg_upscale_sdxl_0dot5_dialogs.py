@@ -214,8 +214,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_10_vae_name
             selected_index = combo_values_10_vae_name.index(a_val)
             comboboxtext_10_vae_name.set_active(selected_index)
-        widget_getters[comboboxtext_10_vae_name.get_name()] = comboboxtext_10_vae_name.get_active_text
-        widget_setters[comboboxtext_10_vae_name.get_name()] = setter_10_vae_name
+        widget_getters[comboboxtext_10_vae_name.get_name()] = comboboxtext_10_vae_name.get_active_text  # noqa
+        widget_setters[comboboxtext_10_vae_name.get_name()] = setter_10_vae_name  # noqa
 
         grid_10: Gtk.Grid = Gtk.Grid.new()
         grid_10.attach(label_10_vae_name,        left=0, top=0, width=1, height=1)  # noqa
@@ -250,8 +250,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_11_clip_name1
             selected_index = combo_values_11_clip_name1.index(a_val)
             comboboxtext_11_clip_name1.set_active(selected_index)
-        widget_getters[comboboxtext_11_clip_name1.get_name()] = comboboxtext_11_clip_name1.get_active_text
-        widget_setters[comboboxtext_11_clip_name1.get_name()] = setter_11_clip_name1
+        widget_getters[comboboxtext_11_clip_name1.get_name()] = comboboxtext_11_clip_name1.get_active_text  # noqa
+        widget_setters[comboboxtext_11_clip_name1.get_name()] = setter_11_clip_name1  # noqa
 
         label_11_clip_name2: Gtk.Label = Gtk.Label.new("Clip_Name2")
         comboboxtext_11_clip_name2: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -276,8 +276,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_11_clip_name2
             selected_index = combo_values_11_clip_name2.index(a_val)
             comboboxtext_11_clip_name2.set_active(selected_index)
-        widget_getters[comboboxtext_11_clip_name2.get_name()] = comboboxtext_11_clip_name2.get_active_text
-        widget_setters[comboboxtext_11_clip_name2.get_name()] = setter_11_clip_name2
+        widget_getters[comboboxtext_11_clip_name2.get_name()] = comboboxtext_11_clip_name2.get_active_text  # noqa
+        widget_setters[comboboxtext_11_clip_name2.get_name()] = setter_11_clip_name2  # noqa
 
         label_11_type: Gtk.Label = Gtk.Label.new("Type")
         comboboxtext_11_type: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -296,8 +296,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_11_type
             selected_index = combo_values_11_type.index(a_val)
             comboboxtext_11_type.set_active(selected_index)
-        widget_getters[comboboxtext_11_type.get_name()] = comboboxtext_11_type.get_active_text
-        widget_setters[comboboxtext_11_type.get_name()] = setter_11_type
+        widget_getters[comboboxtext_11_type.get_name()] = comboboxtext_11_type.get_active_text  # noqa
+        widget_setters[comboboxtext_11_type.get_name()] = setter_11_type  # noqa
 
         grid_11: Gtk.Grid = Gtk.Grid.new()
         grid_11.attach(label_11_clip_name1,        left=0, top=0, width=1, height=1)  # noqa
@@ -336,8 +336,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_12_unet_name
             selected_index = combo_values_12_unet_name.index(a_val)
             comboboxtext_12_unet_name.set_active(selected_index)
-        widget_getters[comboboxtext_12_unet_name.get_name()] = comboboxtext_12_unet_name.get_active_text
-        widget_setters[comboboxtext_12_unet_name.get_name()] = setter_12_unet_name
+        widget_getters[comboboxtext_12_unet_name.get_name()] = comboboxtext_12_unet_name.get_active_text  # noqa
+        widget_setters[comboboxtext_12_unet_name.get_name()] = setter_12_unet_name  # noqa
 
         label_12_weight_dtype: Gtk.Label = Gtk.Label.new("Weight_Dtype")
         comboboxtext_12_weight_dtype: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -356,8 +356,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_12_weight_dtype
             selected_index = combo_values_12_weight_dtype.index(a_val)
             comboboxtext_12_weight_dtype.set_active(selected_index)
-        widget_getters[comboboxtext_12_weight_dtype.get_name()] = comboboxtext_12_weight_dtype.get_active_text
-        widget_setters[comboboxtext_12_weight_dtype.get_name()] = setter_12_weight_dtype
+        widget_getters[comboboxtext_12_weight_dtype.get_name()] = comboboxtext_12_weight_dtype.get_active_text  # noqa
+        widget_setters[comboboxtext_12_weight_dtype.get_name()] = setter_12_weight_dtype  # noqa
 
         grid_12: Gtk.Grid = Gtk.Grid.new()
         grid_12.attach(label_12_unet_name,           left=0, top=0, width=1, height=1)  # noqa
@@ -400,8 +400,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_49_width(a_val: int):
             entry_49_width.set_text(str(a_val))
-        widget_getters[entry_49_width.get_name()] = getter_49_width
-        widget_setters[entry_49_width.get_name()] = setter_49_width
+        widget_getters[entry_49_width.get_name()] = getter_49_width  # noqa
+        widget_setters[entry_49_width.get_name()] = setter_49_width  # noqa
 
         label_49_height: Gtk.Label = Gtk.Label.new("Height")
         label_49_height.set_margin_start(8)
@@ -424,8 +424,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_49_height(a_val: int):
             entry_49_height.set_text(str(a_val))
-        widget_getters[entry_49_height.get_name()] = getter_49_height
-        widget_setters[entry_49_height.get_name()] = setter_49_height
+        widget_getters[entry_49_height.get_name()] = getter_49_height  # noqa
+        widget_setters[entry_49_height.get_name()] = setter_49_height  # noqa
 
         label_49_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_49_batch_size.set_margin_start(8)
@@ -448,8 +448,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_49_batch_size(a_val: int):
             entry_49_batch_size.set_text(str(a_val))
-        widget_getters[entry_49_batch_size.get_name()] = getter_49_batch_size
-        widget_setters[entry_49_batch_size.get_name()] = setter_49_batch_size
+        widget_getters[entry_49_batch_size.get_name()] = getter_49_batch_size  # noqa
+        widget_setters[entry_49_batch_size.get_name()] = setter_49_batch_size  # noqa
 
         grid_49: Gtk.Grid = Gtk.Grid.new()
         grid_49.attach(label_49_width,      left=0, top=0, width=1, height=1)  # noqa
@@ -476,7 +476,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def getter_97_add_noise():
             return "enable" if checkbutton_97_add_noise.get_active() else "disable"
-        widget_getters[checkbutton_97_add_noise.get_name()] = getter_97_add_noise
+        widget_getters[checkbutton_97_add_noise.get_name()] = getter_97_add_noise  # noqa
 
         label_97_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_97_noise_seed.set_margin_start(8)
@@ -499,8 +499,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_97_noise_seed(a_val: int):
             entry_97_noise_seed.set_text(str(a_val))
-        widget_getters[entry_97_noise_seed.get_name()] = getter_97_noise_seed
-        widget_setters[entry_97_noise_seed.get_name()] = setter_97_noise_seed
+        widget_getters[entry_97_noise_seed.get_name()] = getter_97_noise_seed  # noqa
+        widget_setters[entry_97_noise_seed.get_name()] = setter_97_noise_seed  # noqa
 
         label_97_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_97_steps.set_margin_start(8)
@@ -523,8 +523,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_97_steps(a_val: int):
             entry_97_steps.set_text(str(a_val))
-        widget_getters[entry_97_steps.get_name()] = getter_97_steps
-        widget_setters[entry_97_steps.get_name()] = setter_97_steps
+        widget_getters[entry_97_steps.get_name()] = getter_97_steps  # noqa
+        widget_setters[entry_97_steps.get_name()] = setter_97_steps  # noqa
 
         label_97_cfg: Gtk.Label = Gtk.Label.new("Cfg")
         label_97_cfg.set_margin_start(8)
@@ -563,8 +563,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_97_sampler_name
             selected_index = combo_values_97_sampler_name.index(a_val)
             comboboxtext_97_sampler_name.set_active(selected_index)
-        widget_getters[comboboxtext_97_sampler_name.get_name()] = comboboxtext_97_sampler_name.get_active_text
-        widget_setters[comboboxtext_97_sampler_name.get_name()] = setter_97_sampler_name
+        widget_getters[comboboxtext_97_sampler_name.get_name()] = comboboxtext_97_sampler_name.get_active_text  # noqa
+        widget_setters[comboboxtext_97_sampler_name.get_name()] = setter_97_sampler_name  # noqa
 
         label_97_scheduler: Gtk.Label = Gtk.Label.new("Scheduler")
         comboboxtext_97_scheduler: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -583,8 +583,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_97_scheduler
             selected_index = combo_values_97_scheduler.index(a_val)
             comboboxtext_97_scheduler.set_active(selected_index)
-        widget_getters[comboboxtext_97_scheduler.get_name()] = comboboxtext_97_scheduler.get_active_text
-        widget_setters[comboboxtext_97_scheduler.get_name()] = setter_97_scheduler
+        widget_getters[comboboxtext_97_scheduler.get_name()] = comboboxtext_97_scheduler.get_active_text  # noqa
+        widget_setters[comboboxtext_97_scheduler.get_name()] = setter_97_scheduler  # noqa
 
         label_97_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_97_start_at_step.set_margin_start(8)
@@ -607,8 +607,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_97_start_at_step(a_val: int):
             entry_97_start_at_step.set_text(str(a_val))
-        widget_getters[entry_97_start_at_step.get_name()] = getter_97_start_at_step
-        widget_setters[entry_97_start_at_step.get_name()] = setter_97_start_at_step
+        widget_getters[entry_97_start_at_step.get_name()] = getter_97_start_at_step  # noqa
+        widget_setters[entry_97_start_at_step.get_name()] = setter_97_start_at_step  # noqa
 
         label_97_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_97_end_at_step.set_margin_start(8)
@@ -631,8 +631,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_97_end_at_step(a_val: int):
             entry_97_end_at_step.set_text(str(a_val))
-        widget_getters[entry_97_end_at_step.get_name()] = getter_97_end_at_step
-        widget_setters[entry_97_end_at_step.get_name()] = setter_97_end_at_step
+        widget_getters[entry_97_end_at_step.get_name()] = getter_97_end_at_step  # noqa
+        widget_setters[entry_97_end_at_step.get_name()] = setter_97_end_at_step  # noqa
 
         checkbutton_97_return_with_leftover_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Return With Leftover Noise")  # noqa
         checkbutton_97_return_with_leftover_noise.set_active(False)
@@ -645,7 +645,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def getter_97_return_with_leftover_noise():
             return "enable" if checkbutton_97_return_with_leftover_noise.get_active() else "disable"
-        widget_getters[checkbutton_97_return_with_leftover_noise.get_name()] = getter_97_return_with_leftover_noise
+        widget_getters[checkbutton_97_return_with_leftover_noise.get_name()] = getter_97_return_with_leftover_noise  # noqa
 
         grid_97: Gtk.Grid = Gtk.Grid.new()
         grid_97.attach(checkbutton_97_add_noise,                  left=0, top=0, width=4, height=1)  # noqa
@@ -682,7 +682,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def getter_98_add_noise():
             return "enable" if checkbutton_98_add_noise.get_active() else "disable"
-        widget_getters[checkbutton_98_add_noise.get_name()] = getter_98_add_noise
+        widget_getters[checkbutton_98_add_noise.get_name()] = getter_98_add_noise  # noqa
 
         label_98_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_98_noise_seed.set_margin_start(8)
@@ -705,8 +705,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_98_noise_seed(a_val: int):
             entry_98_noise_seed.set_text(str(a_val))
-        widget_getters[entry_98_noise_seed.get_name()] = getter_98_noise_seed
-        widget_setters[entry_98_noise_seed.get_name()] = setter_98_noise_seed
+        widget_getters[entry_98_noise_seed.get_name()] = getter_98_noise_seed  # noqa
+        widget_setters[entry_98_noise_seed.get_name()] = setter_98_noise_seed  # noqa
 
         label_98_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_98_steps.set_margin_start(8)
@@ -729,8 +729,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_98_steps(a_val: int):
             entry_98_steps.set_text(str(a_val))
-        widget_getters[entry_98_steps.get_name()] = getter_98_steps
-        widget_setters[entry_98_steps.get_name()] = setter_98_steps
+        widget_getters[entry_98_steps.get_name()] = getter_98_steps  # noqa
+        widget_setters[entry_98_steps.get_name()] = setter_98_steps  # noqa
 
         label_98_cfg: Gtk.Label = Gtk.Label.new("Cfg")
         label_98_cfg.set_margin_start(8)
@@ -769,8 +769,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_98_sampler_name
             selected_index = combo_values_98_sampler_name.index(a_val)
             comboboxtext_98_sampler_name.set_active(selected_index)
-        widget_getters[comboboxtext_98_sampler_name.get_name()] = comboboxtext_98_sampler_name.get_active_text
-        widget_setters[comboboxtext_98_sampler_name.get_name()] = setter_98_sampler_name
+        widget_getters[comboboxtext_98_sampler_name.get_name()] = comboboxtext_98_sampler_name.get_active_text  # noqa
+        widget_setters[comboboxtext_98_sampler_name.get_name()] = setter_98_sampler_name  # noqa
 
         label_98_scheduler: Gtk.Label = Gtk.Label.new("Scheduler")
         comboboxtext_98_scheduler: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -789,8 +789,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_98_scheduler
             selected_index = combo_values_98_scheduler.index(a_val)
             comboboxtext_98_scheduler.set_active(selected_index)
-        widget_getters[comboboxtext_98_scheduler.get_name()] = comboboxtext_98_scheduler.get_active_text
-        widget_setters[comboboxtext_98_scheduler.get_name()] = setter_98_scheduler
+        widget_getters[comboboxtext_98_scheduler.get_name()] = comboboxtext_98_scheduler.get_active_text  # noqa
+        widget_setters[comboboxtext_98_scheduler.get_name()] = setter_98_scheduler  # noqa
 
         label_98_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_98_start_at_step.set_margin_start(8)
@@ -813,8 +813,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_98_start_at_step(a_val: int):
             entry_98_start_at_step.set_text(str(a_val))
-        widget_getters[entry_98_start_at_step.get_name()] = getter_98_start_at_step
-        widget_setters[entry_98_start_at_step.get_name()] = setter_98_start_at_step
+        widget_getters[entry_98_start_at_step.get_name()] = getter_98_start_at_step  # noqa
+        widget_setters[entry_98_start_at_step.get_name()] = setter_98_start_at_step  # noqa
 
         label_98_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_98_end_at_step.set_margin_start(8)
@@ -837,8 +837,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_98_end_at_step(a_val: int):
             entry_98_end_at_step.set_text(str(a_val))
-        widget_getters[entry_98_end_at_step.get_name()] = getter_98_end_at_step
-        widget_setters[entry_98_end_at_step.get_name()] = setter_98_end_at_step
+        widget_getters[entry_98_end_at_step.get_name()] = getter_98_end_at_step  # noqa
+        widget_setters[entry_98_end_at_step.get_name()] = setter_98_end_at_step  # noqa
 
         checkbutton_98_return_with_leftover_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Return With Leftover Noise")  # noqa
         checkbutton_98_return_with_leftover_noise.set_active(True)
@@ -851,7 +851,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def getter_98_return_with_leftover_noise():
             return "enable" if checkbutton_98_return_with_leftover_noise.get_active() else "disable"
-        widget_getters[checkbutton_98_return_with_leftover_noise.get_name()] = getter_98_return_with_leftover_noise
+        widget_getters[checkbutton_98_return_with_leftover_noise.get_name()] = getter_98_return_with_leftover_noise  # noqa
 
         grid_98: Gtk.Grid = Gtk.Grid.new()
         grid_98.attach(checkbutton_98_add_noise,                  left=0, top=0, width=4, height=1)  # noqa
@@ -935,8 +935,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_100_mimic_mode
             selected_index = combo_values_100_mimic_mode.index(a_val)
             comboboxtext_100_mimic_mode.set_active(selected_index)
-        widget_getters[comboboxtext_100_mimic_mode.get_name()] = comboboxtext_100_mimic_mode.get_active_text
-        widget_setters[comboboxtext_100_mimic_mode.get_name()] = setter_100_mimic_mode
+        widget_getters[comboboxtext_100_mimic_mode.get_name()] = comboboxtext_100_mimic_mode.get_active_text  # noqa
+        widget_setters[comboboxtext_100_mimic_mode.get_name()] = setter_100_mimic_mode  # noqa
 
         label_100_mimic_scale_min: Gtk.Label = Gtk.Label.new("Mimic_Scale_Min")
         label_100_mimic_scale_min.set_margin_start(8)
@@ -976,8 +976,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_100_cfg_mode
             selected_index = combo_values_100_cfg_mode.index(a_val)
             comboboxtext_100_cfg_mode.set_active(selected_index)
-        widget_getters[comboboxtext_100_cfg_mode.get_name()] = comboboxtext_100_cfg_mode.get_active_text
-        widget_setters[comboboxtext_100_cfg_mode.get_name()] = setter_100_cfg_mode
+        widget_getters[comboboxtext_100_cfg_mode.get_name()] = comboboxtext_100_cfg_mode.get_active_text  # noqa
+        widget_setters[comboboxtext_100_cfg_mode.get_name()] = setter_100_cfg_mode  # noqa
 
         label_100_cfg_scale_min: Gtk.Label = Gtk.Label.new("Cfg_Scale_Min")
         label_100_cfg_scale_min.set_margin_start(8)
@@ -1040,8 +1040,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_100_separate_feature_channels
             selected_index = combo_values_100_separate_feature_channels.index(a_val)
             comboboxtext_100_separate_feature_channels.set_active(selected_index)
-        widget_getters[comboboxtext_100_separate_feature_channels.get_name()] = comboboxtext_100_separate_feature_channels.get_active_text
-        widget_setters[comboboxtext_100_separate_feature_channels.get_name()] = setter_100_separate_feature_channels
+        widget_getters[comboboxtext_100_separate_feature_channels.get_name()] = comboboxtext_100_separate_feature_channels.get_active_text  # noqa
+        widget_setters[comboboxtext_100_separate_feature_channels.get_name()] = setter_100_separate_feature_channels  # noqa
 
         label_100_scaling_startpoint: Gtk.Label = Gtk.Label.new("Scaling_Startpoint")
         comboboxtext_100_scaling_startpoint: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1060,8 +1060,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_100_scaling_startpoint
             selected_index = combo_values_100_scaling_startpoint.index(a_val)
             comboboxtext_100_scaling_startpoint.set_active(selected_index)
-        widget_getters[comboboxtext_100_scaling_startpoint.get_name()] = comboboxtext_100_scaling_startpoint.get_active_text
-        widget_setters[comboboxtext_100_scaling_startpoint.get_name()] = setter_100_scaling_startpoint
+        widget_getters[comboboxtext_100_scaling_startpoint.get_name()] = comboboxtext_100_scaling_startpoint.get_active_text  # noqa
+        widget_setters[comboboxtext_100_scaling_startpoint.get_name()] = setter_100_scaling_startpoint  # noqa
 
         label_100_variability_measure: Gtk.Label = Gtk.Label.new("Variability_Measure")
         comboboxtext_100_variability_measure: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1080,8 +1080,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_100_variability_measure
             selected_index = combo_values_100_variability_measure.index(a_val)
             comboboxtext_100_variability_measure.set_active(selected_index)
-        widget_getters[comboboxtext_100_variability_measure.get_name()] = comboboxtext_100_variability_measure.get_active_text
-        widget_setters[comboboxtext_100_variability_measure.get_name()] = setter_100_variability_measure
+        widget_getters[comboboxtext_100_variability_measure.get_name()] = comboboxtext_100_variability_measure.get_active_text  # noqa
+        widget_setters[comboboxtext_100_variability_measure.get_name()] = setter_100_variability_measure  # noqa
 
         label_100_interpolate_phi: Gtk.Label = Gtk.Label.new("Interpolate_Phi")
         label_100_interpolate_phi.set_margin_start(8)
@@ -1271,8 +1271,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_122_ckpt_name
             selected_index = combo_values_122_ckpt_name.index(a_val)
             comboboxtext_122_ckpt_name.set_active(selected_index)
-        widget_getters[comboboxtext_122_ckpt_name.get_name()] = comboboxtext_122_ckpt_name.get_active_text
-        widget_setters[comboboxtext_122_ckpt_name.get_name()] = setter_122_ckpt_name
+        widget_getters[comboboxtext_122_ckpt_name.get_name()] = comboboxtext_122_ckpt_name.get_active_text  # noqa
+        widget_setters[comboboxtext_122_ckpt_name.get_name()] = setter_122_ckpt_name  # noqa
 
         label_122_vae_name: Gtk.Label = Gtk.Label.new("Vae_Name")
         comboboxtext_122_vae_name: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1297,8 +1297,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_122_vae_name
             selected_index = combo_values_122_vae_name.index(a_val)
             comboboxtext_122_vae_name.set_active(selected_index)
-        widget_getters[comboboxtext_122_vae_name.get_name()] = comboboxtext_122_vae_name.get_active_text
-        widget_setters[comboboxtext_122_vae_name.get_name()] = setter_122_vae_name
+        widget_getters[comboboxtext_122_vae_name.get_name()] = comboboxtext_122_vae_name.get_active_text  # noqa
+        widget_setters[comboboxtext_122_vae_name.get_name()] = setter_122_vae_name  # noqa
 
         label_122_clip_skip: Gtk.Label = Gtk.Label.new("Clip_Skip")
         label_122_clip_skip.set_margin_start(8)
@@ -1321,8 +1321,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_122_clip_skip(a_val: int):
             entry_122_clip_skip.set_text(str(a_val))
-        widget_getters[entry_122_clip_skip.get_name()] = getter_122_clip_skip
-        widget_setters[entry_122_clip_skip.get_name()] = setter_122_clip_skip
+        widget_getters[entry_122_clip_skip.get_name()] = getter_122_clip_skip  # noqa
+        widget_setters[entry_122_clip_skip.get_name()] = setter_122_clip_skip  # noqa
 
         label_122_lora_name: Gtk.Label = Gtk.Label.new("Lora_Name")
         comboboxtext_122_lora_name: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1347,8 +1347,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_122_lora_name
             selected_index = combo_values_122_lora_name.index(a_val)
             comboboxtext_122_lora_name.set_active(selected_index)
-        widget_getters[comboboxtext_122_lora_name.get_name()] = comboboxtext_122_lora_name.get_active_text
-        widget_setters[comboboxtext_122_lora_name.get_name()] = setter_122_lora_name
+        widget_getters[comboboxtext_122_lora_name.get_name()] = comboboxtext_122_lora_name.get_active_text  # noqa
+        widget_setters[comboboxtext_122_lora_name.get_name()] = setter_122_lora_name  # noqa
 
         label_122_lora_model_strength: Gtk.Label = Gtk.Label.new("Lora_Model_Strength")
         label_122_lora_model_strength.set_margin_start(8)
@@ -1463,8 +1463,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_122_token_normalization
             selected_index = combo_values_122_token_normalization.index(a_val)
             comboboxtext_122_token_normalization.set_active(selected_index)
-        widget_getters[comboboxtext_122_token_normalization.get_name()] = comboboxtext_122_token_normalization.get_active_text
-        widget_setters[comboboxtext_122_token_normalization.get_name()] = setter_122_token_normalization
+        widget_getters[comboboxtext_122_token_normalization.get_name()] = comboboxtext_122_token_normalization.get_active_text  # noqa
+        widget_setters[comboboxtext_122_token_normalization.get_name()] = setter_122_token_normalization  # noqa
 
         label_122_weight_interpretation: Gtk.Label = Gtk.Label.new("Weight_Interpretation")
         comboboxtext_122_weight_interpretation: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1483,8 +1483,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_122_weight_interpretation
             selected_index = combo_values_122_weight_interpretation.index(a_val)
             comboboxtext_122_weight_interpretation.set_active(selected_index)
-        widget_getters[comboboxtext_122_weight_interpretation.get_name()] = comboboxtext_122_weight_interpretation.get_active_text
-        widget_setters[comboboxtext_122_weight_interpretation.get_name()] = setter_122_weight_interpretation
+        widget_getters[comboboxtext_122_weight_interpretation.get_name()] = comboboxtext_122_weight_interpretation.get_active_text  # noqa
+        widget_setters[comboboxtext_122_weight_interpretation.get_name()] = setter_122_weight_interpretation  # noqa
 
         label_122_empty_latent_width: Gtk.Label = Gtk.Label.new("Empty_Latent_Width")
         label_122_empty_latent_width.set_margin_start(8)
@@ -1507,8 +1507,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_122_empty_latent_width(a_val: int):
             entry_122_empty_latent_width.set_text(str(a_val))
-        widget_getters[entry_122_empty_latent_width.get_name()] = getter_122_empty_latent_width
-        widget_setters[entry_122_empty_latent_width.get_name()] = setter_122_empty_latent_width
+        widget_getters[entry_122_empty_latent_width.get_name()] = getter_122_empty_latent_width  # noqa
+        widget_setters[entry_122_empty_latent_width.get_name()] = setter_122_empty_latent_width  # noqa
 
         label_122_empty_latent_height: Gtk.Label = Gtk.Label.new("Empty_Latent_Height")
         label_122_empty_latent_height.set_margin_start(8)
@@ -1531,8 +1531,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_122_empty_latent_height(a_val: int):
             entry_122_empty_latent_height.set_text(str(a_val))
-        widget_getters[entry_122_empty_latent_height.get_name()] = getter_122_empty_latent_height
-        widget_setters[entry_122_empty_latent_height.get_name()] = setter_122_empty_latent_height
+        widget_getters[entry_122_empty_latent_height.get_name()] = getter_122_empty_latent_height  # noqa
+        widget_setters[entry_122_empty_latent_height.get_name()] = setter_122_empty_latent_height  # noqa
 
         label_122_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_122_batch_size.set_margin_start(8)
@@ -1555,8 +1555,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_122_batch_size(a_val: int):
             entry_122_batch_size.set_text(str(a_val))
-        widget_getters[entry_122_batch_size.get_name()] = getter_122_batch_size
-        widget_setters[entry_122_batch_size.get_name()] = setter_122_batch_size
+        widget_getters[entry_122_batch_size.get_name()] = getter_122_batch_size  # noqa
+        widget_setters[entry_122_batch_size.get_name()] = setter_122_batch_size  # noqa
 
         grid_122: Gtk.Grid = Gtk.Grid.new()
         grid_122.attach(label_122_ckpt_name,                    left=0, top=0, width=1, height=1)  # noqa
@@ -1634,8 +1634,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_123_seed(a_val: int):
             entry_123_seed.set_text(str(a_val))
-        widget_getters[entry_123_seed.get_name()] = getter_123_seed
-        widget_setters[entry_123_seed.get_name()] = setter_123_seed
+        widget_getters[entry_123_seed.get_name()] = getter_123_seed  # noqa
+        widget_setters[entry_123_seed.get_name()] = setter_123_seed  # noqa
 
         label_123_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_123_steps.set_margin_start(8)
@@ -1658,8 +1658,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_123_steps(a_val: int):
             entry_123_steps.set_text(str(a_val))
-        widget_getters[entry_123_steps.get_name()] = getter_123_steps
-        widget_setters[entry_123_steps.get_name()] = setter_123_steps
+        widget_getters[entry_123_steps.get_name()] = getter_123_steps  # noqa
+        widget_setters[entry_123_steps.get_name()] = setter_123_steps  # noqa
 
         label_123_cfg: Gtk.Label = Gtk.Label.new("Cfg")
         label_123_cfg.set_margin_start(8)
@@ -1698,8 +1698,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_123_sampler_name
             selected_index = combo_values_123_sampler_name.index(a_val)
             comboboxtext_123_sampler_name.set_active(selected_index)
-        widget_getters[comboboxtext_123_sampler_name.get_name()] = comboboxtext_123_sampler_name.get_active_text
-        widget_setters[comboboxtext_123_sampler_name.get_name()] = setter_123_sampler_name
+        widget_getters[comboboxtext_123_sampler_name.get_name()] = comboboxtext_123_sampler_name.get_active_text  # noqa
+        widget_setters[comboboxtext_123_sampler_name.get_name()] = setter_123_sampler_name  # noqa
 
         label_123_scheduler: Gtk.Label = Gtk.Label.new("Scheduler")
         comboboxtext_123_scheduler: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1718,8 +1718,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_123_scheduler
             selected_index = combo_values_123_scheduler.index(a_val)
             comboboxtext_123_scheduler.set_active(selected_index)
-        widget_getters[comboboxtext_123_scheduler.get_name()] = comboboxtext_123_scheduler.get_active_text
-        widget_setters[comboboxtext_123_scheduler.get_name()] = setter_123_scheduler
+        widget_getters[comboboxtext_123_scheduler.get_name()] = comboboxtext_123_scheduler.get_active_text  # noqa
+        widget_setters[comboboxtext_123_scheduler.get_name()] = setter_123_scheduler  # noqa
 
         label_123_denoise: Gtk.Label = Gtk.Label.new("Denoise")
         label_123_denoise.set_margin_start(8)
@@ -1758,8 +1758,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_123_mode_type
             selected_index = combo_values_123_mode_type.index(a_val)
             comboboxtext_123_mode_type.set_active(selected_index)
-        widget_getters[comboboxtext_123_mode_type.get_name()] = comboboxtext_123_mode_type.get_active_text
-        widget_setters[comboboxtext_123_mode_type.get_name()] = setter_123_mode_type
+        widget_getters[comboboxtext_123_mode_type.get_name()] = comboboxtext_123_mode_type.get_active_text  # noqa
+        widget_setters[comboboxtext_123_mode_type.get_name()] = setter_123_mode_type  # noqa
 
         label_123_mask_blur: Gtk.Label = Gtk.Label.new("Mask_Blur")
         label_123_mask_blur.set_margin_start(8)
@@ -1782,8 +1782,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_123_mask_blur(a_val: int):
             entry_123_mask_blur.set_text(str(a_val))
-        widget_getters[entry_123_mask_blur.get_name()] = getter_123_mask_blur
-        widget_setters[entry_123_mask_blur.get_name()] = setter_123_mask_blur
+        widget_getters[entry_123_mask_blur.get_name()] = getter_123_mask_blur  # noqa
+        widget_setters[entry_123_mask_blur.get_name()] = setter_123_mask_blur  # noqa
 
         label_123_tile_padding: Gtk.Label = Gtk.Label.new("Tile_Padding")
         label_123_tile_padding.set_margin_start(8)
@@ -1806,8 +1806,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_123_tile_padding(a_val: int):
             entry_123_tile_padding.set_text(str(a_val))
-        widget_getters[entry_123_tile_padding.get_name()] = getter_123_tile_padding
-        widget_setters[entry_123_tile_padding.get_name()] = setter_123_tile_padding
+        widget_getters[entry_123_tile_padding.get_name()] = getter_123_tile_padding  # noqa
+        widget_setters[entry_123_tile_padding.get_name()] = setter_123_tile_padding  # noqa
 
         label_123_seam_fix_mode: Gtk.Label = Gtk.Label.new("Seam_Fix_Mode")
         comboboxtext_123_seam_fix_mode: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1826,8 +1826,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_123_seam_fix_mode
             selected_index = combo_values_123_seam_fix_mode.index(a_val)
             comboboxtext_123_seam_fix_mode.set_active(selected_index)
-        widget_getters[comboboxtext_123_seam_fix_mode.get_name()] = comboboxtext_123_seam_fix_mode.get_active_text
-        widget_setters[comboboxtext_123_seam_fix_mode.get_name()] = setter_123_seam_fix_mode
+        widget_getters[comboboxtext_123_seam_fix_mode.get_name()] = comboboxtext_123_seam_fix_mode.get_active_text  # noqa
+        widget_setters[comboboxtext_123_seam_fix_mode.get_name()] = setter_123_seam_fix_mode  # noqa
 
         label_123_seam_fix_denoise: Gtk.Label = Gtk.Label.new("Seam_Fix_Denoise")
         label_123_seam_fix_denoise.set_margin_start(8)
@@ -1871,8 +1871,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_123_seam_fix_width(a_val: int):
             entry_123_seam_fix_width.set_text(str(a_val))
-        widget_getters[entry_123_seam_fix_width.get_name()] = getter_123_seam_fix_width
-        widget_setters[entry_123_seam_fix_width.get_name()] = setter_123_seam_fix_width
+        widget_getters[entry_123_seam_fix_width.get_name()] = getter_123_seam_fix_width  # noqa
+        widget_setters[entry_123_seam_fix_width.get_name()] = setter_123_seam_fix_width  # noqa
 
         label_123_seam_fix_mask_blur: Gtk.Label = Gtk.Label.new("Seam_Fix_Mask_Blur")
         label_123_seam_fix_mask_blur.set_margin_start(8)
@@ -1895,8 +1895,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_123_seam_fix_mask_blur(a_val: int):
             entry_123_seam_fix_mask_blur.set_text(str(a_val))
-        widget_getters[entry_123_seam_fix_mask_blur.get_name()] = getter_123_seam_fix_mask_blur
-        widget_setters[entry_123_seam_fix_mask_blur.get_name()] = setter_123_seam_fix_mask_blur
+        widget_getters[entry_123_seam_fix_mask_blur.get_name()] = getter_123_seam_fix_mask_blur  # noqa
+        widget_setters[entry_123_seam_fix_mask_blur.get_name()] = setter_123_seam_fix_mask_blur  # noqa
 
         label_123_seam_fix_padding: Gtk.Label = Gtk.Label.new("Seam_Fix_Padding")
         label_123_seam_fix_padding.set_margin_start(8)
@@ -1919,8 +1919,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def setter_123_seam_fix_padding(a_val: int):
             entry_123_seam_fix_padding.set_text(str(a_val))
-        widget_getters[entry_123_seam_fix_padding.get_name()] = getter_123_seam_fix_padding
-        widget_setters[entry_123_seam_fix_padding.get_name()] = setter_123_seam_fix_padding
+        widget_getters[entry_123_seam_fix_padding.get_name()] = getter_123_seam_fix_padding  # noqa
+        widget_setters[entry_123_seam_fix_padding.get_name()] = setter_123_seam_fix_padding  # noqa
 
         checkbutton_123_force_uniform_tiles: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Force Uniform Tiles")  # noqa
         checkbutton_123_force_uniform_tiles.set_active(True)
@@ -1933,7 +1933,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def getter_123_force_uniform_tiles():
             return "enable" if checkbutton_123_force_uniform_tiles.get_active() else "disable"
-        widget_getters[checkbutton_123_force_uniform_tiles.get_name()] = getter_123_force_uniform_tiles
+        widget_getters[checkbutton_123_force_uniform_tiles.get_name()] = getter_123_force_uniform_tiles  # noqa
 
         checkbutton_123_tiled_decode: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Tiled Decode")  # noqa
         checkbutton_123_tiled_decode.set_active(False)
@@ -1946,7 +1946,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         def getter_123_tiled_decode():
             return "enable" if checkbutton_123_tiled_decode.get_active() else "disable"
-        widget_getters[checkbutton_123_tiled_decode.get_name()] = getter_123_tiled_decode
+        widget_getters[checkbutton_123_tiled_decode.get_name()] = getter_123_tiled_decode  # noqa
 
         grid_123: Gtk.Grid = Gtk.Grid.new()
         grid_123.attach(label_123_upscale_by,                left=0, top=0, width=1, height=1)  # noqa
@@ -2011,8 +2011,8 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_124_model_name
             selected_index = combo_values_124_model_name.index(a_val)
             comboboxtext_124_model_name.set_active(selected_index)
-        widget_getters[comboboxtext_124_model_name.get_name()] = comboboxtext_124_model_name.get_active_text
-        widget_setters[comboboxtext_124_model_name.get_name()] = setter_124_model_name
+        widget_getters[comboboxtext_124_model_name.get_name()] = comboboxtext_124_model_name.get_active_text  # noqa
+        widget_setters[comboboxtext_124_model_name.get_name()] = setter_124_model_name  # noqa
 
         grid_124: Gtk.Grid = Gtk.Grid.new()
         grid_124.attach(label_124_model_name,        left=0, top=0, width=1, height=1)  # noqa

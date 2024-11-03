@@ -87,7 +87,7 @@ def new_checkbutton(node_index_str: str,
     handler_assignment = f"{SP08}{widget_id}.connect(SIG_TOGGLED, {handler_id})\n"
     getter_id: str = f"getter_{node_index_str}_{input_name}"
     getter_code = f"\n{SP08}def {getter_id}():\n{SP12}return \"enable\" if {widget_id}.get_active() else \"disable\"\n"  # noqa
-    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {getter_id}\n"
+    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {getter_id}  # noqa\n"
     text: str = ""
     text += widget_declaration
     text += content_assignment
@@ -137,7 +137,7 @@ def new_treeview_layer(node_index_str,
         "\n"
         f"{SP08}{widget_id}.get_selection().connect(\"changed\", selection_handler_{node_index_str}_{input_name})\n"
     )
-    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {widget_id}.get_selected_png_leaf\n"
+    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {widget_id}.get_selected_png_leaf  # noqa\n"
     text: str = ""
     text += widget_declaration
     text += widget_config  # Must be after content_assignment
@@ -198,8 +198,8 @@ def new_combo_fs(node_index_str: str,
         nonlocal {combo_values_id}
         selected_index = {combo_values_id}.index(a_val)
         {widget_id}.set_active(selected_index)\n"""
-    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {widget_id}.get_active_text\n"
-    widget_filling = f"{SP08}widget_setters[{widget_id}.get_name()] = {setter_id}\n"
+    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {widget_id}.get_active_text  # noqa\n"
+    widget_filling = f"{SP08}widget_setters[{widget_id}.get_name()] = {setter_id}  # noqa\n"
     text: str = ""
     text += widget_declaration
     text += content_list_declaration
@@ -249,8 +249,8 @@ def new_combo_models(node_index_str: str,
             nonlocal {combo_values_id}
             selected_index = {combo_values_id}.index(a_val)
             {widget_id}.set_active(selected_index)\n"""
-    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {widget_id}.get_active_text\n"
-    widget_filling = f"{SP08}widget_setters[{widget_id}.get_name()] = {setter_id}\n"
+    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {widget_id}.get_active_text  # noqa\n"
+    widget_filling = f"{SP08}widget_setters[{widget_id}.get_name()] = {setter_id}  # noqa\n"
     text: str = ""
     text += widget_declaration
     text += content_list_declaration
@@ -295,8 +295,8 @@ def new_combo_static(node_index_str: str,
             selected_index = {combo_values_id}.index(a_val)
             {widget_id}.set_active(selected_index)
 """
-    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {widget_id}.get_active_text\n"
-    widget_filling = f"{SP08}widget_setters[{widget_id}.get_name()] = {setter_id}\n"
+    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {widget_id}.get_active_text  # noqa\n"
+    widget_filling = f"{SP08}widget_setters[{widget_id}.get_name()] = {setter_id}  # noqa\n"
     text: str = ""
     text += widget_declaration
     text += content_list_declaration
@@ -350,8 +350,8 @@ def new_entry_float(node_index_str: str,
         def {setter_id}(a_val: float):
             {widget_id}.set_text(str(a_val))
 """
-    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {getter_id}\n"
-    widget_filling = f"{SP08}widget_setters[{widget_id}.get_name()] = {setter_id}\n"
+    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {getter_id}  # noqa\n"
+    widget_filling = f"{SP08}widget_setters[{widget_id}.get_name()] = {setter_id}  # noqa\n"
     text: str = ""
     text += widget_declaration
     text += content_assignment
@@ -406,8 +406,8 @@ def new_entry_int(node_index_str: str,
         def {setter_id}(a_val: int):
             {widget_id}.set_text(str(a_val))
 """
-    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {getter_id}\n"
-    widget_filling = f"{SP08}widget_setters[{widget_id}.get_name()] = {setter_id}\n"
+    content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {getter_id}  # noqa\n"
+    widget_filling = f"{SP08}widget_setters[{widget_id}.get_name()] = {setter_id}  # noqa\n"
     text: str = ""
     text += widget_declaration
     text += content_assignment
