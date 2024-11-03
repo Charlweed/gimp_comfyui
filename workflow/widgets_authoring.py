@@ -28,8 +28,10 @@ KEY_SUFFIX_NEWLINE: str = f"{METAKEY_FLAG}newline{METAKEY_FLAG}"  # w_text keys 
 KEY_SUFFIX_GRID_WIDTH: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"
 # w_text keys with this suffix are the count of vertical cells in a layout grid.
 KEY_SUFFIX_GRID_HEIGHT: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"
-NEGATIVE_PROMPT_TITLE_REGEX_PATTERN = ".*negative.*prompt.*"
-NEGATIVE_PROMPT_TITLE_REGEX = re.compile(NEGATIVE_PROMPT_TITLE_REGEX_PATTERN)
+NEGATIVE_PROMPT_TITLE_REGEX_1_PATTERN = ".*negative.*prompt.*"
+NEGATIVE_PROMPT_TITLE_REGEX_1 = re.compile(NEGATIVE_PROMPT_TITLE_REGEX_1_PATTERN)
+NEGATIVE_PROMPT_INPUT_REGEX_1_PATTERN = ".*negative.*"
+NEGATIVE_PROMPT_INPUT_REGEX_1 = re.compile(NEGATIVE_PROMPT_INPUT_REGEX_1_PATTERN)
 
 
 def append_newline_suffix(original_key: str) -> str:
@@ -56,10 +58,16 @@ def indent_a(start: int, source_identifier: str, infix: str) -> str:
     return " " * indent
 
 
-def probably_negative_prompt(some_string: str) -> bool:
+def probably_negative_prompt_title(some_string: str) -> bool:
     if not some_string:
         raise ValueError("some_string argument cannot be empty")
-    return bool(NEGATIVE_PROMPT_TITLE_REGEX.search(some_string.lower()))
+    return bool(NEGATIVE_PROMPT_TITLE_REGEX_1.search(some_string.lower()))
+
+
+def probably_negative_prompt_input(some_string: str) -> bool:
+    if not some_string:
+        raise ValueError("some_string argument cannot be empty")
+    return bool(NEGATIVE_PROMPT_INPUT_REGEX_1.search(some_string.lower()))
 
 
 def new_checkbutton(node_index_str: str,
@@ -582,7 +590,7 @@ def new_textview(node_index_str: str,
     # https://lazka.github.io/pgi-docs/Gtk-3.0/mapping.html
     scroll_window_width = 864
     scroll_window_height = 288
-    if probably_negative_prompt(node_title):
+    if probably_negative_prompt_title(node_title) or probably_negative_prompt_input(input_name):
         scroll_window_width = 288
         scroll_window_height = 96
     widget_config: str = (f"{SP08}{widget_id}.set_name(\"{widget_id}\")\n"

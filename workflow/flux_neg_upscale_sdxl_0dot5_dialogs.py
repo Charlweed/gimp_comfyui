@@ -1428,7 +1428,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         # Create a ScrolledWindow to hold the TextView
         scrolled_window_122_negative = Gtk.ScrolledWindow()
         scrolled_window_122_negative.add(textview_122_negative)  # noqa
-        scrolled_window_122_negative.set_size_request(864, 288)
+        scrolled_window_122_negative.set_size_request(288, 96)
 
         def preedit_handler_122_negative(source, **args):  # noqa
             pass
@@ -2064,27 +2064,39 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         grid_129.set_column_homogeneous(False)
         grid_129.set_row_homogeneous(False)
         frame_saveimage_129save_original_scale.add(widget=grid_129)  # noqa
+
         content_area: Gtk.Box = dialog.get_content_area()
-        content_area.pack_start(child=frame_cliptextencode_006positive_prompt, expand=True, fill=True, padding=0)  # noqa
-        content_area.pack_start(child=frame_vaeloader_010load_vae, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_dualcliploader_011dualcliploader, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_unetloader_012load_diffusion_model, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_tobasicpipe_047tobasicpipe, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_emptylatentimage_049empty_latent_image, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_impactksampleradvancedbasicpipe_097ksampler_pass2_advancedpipe, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_impactksampleradvancedbasicpipe_098ksampler_pass1_advancedpipe, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_dynamicthresholdingfull_100dynamicthresholdingfull, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_cliptextencode_101negative_prompt, expand=True, fill=True, padding=0)  # noqa
-        content_area.pack_start(child=frame_editbasicpipe_103edit_basicpipe, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_frombasicpipe_v2_104frombasicpipe_v2, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_vaedecode_111vae_decode, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_sd_4xupscale_conditioning_121sd_4xupscale_conditioning, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_efficient_loader_122efficient_loader, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_ultimatesdupscale_123ultimate_sd_upscale, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_upscalemodelloader_124load_upscale_model, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_getimagesizeandcount_125get_image_size__count, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_saveimage_128save_upscaled, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_saveimage_129save_original_scale, expand=False, fill=False, padding=0)  # noqa
+        main_scrollable: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
+        subject_box: Gtk.Box = Gtk.Box()
+        subject_box.set_orientation(Gtk.Orientation.VERTICAL)
+
+        subject_box.pack_start(child=frame_cliptextencode_006positive_prompt, expand=True, fill=True, padding=0)  # noqa
+        subject_box.pack_start(child=frame_vaeloader_010load_vae, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_dualcliploader_011dualcliploader, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_unetloader_012load_diffusion_model, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_tobasicpipe_047tobasicpipe, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_emptylatentimage_049empty_latent_image, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_impactksampleradvancedbasicpipe_097ksampler_pass2_advancedpipe, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_impactksampleradvancedbasicpipe_098ksampler_pass1_advancedpipe, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_dynamicthresholdingfull_100dynamicthresholdingfull, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_cliptextencode_101negative_prompt, expand=True, fill=True, padding=0)  # noqa
+        subject_box.pack_start(child=frame_editbasicpipe_103edit_basicpipe, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_frombasicpipe_v2_104frombasicpipe_v2, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_vaedecode_111vae_decode, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_sd_4xupscale_conditioning_121sd_4xupscale_conditioning, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_efficient_loader_122efficient_loader, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_ultimatesdupscale_123ultimate_sd_upscale, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_upscalemodelloader_124load_upscale_model, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_getimagesizeandcount_125get_image_size__count, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_saveimage_128save_upscaled, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_saveimage_129save_original_scale, expand=False, fill=False, padding=0)  # noqa
+
+        subject_box.set_vexpand(True)
+        subject_box.set_hexpand(True)
+        main_scrollable.add(subject_box)  # noqa
+        main_scrollable.set_size_request(1280, 928)
+        main_scrollable.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
+        content_area.add(main_scrollable)  # noqa
 
         button_cancel.connect("clicked", delete_results)
         button_apply.connect("clicked", assign_results)
