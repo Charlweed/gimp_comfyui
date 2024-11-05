@@ -43,6 +43,17 @@ def append_newline_suffix(original_key: str) -> str:
     return f"{original_key}{KEY_SUFFIX_NEWLINE}"
 
 
+def index_or_not(entries: List[str], selected_entry: str, unselectable_entry: str | None = None) -> int:
+    if unselectable_entry is None or (not unselectable_entry):
+        return entries.index(selected_entry)
+    if selected_entry == unselectable_entry:
+        LOGGER_WF2PY.warning(f"Nullifying {unselectable_entry}")
+        sel_idx: int = -1
+    else:
+        sel_idx: int = entries.index(selected_entry)
+    return sel_idx
+
+
 def list_as_literals(values: List[str]) -> str:
     return ', '.join(f'"{w}"' for w in values)
 
@@ -228,7 +239,8 @@ def new_combo_models(node_index_str: str,
                      input_name: str,
                      change_handler_body_txt: str,
                      model_type: ModelType,
-                     selected_index: int = 0
+                     selected_index: int = 0,
+                     special_entries: List[str] | None = None,
                      ) -> Dict[str, str]:
     result: Dict[str, str] = {}
     widget_id: str = "comboboxtext_%s_%s" % (node_index_str, input_name)
@@ -245,9 +257,15 @@ def new_combo_models(node_index_str: str,
     fault_checking: str = (f"{SP08}if {combo_values_id} is None:\n"
                            f"{SP12}raise SystemError(f\"get_models_filenames() returned None.\")\n"
                            f"{SP08}if not {combo_values_id}:\n"
-                           f"{SP12}raise ValueError(fr\"No models retrieved from ComfyUI\")  # noqa\n")  # noqa
-    content_assignment = (f"{SP08}for combo_item_path in {combo_values_id}:\n"
-                          f"{SP12}{widget_id}.append_text(combo_item_path)\n")
+                           f"{SP12}raise ValueError(fr\"No models retrieved from ComfyUI\")\n")
+    if special_entries is not None and special_entries:
+        content_assignment = (
+            f"{SP08}{combo_values_id} = {special_entries} + {combo_values_id}\n"
+            f"{SP08}for combo_item_path in {combo_values_id}:\n"
+            f"{SP12}{widget_id}.append_text(combo_item_path)\n")
+    else:
+        content_assignment = (f"{SP08}for combo_item_path in {combo_values_id}:\n"
+                              f"{SP12}{widget_id}.append_text(combo_item_path)\n")
     hh = handler_header(handler_id)
     handler_definition = f"\n{SP08}{hh}{SP12}{change_handler_body_txt}\n"
     handler_assignment = f"{SP08}{widget_id}.connect(SIG_CHANGED, {handler_id})\n"
@@ -963,8 +981,6 @@ class WidgetAuthor:
                                           )
             case "vae_name":
                 vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae)
-                # Baked VAE is a vae that's already merged into the checkpoint model.
-                vaes_from_fs.append("Baked VAE")
                 vae_literals = list_as_literals(vaes_from_fs)
                 combo_message = f"Looking for index of {json_value} in {vae_literals}"
                 LOGGER_WF2PY.info(combo_message)
@@ -1222,14 +1238,21 @@ class WidgetAuthor:
                                                   model_type=ModelType.CHECKPOINTS
                                                   )
                     case "vae_name":
-                        vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae)
-                        vaes_from_fs.append("Baked VAE")
-                        sel_idx: int = vaes_from_fs.index(json_value)
+                        # We are constructing the dialog offline now, and also telling it what to expect from the
+                        # ComfyUI server later. So we add our special_entries as an argument to list_from_fs AND as the
+                        # special_entries argument to new_combo_models
+                        # Baked VAE is a vae that's already merged into the checkpoint model.
+                        vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'],
+                                                    predicate=seems_vae,
+                                                    special_entries=['Baked VAE']
+                                                    )
+                        sel_idx: int = index_or_not(entries=vaes_from_fs, selected_entry=json_value)
                         result = new_combo_models(node_title=node_title,
                                                   node_index_str=node_index_str,
                                                   input_name=input_name,
                                                   change_handler_body_txt="pass",
                                                   selected_index=sel_idx,
+                                                  special_entries=['Baked VAE'],
                                                   model_type=ModelType.VAE
                                                   )
                     case "clip_skip":
@@ -1242,14 +1265,21 @@ class WidgetAuthor:
                             bounds=(-1, INT_MAX)
                         )
                     case "lora_name":
-                        loras_from_fs = list_from_fs(fs_path=self._config['sd_loras_dir'], predicate=seems_lora)
-                        loras_from_fs.append("None")
-                        sel_idx: int = loras_from_fs.index(json_value)
+                        # We are constructing the dialog offline now, and also telling it what to expect from the
+                        # ComfyUI server later. So we add our special_entries as an argument to list_from_fs AND as the
+                        # special_entries argument to new_combo_models.
+                        # Also Confusing. The literal 'None' is (sometimes) returned as an entry by teh server, so we
+                        # include it here as an entry for offline construction of the dialog source.
+                        loras_from_fs = list_from_fs(fs_path=self._config['sd_loras_dir'],
+                                                     predicate=seems_lora,
+                                                     special_entries=['None'])
+                        sel_idx: int = index_or_not(entries=loras_from_fs, selected_entry=json_value)
                         result = new_combo_models(node_title=node_title,
                                                   node_index_str=node_index_str,
                                                   input_name=input_name,
                                                   change_handler_body_txt="pass",
                                                   selected_index=sel_idx,
+                                                  special_entries=['None'],
                                                   model_type=ModelType.LORAS
                                                   )
                     case "lora_model_strength":
@@ -1708,16 +1738,19 @@ class WidgetAuthor:
             case "Load VAE":
                 match input_name:
                     case "vae_name":
-                        vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae)
+                        vaes_from_fs = list_from_fs(fs_path=self._config['sd_vae_dir'], predicate=seems_vae,
+                                                    special_entries=['Baked VAE']
+                                                    )
                         vae_literals = list_as_literals(vaes_from_fs)
                         combo_message = f"Looking for index of {json_value} in {vae_literals}"
                         LOGGER_WF2PY.debug(combo_message)
-                        sel_idx: int = vaes_from_fs.index(json_value)  # Should be 1
+                        sel_idx: int = index_or_not(entries=vaes_from_fs, selected_entry=json_value)
                         result = new_combo_models(node_title=node_title,
                                                   node_index_str=node_index_str,
                                                   input_name=input_name,
                                                   change_handler_body_txt="pass",
                                                   selected_index=sel_idx,
+                                                  special_entries=['Baked VAE'],
                                                   model_type=ModelType.VAE
                                                   )
                     case _:
