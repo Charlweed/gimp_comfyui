@@ -317,7 +317,8 @@ def store_temporary_dictionary(plugin_name_long: str, dictionary: Dict):
 
 def list_from_fs(fs_path: str,
                  predicate: Callable[[str], bool] = seems_json,
-                 permitted_empties: List[str] | None = None) -> List[str]:
+                 permitted_empties: List[str] | None = None,
+                 special_entries: List[str] | None = None) -> List[str]:
     if not os.path.exists(fs_path):
         raise IOError(f"Could not find \"{fs_path}\"")
     if not os.path.isdir(fs_path):
@@ -341,4 +342,7 @@ def list_from_fs(fs_path: str,
         # Disable and enable the following exception as the situation demands.
         if len_raw >= 2:  # USUALLY Not a problem if dir is practically empty.
             raise IOError(complaint)
+    if special_entries is not None and special_entries:
+        LOGGER_PRSTU.debug(f"prefixing {special_entries} to {filtered_listing}")
+        return special_entries + filtered_listing
     return filtered_listing
