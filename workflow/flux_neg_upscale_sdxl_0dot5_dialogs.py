@@ -151,7 +151,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             self.put_inputs(dialog_data=dialog_data)
 
         # New Frame
-        frame_cliptextencode_006positive_prompt: Gtk.Frame = Gtk.Frame.new(label="Positive Prompt")  # noqa
+        frame_cliptextencode_006positive_prompt: Gtk.Frame = Gtk.Frame.new(label="Positive Prompt        #6")  # noqa
         frame_cliptextencode_006positive_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_6_text: Gtk.Label = Gtk.Label.new("Text")
         textview_6_text: Gtk.TextView = Gtk.TextView.new()
@@ -189,7 +189,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_cliptextencode_006positive_prompt.add(widget=grid_6)  # noqa
 
         # New Frame
-        frame_vaeloader_010load_vae: Gtk.Frame = Gtk.Frame.new(label="Load VAE")  # noqa
+        frame_vaeloader_010load_vae: Gtk.Frame = Gtk.Frame.new(label="Load VAE        #10")  # noqa
         frame_vaeloader_010load_vae.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_10_vae_name: Gtk.Label = Gtk.Label.new("Vae_Name")
         comboboxtext_10_vae_name: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -199,12 +199,13 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         if combo_values_10_vae_name is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_10_vae_name:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
+        combo_values_10_vae_name = ['Baked VAE'] + combo_values_10_vae_name
         for combo_item_path in combo_values_10_vae_name:
             comboboxtext_10_vae_name.append_text(combo_item_path)
         comboboxtext_10_vae_name.set_name("comboboxtext_10_vae_name")
         comboboxtext_10_vae_name.set_hexpand(True)
-        comboboxtext_10_vae_name.set_active(0)
+        comboboxtext_10_vae_name.set_active(1)
 
         def change_handler_10_vae_name(source, **args):  # noqa
             pass
@@ -225,7 +226,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_vaeloader_010load_vae.add(widget=grid_10)  # noqa
 
         # New Frame
-        frame_dualcliploader_011dualcliploader: Gtk.Frame = Gtk.Frame.new(label="DualCLIPLoader")  # noqa
+        frame_dualcliploader_011dualcliploader: Gtk.Frame = Gtk.Frame.new(label="DualCLIPLoader        #11")  # noqa
         frame_dualcliploader_011dualcliploader.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_11_clip_name1: Gtk.Label = Gtk.Label.new("Clip_Name1")
         comboboxtext_11_clip_name1: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -235,7 +236,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         if combo_values_11_clip_name1 is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_11_clip_name1:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
         for combo_item_path in combo_values_11_clip_name1:
             comboboxtext_11_clip_name1.append_text(combo_item_path)
         comboboxtext_11_clip_name1.set_name("comboboxtext_11_clip_name1")
@@ -261,7 +262,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         if combo_values_11_clip_name2 is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_11_clip_name2:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
         for combo_item_path in combo_values_11_clip_name2:
             comboboxtext_11_clip_name2.append_text(combo_item_path)
         comboboxtext_11_clip_name2.set_name("comboboxtext_11_clip_name2")
@@ -311,7 +312,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_dualcliploader_011dualcliploader.add(widget=grid_11)  # noqa
 
         # New Frame
-        frame_unetloader_012load_diffusion_model: Gtk.Frame = Gtk.Frame.new(label="Load Diffusion Model")  # noqa
+        frame_unetloader_012load_diffusion_model: Gtk.Frame = Gtk.Frame.new(label="Load Diffusion Model        #12")  # noqa
         frame_unetloader_012load_diffusion_model.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_12_unet_name: Gtk.Label = Gtk.Label.new("Unet_Name")
         comboboxtext_12_unet_name: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -321,7 +322,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         if combo_values_12_unet_name is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_12_unet_name:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
         for combo_item_path in combo_values_12_unet_name:
             comboboxtext_12_unet_name.append_text(combo_item_path)
         comboboxtext_12_unet_name.set_name("comboboxtext_12_unet_name")
@@ -369,15 +370,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_unetloader_012load_diffusion_model.add(widget=grid_12)  # noqa
 
         # New Frame
-        frame_tobasicpipe_047tobasicpipe: Gtk.Frame = Gtk.Frame.new(label="ToBasicPipe")  # noqa
-        frame_tobasicpipe_047tobasicpipe.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        grid_47: Gtk.Grid = Gtk.Grid.new()
-        grid_47.set_column_homogeneous(False)
-        grid_47.set_row_homogeneous(False)
-        frame_tobasicpipe_047tobasicpipe.add(widget=grid_47)  # noqa
-
-        # New Frame
-        frame_emptylatentimage_049empty_latent_image: Gtk.Frame = Gtk.Frame.new(label="Empty Latent Image")  # noqa
+        frame_emptylatentimage_049empty_latent_image: Gtk.Frame = Gtk.Frame.new(label="Empty Latent Image        #49")  # noqa
         frame_emptylatentimage_049empty_latent_image.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_49_width: Gtk.Label = Gtk.Label.new("Width")
         label_49_width.set_margin_start(8)
@@ -463,7 +456,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_emptylatentimage_049empty_latent_image.add(widget=grid_49)  # noqa
 
         # New Frame
-        frame_impactksampleradvancedbasicpipe_097ksampler_pass2_advancedpipe: Gtk.Frame = Gtk.Frame.new(label="KSampler Pass2 (Advanced/pipe)")  # noqa
+        frame_impactksampleradvancedbasicpipe_097ksampler_pass2_advancedpipe: Gtk.Frame = Gtk.Frame.new(label="KSampler Pass2 (Advanced/pipe)        #97")  # noqa
         frame_impactksampleradvancedbasicpipe_097ksampler_pass2_advancedpipe.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         checkbutton_97_add_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Add Noise")  # noqa
         checkbutton_97_add_noise.set_active(False)
@@ -669,7 +662,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_impactksampleradvancedbasicpipe_097ksampler_pass2_advancedpipe.add(widget=grid_97)  # noqa
 
         # New Frame
-        frame_impactksampleradvancedbasicpipe_098ksampler_pass1_advancedpipe: Gtk.Frame = Gtk.Frame.new(label="KSampler Pass1 (Advanced/pipe)")  # noqa
+        frame_impactksampleradvancedbasicpipe_098ksampler_pass1_advancedpipe: Gtk.Frame = Gtk.Frame.new(label="KSampler Pass1 (Advanced/pipe)        #98")  # noqa
         frame_impactksampleradvancedbasicpipe_098ksampler_pass1_advancedpipe.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         checkbutton_98_add_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Add Noise")  # noqa
         checkbutton_98_add_noise.set_active(True)
@@ -875,7 +868,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_impactksampleradvancedbasicpipe_098ksampler_pass1_advancedpipe.add(widget=grid_98)  # noqa
 
         # New Frame
-        frame_dynamicthresholdingfull_100dynamicthresholdingfull: Gtk.Frame = Gtk.Frame.new(label="DynamicThresholdingFull")  # noqa
+        frame_dynamicthresholdingfull_100dynamicthresholdingfull: Gtk.Frame = Gtk.Frame.new(label="DynamicThresholdingFull        #100")  # noqa
         frame_dynamicthresholdingfull_100dynamicthresholdingfull.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_100_mimic_scale: Gtk.Label = Gtk.Label.new("Mimic_Scale")
         label_100_mimic_scale.set_margin_start(8)
@@ -1132,7 +1125,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_dynamicthresholdingfull_100dynamicthresholdingfull.add(widget=grid_100)  # noqa
 
         # New Frame
-        frame_cliptextencode_101negative_prompt: Gtk.Frame = Gtk.Frame.new(label="Negative Prompt")  # noqa
+        frame_cliptextencode_101negative_prompt: Gtk.Frame = Gtk.Frame.new(label="Negative Prompt        #101")  # noqa
         frame_cliptextencode_101negative_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_101_text: Gtk.Label = Gtk.Label.new("Text")
         textview_101_text: Gtk.TextView = Gtk.TextView.new()
@@ -1170,31 +1163,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_cliptextencode_101negative_prompt.add(widget=grid_101)  # noqa
 
         # New Frame
-        frame_editbasicpipe_103edit_basicpipe: Gtk.Frame = Gtk.Frame.new(label="Edit BasicPipe")  # noqa
-        frame_editbasicpipe_103edit_basicpipe.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        grid_103: Gtk.Grid = Gtk.Grid.new()
-        grid_103.set_column_homogeneous(False)
-        grid_103.set_row_homogeneous(False)
-        frame_editbasicpipe_103edit_basicpipe.add(widget=grid_103)  # noqa
-
-        # New Frame
-        frame_frombasicpipe_v2_104frombasicpipe_v2: Gtk.Frame = Gtk.Frame.new(label="FromBasicPipe_v2")  # noqa
-        frame_frombasicpipe_v2_104frombasicpipe_v2.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        grid_104: Gtk.Grid = Gtk.Grid.new()
-        grid_104.set_column_homogeneous(False)
-        grid_104.set_row_homogeneous(False)
-        frame_frombasicpipe_v2_104frombasicpipe_v2.add(widget=grid_104)  # noqa
-
-        # New Frame
-        frame_vaedecode_111vae_decode: Gtk.Frame = Gtk.Frame.new(label="VAE Decode")  # noqa
-        frame_vaedecode_111vae_decode.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        grid_111: Gtk.Grid = Gtk.Grid.new()
-        grid_111.set_column_homogeneous(False)
-        grid_111.set_row_homogeneous(False)
-        frame_vaedecode_111vae_decode.add(widget=grid_111)  # noqa
-
-        # New Frame
-        frame_sd_4xupscale_conditioning_121sd_4xupscale_conditioning: Gtk.Frame = Gtk.Frame.new(label="SD_4XUpscale_Conditioning")  # noqa
+        frame_sd_4xupscale_conditioning_121sd_4xupscale_conditioning: Gtk.Frame = Gtk.Frame.new(label="SD_4XUpscale_Conditioning        #121")  # noqa
         frame_sd_4xupscale_conditioning_121sd_4xupscale_conditioning.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_121_scale_ratio: Gtk.Label = Gtk.Label.new("Scale_Ratio")
         label_121_scale_ratio.set_margin_start(8)
@@ -1246,7 +1215,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_sd_4xupscale_conditioning_121sd_4xupscale_conditioning.add(widget=grid_121)  # noqa
 
         # New Frame
-        frame_efficient_loader_122efficient_loader: Gtk.Frame = Gtk.Frame.new(label="Efficient Loader")  # noqa
+        frame_efficient_loader_122efficient_loader: Gtk.Frame = Gtk.Frame.new(label="Efficient Loader        #122")  # noqa
         frame_efficient_loader_122efficient_loader.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_122_ckpt_name: Gtk.Label = Gtk.Label.new("Ckpt_Name")
         comboboxtext_122_ckpt_name: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1256,7 +1225,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         if combo_values_122_ckpt_name is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_122_ckpt_name:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
         for combo_item_path in combo_values_122_ckpt_name:
             comboboxtext_122_ckpt_name.append_text(combo_item_path)
         comboboxtext_122_ckpt_name.set_name("comboboxtext_122_ckpt_name")
@@ -1282,12 +1251,13 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         if combo_values_122_vae_name is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_122_vae_name:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
+        combo_values_122_vae_name = ['Baked VAE'] + combo_values_122_vae_name
         for combo_item_path in combo_values_122_vae_name:
             comboboxtext_122_vae_name.append_text(combo_item_path)
         comboboxtext_122_vae_name.set_name("comboboxtext_122_vae_name")
         comboboxtext_122_vae_name.set_hexpand(True)
-        comboboxtext_122_vae_name.set_active(2)
+        comboboxtext_122_vae_name.set_active(0)
 
         def change_handler_122_vae_name(source, **args):  # noqa
             pass
@@ -1332,12 +1302,13 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         if combo_values_122_lora_name is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_122_lora_name:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
+        combo_values_122_lora_name = ['None'] + combo_values_122_lora_name
         for combo_item_path in combo_values_122_lora_name:
             comboboxtext_122_lora_name.append_text(combo_item_path)
         comboboxtext_122_lora_name.set_name("comboboxtext_122_lora_name")
         comboboxtext_122_lora_name.set_hexpand(True)
-        comboboxtext_122_lora_name.set_active(18)
+        comboboxtext_122_lora_name.set_active(0)
 
         def change_handler_122_lora_name(source, **args):  # noqa
             pass
@@ -1590,7 +1561,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_efficient_loader_122efficient_loader.add(widget=grid_122)  # noqa
 
         # New Frame
-        frame_ultimatesdupscale_123ultimate_sd_upscale: Gtk.Frame = Gtk.Frame.new(label="Ultimate SD Upscale")  # noqa
+        frame_ultimatesdupscale_123ultimate_sd_upscale: Gtk.Frame = Gtk.Frame.new(label="Ultimate SD Upscale        #123")  # noqa
         frame_ultimatesdupscale_123ultimate_sd_upscale.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_123_upscale_by: Gtk.Label = Gtk.Label.new("Upscale_By")
         label_123_upscale_by.set_margin_start(8)
@@ -1986,7 +1957,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_ultimatesdupscale_123ultimate_sd_upscale.add(widget=grid_123)  # noqa
 
         # New Frame
-        frame_upscalemodelloader_124load_upscale_model: Gtk.Frame = Gtk.Frame.new(label="Load Upscale Model")  # noqa
+        frame_upscalemodelloader_124load_upscale_model: Gtk.Frame = Gtk.Frame.new(label="Load Upscale Model        #124")  # noqa
         frame_upscalemodelloader_124load_upscale_model.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_124_model_name: Gtk.Label = Gtk.Label.new("Model_Name")
         comboboxtext_124_model_name: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1996,7 +1967,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         if combo_values_124_model_name is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_124_model_name:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
         for combo_item_path in combo_values_124_model_name:
             comboboxtext_124_model_name.append_text(combo_item_path)
         comboboxtext_124_model_name.set_name("comboboxtext_124_model_name")
@@ -2022,15 +1993,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_upscalemodelloader_124load_upscale_model.add(widget=grid_124)  # noqa
 
         # New Frame
-        frame_getimagesizeandcount_125get_image_size__count: Gtk.Frame = Gtk.Frame.new(label="Get Image Size & Count")  # noqa
-        frame_getimagesizeandcount_125get_image_size__count.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        grid_125: Gtk.Grid = Gtk.Grid.new()
-        grid_125.set_column_homogeneous(False)
-        grid_125.set_row_homogeneous(False)
-        frame_getimagesizeandcount_125get_image_size__count.add(widget=grid_125)  # noqa
-
-        # New Frame
-        frame_saveimage_128save_upscaled: Gtk.Frame = Gtk.Frame.new(label="Save Upscaled")  # noqa
+        frame_saveimage_128save_upscaled: Gtk.Frame = Gtk.Frame.new(label="Save Upscaled        #128")  # noqa
         frame_saveimage_128save_upscaled.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_128_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
         entry_128_filename_prefix: Gtk.Entry = Gtk.Entry.new()
@@ -2048,7 +2011,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_saveimage_128save_upscaled.add(widget=grid_128)  # noqa
 
         # New Frame
-        frame_saveimage_129save_original_scale: Gtk.Frame = Gtk.Frame.new(label="Save Original Scale")  # noqa
+        frame_saveimage_129save_original_scale: Gtk.Frame = Gtk.Frame.new(label="Save Original Scale        #129")  # noqa
         frame_saveimage_129save_original_scale.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_129_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
         entry_129_filename_prefix: Gtk.Entry = Gtk.Entry.new()
@@ -2074,20 +2037,15 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         subject_box.pack_start(child=frame_vaeloader_010load_vae, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_dualcliploader_011dualcliploader, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_unetloader_012load_diffusion_model, expand=False, fill=False, padding=0)  # noqa
-        subject_box.pack_start(child=frame_tobasicpipe_047tobasicpipe, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_emptylatentimage_049empty_latent_image, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_impactksampleradvancedbasicpipe_097ksampler_pass2_advancedpipe, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_impactksampleradvancedbasicpipe_098ksampler_pass1_advancedpipe, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_dynamicthresholdingfull_100dynamicthresholdingfull, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_cliptextencode_101negative_prompt, expand=True, fill=True, padding=0)  # noqa
-        subject_box.pack_start(child=frame_editbasicpipe_103edit_basicpipe, expand=False, fill=False, padding=0)  # noqa
-        subject_box.pack_start(child=frame_frombasicpipe_v2_104frombasicpipe_v2, expand=False, fill=False, padding=0)  # noqa
-        subject_box.pack_start(child=frame_vaedecode_111vae_decode, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_sd_4xupscale_conditioning_121sd_4xupscale_conditioning, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_efficient_loader_122efficient_loader, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_ultimatesdupscale_123ultimate_sd_upscale, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_upscalemodelloader_124load_upscale_model, expand=False, fill=False, padding=0)  # noqa
-        subject_box.pack_start(child=frame_getimagesizeandcount_125get_image_size__count, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_saveimage_128save_upscaled, expand=False, fill=False, padding=0)  # noqa
         subject_box.pack_start(child=frame_saveimage_129save_original_scale, expand=False, fill=False, padding=0)  # noqa
 
