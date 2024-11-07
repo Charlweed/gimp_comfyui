@@ -602,6 +602,7 @@ class GimpComfyUI(Gimp.PlugIn):
     # noinspection PyMethodMayBeStatic
     def do_query_procedures(self) -> List[str]:
         # Documentation states "query happens only once in the life of a plug-in (right after installation or update)."
+        LOGGER_GCUI.info(f"{self.__class__.__name__}")
         # First action is to remove temporary data from previous sessions.
         remove_temporary_dictionary(plugin_name_long=GimpComfyUI.PYTHON_PLUGIN_NAME_LONG)
         GimpComfyUI.__init_plugin()  # This invocation will NOT provide state
@@ -975,7 +976,7 @@ class GimpComfyUI(Gimp.PlugIn):
                       run_data  # noqa
                       ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()
-        factory: FluxNeg1Dot1Dialogs = FluxNeg1Dot1Dialogs(accessor=self.flux_acc)
+        factory: FluxNeg1Dot1Dialogs = FluxNeg1Dot1Dialogs(accessor=self.flux_neg_acc)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
                                           title_in="Flux dev 16",
