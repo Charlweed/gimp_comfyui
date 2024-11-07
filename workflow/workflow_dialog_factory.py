@@ -114,14 +114,21 @@ class WorkflowDialogFactory(ABC):
                                                                         )
         # Fallback data is only used if Persisted data is missing.
         fallback_path = os.path.join(self.__asset_dir_path, api_workflow)
+        # LOGGER_SDGUIU.debug(f"{self.__class__.__class__}: fallback_path=\"{fallback_path}\"")
+        # LOGGER_SDGUIU.debug(f"{self.__class__.__class__}: chassis_name=\"{wf_data_chassis_name}\"")
         self._workflow_persister: PersisterPetite = PersisterPetite(chassis=self,
                                                                     chassis_name=wf_data_chassis_name,
                                                                     fallback_path=fallback_path
                                                                     )
         self._accessor: NodesAccessor = accessor
+        # LOGGER_SDGUIU.debug(f"{self.__class__.__class__}:"
+        #                       f" (self._accessor.__class__=\"{self._accessor.__class__.__name__}\"")
+        # LOGGER_SDGUIU.debug(f"{self.__class__.__class__}:"
+        #                       f" (self._accessor.asset_dir_path=\"{self._accessor.asset_dir_path}\"")
         self._workflow_persister.update_config(self._accessor.nodes_dict)  # First the data from the read-only asset
         # Then the data that was persisted locally,
         self._workflow_persister.load_config(read_option=ReadOption.MERGE_OVER)
+        # self._workflow_persister.log_config()
         self._workflow_data: Dict = dict(self._workflow_persister.configuration)  # Now, a dynamic working copy.
         self._image_paths: Set[tuple[str, str]] = set()
         self._mask_paths: Set[tuple[str, str]] = set()
