@@ -22,7 +22,7 @@ class FluxNeg1Dot1Accessor(NodesAccessor):
         NODE_VAE_DECODE = "110"
         NODE_SAVE_IMAGE = "111"
 
-    class CLIPTextEncode006PositivePrompt:
+    class CLIPTextEncode006PositivePrompt:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -35,7 +35,7 @@ class FluxNeg1Dot1Accessor(NodesAccessor):
         def text(self, value: str):
             self._outer.nodes_dict[FluxNeg1Dot1Accessor.NodeIndexes.NODE_POSITIVE_PROMPT.value]["inputs"]["text"] = value  # noqa
 
-    class VAELoader010LoadVae:
+    class VAELoader010LoadVae:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -48,7 +48,7 @@ class FluxNeg1Dot1Accessor(NodesAccessor):
         def vae_name(self, value: str):
             self._outer.nodes_dict[FluxNeg1Dot1Accessor.NodeIndexes.NODE_LOAD_VAE.value]["inputs"]["vae_name"] = value  # noqa
 
-    class DualCLIPLoader011Dualcliploader:
+    class DualCLIPLoader011Dualcliploader:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -77,7 +77,7 @@ class FluxNeg1Dot1Accessor(NodesAccessor):
         def type(self, value: str):
             self._outer.nodes_dict[FluxNeg1Dot1Accessor.NodeIndexes.NODE_DUALCLIPLOADER.value]["inputs"]["type"] = value  # noqa
 
-    class UNETLoader012LoadDiffusionModel:
+    class UNETLoader012LoadDiffusionModel:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -98,12 +98,12 @@ class FluxNeg1Dot1Accessor(NodesAccessor):
         def weight_dtype(self, value: str):
             self._outer.nodes_dict[FluxNeg1Dot1Accessor.NodeIndexes.NODE_LOAD_DIFFUSION_MODEL.value]["inputs"]["weight_dtype"] = value  # noqa
 
-    class ToBasicPipe047Tobasicpipe:
+    class ToBasicPipe047Tobasicpipe:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class EmptyLatentImage049EmptyLatentImage:
+    class EmptyLatentImage049EmptyLatentImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -132,7 +132,7 @@ class FluxNeg1Dot1Accessor(NodesAccessor):
         def batch_size(self, value: int):
             self._outer.nodes_dict[FluxNeg1Dot1Accessor.NodeIndexes.NODE_EMPTY_LATENT_IMAGE.value]["inputs"]["batch_size"] = value  # noqa
 
-    class ImpactKSamplerAdvancedBasicPipe097KsamplerAdvancedpipe:
+    class ImpactKSamplerAdvancedBasicPipe097KsamplerAdvancedpipe:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -209,7 +209,7 @@ class FluxNeg1Dot1Accessor(NodesAccessor):
         def return_with_leftover_noise(self, value: bool):
             self._outer.nodes_dict[FluxNeg1Dot1Accessor.NodeIndexes.NODE_KSAMPLER_ADVANCEDPIPE.value]["inputs"]["return_with_leftover_noise"] = value  # noqa
 
-    class ImpactKSamplerAdvancedBasicPipe098KsamplerAdvancedpipe:
+    class ImpactKSamplerAdvancedBasicPipe098KsamplerAdvancedpipe:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -286,7 +286,7 @@ class FluxNeg1Dot1Accessor(NodesAccessor):
         def return_with_leftover_noise(self, value: bool):
             self._outer.nodes_dict[FluxNeg1Dot1Accessor.NodeIndexes.NODE_KSAMPLER_ADVANCEDPIPE_01.value]["inputs"]["return_with_leftover_noise"] = value  # noqa
 
-    class DynamicThresholdingFull100Dynamicthresholdingfull:
+    class DynamicThresholdingFull100Dynamicthresholdingfull:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -379,7 +379,7 @@ class FluxNeg1Dot1Accessor(NodesAccessor):
         def interpolate_phi(self, value: int):
             self._outer.nodes_dict[FluxNeg1Dot1Accessor.NodeIndexes.NODE_DYNAMICTHRESHOLDINGFULL.value]["inputs"]["interpolate_phi"] = value  # noqa
 
-    class CLIPTextEncode101NegativePrompt:
+    class CLIPTextEncode101NegativePrompt:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -392,27 +392,27 @@ class FluxNeg1Dot1Accessor(NodesAccessor):
         def text(self, value: str):
             self._outer.nodes_dict[FluxNeg1Dot1Accessor.NodeIndexes.NODE_NEGATIVE_PROMPT.value]["inputs"]["text"] = value  # noqa
 
-    class EditBasicPipe103EditBasicpipe:
+    class EditBasicPipe103EditBasicpipe:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class FromBasicPipe_v2104FrombasicpipeV2:
+    class FromBasicPipe_v2104FrombasicpipeV2:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class ImpactNegativeConditioningPlaceholder105NegativeCondPlaceholder:
+    class ImpactNegativeConditioningPlaceholder105NegativeCondPlaceholder:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class VAEDecode110VaeDecode:
+    class VAEDecode110VaeDecode:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class SaveImage111SaveImage:
+    class SaveImage111SaveImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
