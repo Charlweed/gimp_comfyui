@@ -17,6 +17,7 @@
 
 import logging
 import numbers
+from enum import Enum, auto
 from typing import Any, List
 
 ALL_NUMERIC_LIST_MSG = "List is all numeric."
@@ -262,3 +263,32 @@ def type_in(item_type: type, some_list: List) -> bool:
 
 def types_in(some_list: List) -> list[type]:
     return [type(item) for item in some_list]
+
+
+class BoolStyle(Enum):
+    NO_YES = auto()
+    FALSE_TRUE = auto()
+    DISABLE_ENABLE = auto()
+
+    def from_bool(self, bool_value: bool) -> str:
+        match self:
+            case BoolStyle.NO_YES:
+                if bool_value:
+                    return "yes"
+                return "no"
+            case BoolStyle.FALSE_TRUE:
+                if bool_value:
+                    return "true"
+                return "false"
+            case BoolStyle.DISABLE_ENABLE:
+                if bool_value:
+                    return "enable"
+                return "disable"
+
+    @property
+    def false_string(self) -> str:
+        return self.from_bool(False)
+
+    @property
+    def true_string(self) -> str:
+        return self.from_bool(True)

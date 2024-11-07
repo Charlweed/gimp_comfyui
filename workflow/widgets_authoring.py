@@ -86,7 +86,8 @@ def new_checkbutton(node_index_str: str,
                     input_name: str,
                     toggled_handler_body_txt: str,
                     current: bool,
-                    label: str | None = None
+                    label: str | None = None,
+                    bool_style: BoolStyle = BoolStyle.FALSE_TRUE
                     ) -> Dict[str, str]:
     result: Dict[str, str] = {}
     widget_id: str = f"checkbutton_{node_index_str}_{input_name}"
@@ -105,7 +106,13 @@ def new_checkbutton(node_index_str: str,
     handler_definition = f"\n{SP08}{hh}{SP12}{toggled_handler_body_txt}\n"
     handler_assignment = f"{SP08}{widget_id}.connect(SIG_TOGGLED, {handler_id})\n"
     getter_id: str = f"getter_{node_index_str}_{input_name}"
-    getter_code = f"\n{SP08}def {getter_id}():\n{SP12}return \"enable\" if {widget_id}.get_active() else \"disable\"\n"  # noqa
+    if bool_style == BoolStyle.FALSE_TRUE:
+        getter_code = (f"\n{SP08}def {getter_id}():\n"
+                       f"{SP12}return {widget_id}.get_active()\n")  # noqa
+    else:
+        getter_code = (f"\n{SP08}def {getter_id}():\n"
+                       f"{SP12}return \"{bool_style.true_string}\" if {widget_id}.get_active() "
+                       f"else \"{bool_style.false_string}\"\n")  # noqa
     content_access = f"{SP08}widget_getters[{widget_id}.get_name()] = {getter_id}  # noqa\n"
     text: str = ""
     text += widget_declaration
@@ -866,6 +873,15 @@ class WidgetAuthor:
                     node_index_str=node_index_str,
                     input_name=input_name,
                     toggled_handler_body_txt="pass",
+                    current=bool_of(json_value),
+                    bool_style=BoolStyle.DISABLE_ENABLE
+                )
+            case "return_with_leftover_noise":
+                result = new_checkbutton(
+                    node_title=node_title,
+                    node_index_str=node_index_str,
+                    input_name=input_name,
+                    toggled_handler_body_txt="pass",
                     current=bool_of(json_value)
                 )
                 # Disable newline.
@@ -1479,7 +1495,7 @@ class WidgetAuthor:
                             node_title=node_title,
                             node_index_str=node_index_str,
                             input_name=input_name,
-                            current="generated")
+                            current="gimp_generated")
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
@@ -1763,7 +1779,7 @@ class WidgetAuthor:
                             node_title=node_title,
                             node_index_str=node_index_str,
                             input_name=input_name,
-                            current="generated")
+                            current="gimp_generated")
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
                         LOGGER_WF2PY.warning(log_msg)
