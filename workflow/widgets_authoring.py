@@ -1033,6 +1033,40 @@ class WidgetAuthor:
     ) -> Dict[str, str]:
         result: Dict[str, str] | None = None
         match node_class_name:
+            case  "BasicScheduler":
+                match input_name:
+                    case "denoise":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current=float(json_value),
+                            lower=0.00001,
+                            upper=1.0,
+                            step_increment=0.001,
+                            page_increment=0.01
+                        )
+                    case "scheduler":
+                        sel_idx: int = WidgetAuthor._SCHEDULER_NAMES.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=WidgetAuthor._SCHEDULER_NAMES,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "steps":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(1, 128)
+                        )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "CheckpointLoaderSimple":
                 sel_idx: int = self._models_checkpoints.index(json_value)
                 result = new_combo_models(node_title=node_title,
@@ -1083,7 +1117,7 @@ class WidgetAuthor:
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
-            case "EmptyLatentImage":
+            case "EmptyLatentImage" | "EmptySD3LatentImage":
                 match input_name:
                     case "batch_size" | "height" | "width" | "crop_h" | "crop_w" | "target_width":
                         result = new_entry_int(
@@ -1095,6 +1129,25 @@ class WidgetAuthor:
                             bounds=(1, None)
                         )
                         continues_row(result=result, input_name=input_name)
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "FluxGuidance":
+                match input_name:
+                    case "guidance":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=10,
+                            step_increment=1,
+                            page_increment=2
+                        )
+                        result[KEY_SUFFIX_DEBUG_LAYOUT] = "True"
+                        ends_row(result=result, input_name=input_name)
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
@@ -1442,7 +1495,7 @@ class WidgetAuthor:
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
-            case "KSampler" | "KSamplerAdvanced":
+            case "KSampler" | "KSamplerAdvanced" | "KSamplerSelect":
                 match input_name:
                     case "cfg":
                         result = new_scale(
@@ -1485,6 +1538,47 @@ class WidgetAuthor:
                                                   items=WidgetAuthor._SCHEDULER_NAMES,
                                                   selected_index=sel_idx
                                                   )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "ModelSamplingFlux":
+                match input_name:
+                    case "height" | "width":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(1, None)
+                        )
+                        continues_row(result=result, input_name=input_name)
+                    case "max_shift" | "base_shift":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current=float(json_value),
+                            lower=0.00001,
+                            upper=3.0,
+                            step_increment=0.001,
+                            page_increment=0.01
+                        )
+                        ends_row(result=result, input_name=input_name)
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "RandomNoise":
+                match input_name:
+                    case "noise_seed" | "seed":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(-1, INT_MAX)
+                        )
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
