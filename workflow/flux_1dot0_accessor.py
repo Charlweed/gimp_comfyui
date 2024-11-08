@@ -21,7 +21,7 @@ class Flux1Dot0Accessor(NodesAccessor):
         NODE_EMPTYSD3LATENTIMAGE = "27"
         NODE_MODELSAMPLINGFLUX = "30"
 
-    class CLIPTextEncode006ClipTextEncodePositivePrompt:
+    class CLIPTextEncode006ClipTextEncodePositivePrompt:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -34,12 +34,12 @@ class Flux1Dot0Accessor(NodesAccessor):
         def text(self, value: str):
             self._outer.nodes_dict[Flux1Dot0Accessor.NodeIndexes.NODE_CLIP_TEXT_ENCODE_POSITIVE_PROMPT.value]["inputs"]["text"] = value  # noqa
 
-    class VAEDecode008VaeDecode:
+    class VAEDecode008VaeDecode:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class SaveImage009SaveImage:
+    class SaveImage009SaveImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -52,7 +52,7 @@ class Flux1Dot0Accessor(NodesAccessor):
         def filename_prefix(self, value: str):
             self._outer.nodes_dict[Flux1Dot0Accessor.NodeIndexes.NODE_SAVE_IMAGE.value]["inputs"]["filename_prefix"] = value  # noqa
 
-    class VAELoader010LoadVae:
+    class VAELoader010LoadVae:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -65,7 +65,7 @@ class Flux1Dot0Accessor(NodesAccessor):
         def vae_name(self, value: str):
             self._outer.nodes_dict[Flux1Dot0Accessor.NodeIndexes.NODE_LOAD_VAE.value]["inputs"]["vae_name"] = value  # noqa
 
-    class DualCLIPLoader011Dualcliploader:
+    class DualCLIPLoader011Dualcliploader:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -94,7 +94,7 @@ class Flux1Dot0Accessor(NodesAccessor):
         def type(self, value: str):
             self._outer.nodes_dict[Flux1Dot0Accessor.NodeIndexes.NODE_DUALCLIPLOADER.value]["inputs"]["type"] = value  # noqa
 
-    class UNETLoader012LoadDiffusionModel:
+    class UNETLoader012LoadDiffusionModel:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -115,12 +115,12 @@ class Flux1Dot0Accessor(NodesAccessor):
         def weight_dtype(self, value: str):
             self._outer.nodes_dict[Flux1Dot0Accessor.NodeIndexes.NODE_LOAD_DIFFUSION_MODEL.value]["inputs"]["weight_dtype"] = value  # noqa
 
-    class SamplerCustomAdvanced013Samplercustomadvanced:
+    class SamplerCustomAdvanced013Samplercustomadvanced:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class KSamplerSelect016Ksamplerselect:
+    class KSamplerSelect016Ksamplerselect:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -133,7 +133,7 @@ class Flux1Dot0Accessor(NodesAccessor):
         def sampler_name(self, value: str):
             self._outer.nodes_dict[Flux1Dot0Accessor.NodeIndexes.NODE_KSAMPLERSELECT.value]["inputs"]["sampler_name"] = value  # noqa
 
-    class BasicScheduler017Basicscheduler:
+    class BasicScheduler017Basicscheduler:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -162,12 +162,12 @@ class Flux1Dot0Accessor(NodesAccessor):
         def denoise(self, value: int):
             self._outer.nodes_dict[Flux1Dot0Accessor.NodeIndexes.NODE_BASICSCHEDULER.value]["inputs"]["denoise"] = value  # noqa
 
-    class BasicGuider022Basicguider:
+    class BasicGuider022Basicguider:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class RandomNoise025Randomnoise:
+    class RandomNoise025Randomnoise:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -180,7 +180,7 @@ class Flux1Dot0Accessor(NodesAccessor):
         def noise_seed(self, value: int):
             self._outer.nodes_dict[Flux1Dot0Accessor.NodeIndexes.NODE_RANDOMNOISE.value]["inputs"]["noise_seed"] = value  # noqa
 
-    class FluxGuidance026Fluxguidance:
+    class FluxGuidance026Fluxguidance:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -193,7 +193,7 @@ class Flux1Dot0Accessor(NodesAccessor):
         def guidance(self, value: float):
             self._outer.nodes_dict[Flux1Dot0Accessor.NodeIndexes.NODE_FLUXGUIDANCE.value]["inputs"]["guidance"] = value  # noqa
 
-    class EmptySD3LatentImage027Emptysd3Latentimage:
+    class EmptySD3LatentImage027Emptysd3Latentimage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -222,7 +222,7 @@ class Flux1Dot0Accessor(NodesAccessor):
         def batch_size(self, value: int):
             self._outer.nodes_dict[Flux1Dot0Accessor.NodeIndexes.NODE_EMPTYSD3LATENTIMAGE.value]["inputs"]["batch_size"] = value  # noqa
 
-    class ModelSamplingFlux030Modelsamplingflux:
+    class ModelSamplingFlux030Modelsamplingflux:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
