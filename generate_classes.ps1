@@ -41,8 +41,8 @@ $WORKFLOWS_ALL = @(
 )
 
 $WORKFLOWS_FLUX = @(
-#    "flux_1.0",
-#    "flux_neg_1.1",
+    "flux_1.0",
+    "flux_neg_1.1",
     "flux_neg_upscale_sdxl_0.5"
 )
 
