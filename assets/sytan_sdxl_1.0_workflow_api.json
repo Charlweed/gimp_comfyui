@@ -184,7 +184,7 @@
   },
   "184": {
     "inputs": {
-      "filename_prefix": "ComfyUI",
+      "filename_prefix": "gimp_generated",
       "images": [
         "8",
         0
@@ -206,7 +206,7 @@
   },
   "201": {
     "inputs": {
-      "filename_prefix": "ComfyUI",
+      "filename_prefix": "upscaled/gimp_generated",
       "images": [
         "221",
         0
