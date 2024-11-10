@@ -26,7 +26,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         NODE_VAE_DECODE_01 = "218"
         NODE_CONTRAST_FIX = "221"
 
-    class CheckpointLoaderSimple004RefinerModel:
+    class CheckpointLoaderSimple004RefinerModel:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -39,7 +39,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def ckpt_name(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_REFINER_MODEL.value]["inputs"]["ckpt_name"] = value  # noqa
 
-    class EmptyLatentImage005ImageResolution:
+    class EmptyLatentImage005ImageResolution:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -68,12 +68,12 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def batch_size(self, value: int):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_IMAGE_RESOLUTION.value]["inputs"]["batch_size"] = value  # noqa
 
-    class VAEDecode008VaeDecode:
+    class VAEDecode008VaeDecode:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class CheckpointLoaderSimple010BaseModel:
+    class CheckpointLoaderSimple010BaseModel:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -86,7 +86,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def ckpt_name(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_BASE_MODEL.value]["inputs"]["ckpt_name"] = value  # noqa
 
-    class KSamplerAdvanced022BasePass:
+    class KSamplerAdvanced022BasePass:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -163,7 +163,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def return_with_leftover_noise(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_BASE_PASS.value]["inputs"]["return_with_leftover_noise"] = value  # noqa
 
-    class KSamplerAdvanced023RefinerPass:
+    class KSamplerAdvanced023RefinerPass:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -240,7 +240,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def return_with_leftover_noise(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_REFINER_PASS.value]["inputs"]["return_with_leftover_noise"] = value  # noqa
 
-    class CLIPTextEncodeSDXL075PositiveBase:
+    class CLIPTextEncodeSDXL075PositiveBase:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -309,7 +309,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def text_l(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_POSITIVE_BASE.value]["inputs"]["text_l"] = value  # noqa
 
-    class CLIPTextEncodeSDXLRefiner081NegativeRefiner:
+    class CLIPTextEncodeSDXLRefiner081NegativeRefiner:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -346,7 +346,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def text(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_NEGATIVE_REFINER.value]["inputs"]["text"] = value  # noqa
 
-    class CLIPTextEncodeSDXL082NegativeBase:
+    class CLIPTextEncodeSDXL082NegativeBase:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -415,7 +415,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def text_l(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_NEGATIVE_BASE.value]["inputs"]["text_l"] = value  # noqa
 
-    class CLIPTextEncodeSDXLRefiner120PositiveRefiner:
+    class CLIPTextEncodeSDXLRefiner120PositiveRefiner:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -452,7 +452,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def text(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_POSITIVE_REFINER.value]["inputs"]["text"] = value  # noqa
 
-    class SaveImage184SytanWorkflow:
+    class SaveImage184SytanWorkflow:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -465,7 +465,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def filename_prefix(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_SYTAN_WORKFLOW.value]["inputs"]["filename_prefix"] = value  # noqa
 
-    class UpscaleModelLoader187UpscaleModel:
+    class UpscaleModelLoader187UpscaleModel:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -478,7 +478,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def model_name(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_UPSCALE_MODEL.value]["inputs"]["model_name"] = value  # noqa
 
-    class SaveImage2012048XUpscale:
+    class SaveImage2012048XUpscale:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -491,12 +491,12 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def filename_prefix(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_2048X_UPSCALE.value]["inputs"]["filename_prefix"] = value  # noqa
 
-    class ImageUpscaleWithModel213PixelUpscaleX4:
+    class ImageUpscaleWithModel213PixelUpscaleX4:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class ImageScaleBy215Downscale:
+    class ImageScaleBy215Downscale:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -517,7 +517,7 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def scale_by(self, value: float):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_DOWNSCALE.value]["inputs"]["scale_by"] = value  # noqa
 
-    class KSamplerAdvanced216UpscaleMixedDiff:
+    class KSamplerAdvanced216UpscaleMixedDiff:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -594,17 +594,17 @@ class SytanSdxl1Dot0Accessor(NodesAccessor):
         def return_with_leftover_noise(self, value: str):
             self._outer.nodes_dict[SytanSdxl1Dot0Accessor.NodeIndexes.NODE_UPSCALE_MIXED_DIFF.value]["inputs"]["return_with_leftover_noise"] = value  # noqa
 
-    class VAEEncode217VaeEncode:
+    class VAEEncode217VaeEncode:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class VAEDecode218VaeDecode:
+    class VAEDecode218VaeDecode:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class ImageBlend221ContrastFix:
+    class ImageBlend221ContrastFix:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer

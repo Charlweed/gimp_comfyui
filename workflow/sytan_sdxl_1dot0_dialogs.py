@@ -90,9 +90,25 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
                 key_name: str = consumers[0]
                 setter = consumers[1]
                 try:
-                    setter(dialog_data[key_name])
-                except KeyError as k_err:  # noqa
-                    pass
+                    if key_name in dialog_data:
+                        arg_value = dialog_data[key_name]
+                        if arg_value is None:
+                            err_msg: str = f"Value for key \"{key_name}\" is None."
+                            LOGGER_SDGUIU.debug(err_msg)
+                            # raise ValueError(err_msg)
+                        setter(arg_value)
+                    else:
+                        err_msg: str = f"Key \"{key_name}\" not present in dialog_data."
+                        dd_data_str: str = json.dumps(dialog_data, indent=2, sort_keys=True)
+                        LOGGER_SDGUIU.debug(err_msg)
+                        LOGGER_SDGUIU.debug(dd_data_str)
+                        # raise KeyError(err_msg)
+                except KeyError as k_err:  # Not an exception if data not persisted.
+                    LOGGER_SDGUIU.debug(k_err)
+                    # raise k_err  # For debugging new workflows.
+                except ValueError as v_err:  # Not an exception if data not persisted.
+                    LOGGER_SDGUIU.debug(v_err)
+                    # raise v_err  # For debugging new workflows.
         
         dialog_box = dialog.get_content_area()
         if blurb_in:
@@ -134,9 +150,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             persister.store_config()
             self.put_inputs(dialog_data=dialog_data)
 
-
         # New Frame
-        frame_checkpointloadersimple_004refiner_model: Gtk.Frame = Gtk.Frame.new(label="Refiner Model")  # noqa
+        frame_checkpointloadersimple_004refiner_model: Gtk.Frame = Gtk.Frame.new(label="Refiner Model        #4")  # noqa
         frame_checkpointloadersimple_004refiner_model.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_4_ckpt_name: Gtk.Label = Gtk.Label.new("Ckpt_Name")
         comboboxtext_4_ckpt_name: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -146,12 +161,12 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         if combo_values_4_ckpt_name is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_4_ckpt_name:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
         for combo_item_path in combo_values_4_ckpt_name:
             comboboxtext_4_ckpt_name.append_text(combo_item_path)
         comboboxtext_4_ckpt_name.set_name("comboboxtext_4_ckpt_name")
         comboboxtext_4_ckpt_name.set_hexpand(True)
-        comboboxtext_4_ckpt_name.set_active(13)
+        comboboxtext_4_ckpt_name.set_active(14)
 
         def change_handler_4_ckpt_name(source, **args):  # noqa
             pass
@@ -161,18 +176,18 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_4_ckpt_name
             selected_index = combo_values_4_ckpt_name.index(a_val)
             comboboxtext_4_ckpt_name.set_active(selected_index)
-        widget_getters[comboboxtext_4_ckpt_name.get_name()] = comboboxtext_4_ckpt_name.get_active_text
-        widget_setters[comboboxtext_4_ckpt_name.get_name()] = setter_4_ckpt_name
+        widget_getters[comboboxtext_4_ckpt_name.get_name()] = comboboxtext_4_ckpt_name.get_active_text  # noqa
+        widget_setters[comboboxtext_4_ckpt_name.get_name()] = setter_4_ckpt_name  # noqa
 
         grid_4: Gtk.Grid = Gtk.Grid.new()
         grid_4.attach(label_4_ckpt_name,        left=0, top=0, width=1, height=1)  # noqa
-        grid_4.attach(comboboxtext_4_ckpt_name, left=1, top=0, width=2, height=1)  # noqa
+        grid_4.attach(comboboxtext_4_ckpt_name, left=1, top=0, width=3, height=1)  # noqa
         grid_4.set_column_homogeneous(False)
         grid_4.set_row_homogeneous(False)
         frame_checkpointloadersimple_004refiner_model.add(widget=grid_4)  # noqa
 
         # New Frame
-        frame_emptylatentimage_005image_resolution: Gtk.Frame = Gtk.Frame.new(label="Image Resolution")  # noqa
+        frame_emptylatentimage_005image_resolution: Gtk.Frame = Gtk.Frame.new(label="Image Resolution        #5")  # noqa
         frame_emptylatentimage_005image_resolution.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_5_width: Gtk.Label = Gtk.Label.new("Width")
         label_5_width.set_margin_start(8)
@@ -195,8 +210,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_5_width(a_val: int):
             entry_5_width.set_text(str(a_val))
-        widget_getters[entry_5_width.get_name()] = getter_5_width
-        widget_setters[entry_5_width.get_name()] = setter_5_width
+        widget_getters[entry_5_width.get_name()] = getter_5_width  # noqa
+        widget_setters[entry_5_width.get_name()] = setter_5_width  # noqa
 
         label_5_height: Gtk.Label = Gtk.Label.new("Height")
         label_5_height.set_margin_start(8)
@@ -219,8 +234,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_5_height(a_val: int):
             entry_5_height.set_text(str(a_val))
-        widget_getters[entry_5_height.get_name()] = getter_5_height
-        widget_setters[entry_5_height.get_name()] = setter_5_height
+        widget_getters[entry_5_height.get_name()] = getter_5_height  # noqa
+        widget_setters[entry_5_height.get_name()] = setter_5_height  # noqa
 
         label_5_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_5_batch_size.set_margin_start(8)
@@ -243,8 +258,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_5_batch_size(a_val: int):
             entry_5_batch_size.set_text(str(a_val))
-        widget_getters[entry_5_batch_size.get_name()] = getter_5_batch_size
-        widget_setters[entry_5_batch_size.get_name()] = setter_5_batch_size
+        widget_getters[entry_5_batch_size.get_name()] = getter_5_batch_size  # noqa
+        widget_setters[entry_5_batch_size.get_name()] = setter_5_batch_size  # noqa
 
         grid_5: Gtk.Grid = Gtk.Grid.new()
         grid_5.attach(label_5_width,      left=0, top=0, width=1, height=1)  # noqa
@@ -258,15 +273,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         frame_emptylatentimage_005image_resolution.add(widget=grid_5)  # noqa
 
         # New Frame
-        frame_vaedecode_008vae_decode: Gtk.Frame = Gtk.Frame.new(label="VAE Decode")  # noqa
-        frame_vaedecode_008vae_decode.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        grid_8: Gtk.Grid = Gtk.Grid.new()
-        grid_8.set_column_homogeneous(False)
-        grid_8.set_row_homogeneous(False)
-        frame_vaedecode_008vae_decode.add(widget=grid_8)  # noqa
-
-        # New Frame
-        frame_checkpointloadersimple_010base_model: Gtk.Frame = Gtk.Frame.new(label="Base Model")  # noqa
+        frame_checkpointloadersimple_010base_model: Gtk.Frame = Gtk.Frame.new(label="Base Model        #10")  # noqa
         frame_checkpointloadersimple_010base_model.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_10_ckpt_name: Gtk.Label = Gtk.Label.new("Ckpt_Name")
         comboboxtext_10_ckpt_name: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -276,12 +283,12 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         if combo_values_10_ckpt_name is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_10_ckpt_name:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
         for combo_item_path in combo_values_10_ckpt_name:
             comboboxtext_10_ckpt_name.append_text(combo_item_path)
         comboboxtext_10_ckpt_name.set_name("comboboxtext_10_ckpt_name")
         comboboxtext_10_ckpt_name.set_hexpand(True)
-        comboboxtext_10_ckpt_name.set_active(12)
+        comboboxtext_10_ckpt_name.set_active(13)
 
         def change_handler_10_ckpt_name(source, **args):  # noqa
             pass
@@ -291,18 +298,18 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_10_ckpt_name
             selected_index = combo_values_10_ckpt_name.index(a_val)
             comboboxtext_10_ckpt_name.set_active(selected_index)
-        widget_getters[comboboxtext_10_ckpt_name.get_name()] = comboboxtext_10_ckpt_name.get_active_text
-        widget_setters[comboboxtext_10_ckpt_name.get_name()] = setter_10_ckpt_name
+        widget_getters[comboboxtext_10_ckpt_name.get_name()] = comboboxtext_10_ckpt_name.get_active_text  # noqa
+        widget_setters[comboboxtext_10_ckpt_name.get_name()] = setter_10_ckpt_name  # noqa
 
         grid_10: Gtk.Grid = Gtk.Grid.new()
         grid_10.attach(label_10_ckpt_name,        left=0, top=0, width=1, height=1)  # noqa
-        grid_10.attach(comboboxtext_10_ckpt_name, left=1, top=0, width=2, height=1)  # noqa
+        grid_10.attach(comboboxtext_10_ckpt_name, left=1, top=0, width=3, height=1)  # noqa
         grid_10.set_column_homogeneous(False)
         grid_10.set_row_homogeneous(False)
         frame_checkpointloadersimple_010base_model.add(widget=grid_10)  # noqa
 
         # New Frame
-        frame_ksampleradvanced_022base_pass: Gtk.Frame = Gtk.Frame.new(label="Base Pass")  # noqa
+        frame_ksampleradvanced_022base_pass: Gtk.Frame = Gtk.Frame.new(label="Base Pass        #22")  # noqa
         frame_ksampleradvanced_022base_pass.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         checkbutton_22_add_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Add Noise")  # noqa
         checkbutton_22_add_noise.set_active(True)
@@ -315,7 +322,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def getter_22_add_noise():
             return "enable" if checkbutton_22_add_noise.get_active() else "disable"
-        widget_getters[checkbutton_22_add_noise.get_name()] = getter_22_add_noise
+        widget_getters[checkbutton_22_add_noise.get_name()] = getter_22_add_noise  # noqa
 
         label_22_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_22_noise_seed.set_margin_start(8)
@@ -338,8 +345,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_22_noise_seed(a_val: int):
             entry_22_noise_seed.set_text(str(a_val))
-        widget_getters[entry_22_noise_seed.get_name()] = getter_22_noise_seed
-        widget_setters[entry_22_noise_seed.get_name()] = setter_22_noise_seed
+        widget_getters[entry_22_noise_seed.get_name()] = getter_22_noise_seed  # noqa
+        widget_setters[entry_22_noise_seed.get_name()] = setter_22_noise_seed  # noqa
 
         label_22_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_22_steps.set_margin_start(8)
@@ -349,7 +356,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         entry_22_steps.set_name("entry_22_steps")
         entry_22_steps.set_hexpand(True)
         validate_in_bounds(entry_widget=entry_22_steps,
-                           minimum=1, maximum=None,  # noqa
+                           minimum=1, maximum=128,  # noqa
                            int_only=True,
                            track_invalid_widgets=track_invalid_widgets)
 
@@ -362,8 +369,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_22_steps(a_val: int):
             entry_22_steps.set_text(str(a_val))
-        widget_getters[entry_22_steps.get_name()] = getter_22_steps
-        widget_setters[entry_22_steps.get_name()] = setter_22_steps
+        widget_getters[entry_22_steps.get_name()] = getter_22_steps  # noqa
+        widget_setters[entry_22_steps.get_name()] = setter_22_steps  # noqa
 
         label_22_cfg: Gtk.Label = Gtk.Label.new("Cfg")
         label_22_cfg.set_margin_start(8)
@@ -401,8 +408,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_22_sampler_name
             selected_index = combo_values_22_sampler_name.index(a_val)
             comboboxtext_22_sampler_name.set_active(selected_index)
-        widget_getters[comboboxtext_22_sampler_name.get_name()] = comboboxtext_22_sampler_name.get_active_text
-        widget_setters[comboboxtext_22_sampler_name.get_name()] = setter_22_sampler_name
+        widget_getters[comboboxtext_22_sampler_name.get_name()] = comboboxtext_22_sampler_name.get_active_text  # noqa
+        widget_setters[comboboxtext_22_sampler_name.get_name()] = setter_22_sampler_name  # noqa
 
         label_22_scheduler: Gtk.Label = Gtk.Label.new("Scheduler")
         comboboxtext_22_scheduler: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -421,8 +428,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_22_scheduler
             selected_index = combo_values_22_scheduler.index(a_val)
             comboboxtext_22_scheduler.set_active(selected_index)
-        widget_getters[comboboxtext_22_scheduler.get_name()] = comboboxtext_22_scheduler.get_active_text
-        widget_setters[comboboxtext_22_scheduler.get_name()] = setter_22_scheduler
+        widget_getters[comboboxtext_22_scheduler.get_name()] = comboboxtext_22_scheduler.get_active_text  # noqa
+        widget_setters[comboboxtext_22_scheduler.get_name()] = setter_22_scheduler  # noqa
 
         label_22_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_22_start_at_step.set_margin_start(8)
@@ -445,8 +452,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_22_start_at_step(a_val: int):
             entry_22_start_at_step.set_text(str(a_val))
-        widget_getters[entry_22_start_at_step.get_name()] = getter_22_start_at_step
-        widget_setters[entry_22_start_at_step.get_name()] = setter_22_start_at_step
+        widget_getters[entry_22_start_at_step.get_name()] = getter_22_start_at_step  # noqa
+        widget_setters[entry_22_start_at_step.get_name()] = setter_22_start_at_step  # noqa
 
         label_22_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_22_end_at_step.set_margin_start(8)
@@ -469,34 +476,45 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_22_end_at_step(a_val: int):
             entry_22_end_at_step.set_text(str(a_val))
-        widget_getters[entry_22_end_at_step.get_name()] = getter_22_end_at_step
-        widget_setters[entry_22_end_at_step.get_name()] = setter_22_end_at_step
+        widget_getters[entry_22_end_at_step.get_name()] = getter_22_end_at_step  # noqa
+        widget_setters[entry_22_end_at_step.get_name()] = setter_22_end_at_step  # noqa
 
-        checkbutton_22_return_with_leftover_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Return_With_Leftover_Noise")  # noqa
+        checkbutton_22_return_with_leftover_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Return With Leftover Noise")  # noqa
+        checkbutton_22_return_with_leftover_noise.set_active(True)
+        checkbutton_22_return_with_leftover_noise.set_name("checkbutton_22_return_with_leftover_noise")
+        checkbutton_22_return_with_leftover_noise.set_hexpand(False)
+
+        def toggled_handler_22_return_with_leftover_noise(source, **args):  # noqa
+            pass
+        checkbutton_22_return_with_leftover_noise.connect(SIG_TOGGLED, toggled_handler_22_return_with_leftover_noise)
+
+        def getter_22_return_with_leftover_noise():
+            return "enable" if checkbutton_22_return_with_leftover_noise.get_active() else "disable"
+        widget_getters[checkbutton_22_return_with_leftover_noise.get_name()] = getter_22_return_with_leftover_noise  # noqa
 
         grid_22: Gtk.Grid = Gtk.Grid.new()
-        grid_22.attach(checkbutton_22_add_noise,                  left=0, top=0, width=3, height=1)  # noqa
-        grid_22.attach(label_22_noise_seed,                       left=3, top=0, width=1, height=1)  # noqa
-        grid_22.attach(entry_22_noise_seed,                       left=4, top=0, width=3, height=1)  # noqa
-        grid_22.attach(label_22_steps,                            left=7, top=0, width=1, height=1)  # noqa
-        grid_22.attach(entry_22_steps,                            left=8, top=0, width=3, height=1)  # noqa
-        grid_22.attach(label_22_cfg,                              left=0, top=1, width=1, height=1)  # noqa
-        grid_22.attach(scale_22_cfg,                              left=1, top=1, width=10, height=1)  # noqa
-        grid_22.attach(label_22_sampler_name,                     left=0, top=2, width=1, height=1)  # noqa
-        grid_22.attach(comboboxtext_22_sampler_name,              left=1, top=2, width=10, height=1)  # noqa
-        grid_22.attach(label_22_scheduler,                        left=0, top=3, width=1, height=1)  # noqa
-        grid_22.attach(comboboxtext_22_scheduler,                 left=1, top=3, width=10, height=1)  # noqa
-        grid_22.attach(label_22_start_at_step,                    left=0, top=4, width=1, height=1)  # noqa
-        grid_22.attach(entry_22_start_at_step,                    left=1, top=4, width=3, height=1)  # noqa
-        grid_22.attach(label_22_end_at_step,                      left=4, top=4, width=1, height=1)  # noqa
-        grid_22.attach(entry_22_end_at_step,                      left=5, top=4, width=6, height=1)  # noqa
-        grid_22.attach(checkbutton_22_return_with_leftover_noise, left=0, top=5, width=11, height=1)  # noqa
+        grid_22.attach(checkbutton_22_add_noise,                  left=0, top=0, width=8, height=1)  # noqa
+        grid_22.attach(label_22_noise_seed,                       left=0, top=1, width=1, height=1)  # noqa
+        grid_22.attach(entry_22_noise_seed,                       left=1, top=1, width=7, height=1)  # noqa
+        grid_22.attach(label_22_steps,                            left=0, top=2, width=1, height=1)  # noqa
+        grid_22.attach(entry_22_steps,                            left=1, top=2, width=7, height=1)  # noqa
+        grid_22.attach(label_22_cfg,                              left=0, top=3, width=1, height=1)  # noqa
+        grid_22.attach(scale_22_cfg,                              left=1, top=3, width=7, height=1)  # noqa
+        grid_22.attach(label_22_sampler_name,                     left=0, top=4, width=1, height=1)  # noqa
+        grid_22.attach(comboboxtext_22_sampler_name,              left=1, top=4, width=7, height=1)  # noqa
+        grid_22.attach(label_22_scheduler,                        left=0, top=5, width=1, height=1)  # noqa
+        grid_22.attach(comboboxtext_22_scheduler,                 left=1, top=5, width=7, height=1)  # noqa
+        grid_22.attach(label_22_start_at_step,                    left=0, top=6, width=1, height=1)  # noqa
+        grid_22.attach(entry_22_start_at_step,                    left=1, top=6, width=3, height=1)  # noqa
+        grid_22.attach(label_22_end_at_step,                      left=4, top=6, width=1, height=1)  # noqa
+        grid_22.attach(entry_22_end_at_step,                      left=5, top=6, width=3, height=1)  # noqa
+        grid_22.attach(checkbutton_22_return_with_leftover_noise, left=0, top=7, width=8, height=1)  # noqa
         grid_22.set_column_homogeneous(False)
         grid_22.set_row_homogeneous(False)
         frame_ksampleradvanced_022base_pass.add(widget=grid_22)  # noqa
 
         # New Frame
-        frame_ksampleradvanced_023refiner_pass: Gtk.Frame = Gtk.Frame.new(label="Refiner Pass")  # noqa
+        frame_ksampleradvanced_023refiner_pass: Gtk.Frame = Gtk.Frame.new(label="Refiner Pass        #23")  # noqa
         frame_ksampleradvanced_023refiner_pass.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         checkbutton_23_add_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Add Noise")  # noqa
         checkbutton_23_add_noise.set_active(False)
@@ -509,7 +527,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def getter_23_add_noise():
             return "enable" if checkbutton_23_add_noise.get_active() else "disable"
-        widget_getters[checkbutton_23_add_noise.get_name()] = getter_23_add_noise
+        widget_getters[checkbutton_23_add_noise.get_name()] = getter_23_add_noise  # noqa
 
         label_23_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_23_noise_seed.set_margin_start(8)
@@ -532,8 +550,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_23_noise_seed(a_val: int):
             entry_23_noise_seed.set_text(str(a_val))
-        widget_getters[entry_23_noise_seed.get_name()] = getter_23_noise_seed
-        widget_setters[entry_23_noise_seed.get_name()] = setter_23_noise_seed
+        widget_getters[entry_23_noise_seed.get_name()] = getter_23_noise_seed  # noqa
+        widget_setters[entry_23_noise_seed.get_name()] = setter_23_noise_seed  # noqa
 
         label_23_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_23_steps.set_margin_start(8)
@@ -543,7 +561,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         entry_23_steps.set_name("entry_23_steps")
         entry_23_steps.set_hexpand(True)
         validate_in_bounds(entry_widget=entry_23_steps,
-                           minimum=1, maximum=None,  # noqa
+                           minimum=1, maximum=128,  # noqa
                            int_only=True,
                            track_invalid_widgets=track_invalid_widgets)
 
@@ -556,8 +574,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_23_steps(a_val: int):
             entry_23_steps.set_text(str(a_val))
-        widget_getters[entry_23_steps.get_name()] = getter_23_steps
-        widget_setters[entry_23_steps.get_name()] = setter_23_steps
+        widget_getters[entry_23_steps.get_name()] = getter_23_steps  # noqa
+        widget_setters[entry_23_steps.get_name()] = setter_23_steps  # noqa
 
         label_23_cfg: Gtk.Label = Gtk.Label.new("Cfg")
         label_23_cfg.set_margin_start(8)
@@ -595,8 +613,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_23_sampler_name
             selected_index = combo_values_23_sampler_name.index(a_val)
             comboboxtext_23_sampler_name.set_active(selected_index)
-        widget_getters[comboboxtext_23_sampler_name.get_name()] = comboboxtext_23_sampler_name.get_active_text
-        widget_setters[comboboxtext_23_sampler_name.get_name()] = setter_23_sampler_name
+        widget_getters[comboboxtext_23_sampler_name.get_name()] = comboboxtext_23_sampler_name.get_active_text  # noqa
+        widget_setters[comboboxtext_23_sampler_name.get_name()] = setter_23_sampler_name  # noqa
 
         label_23_scheduler: Gtk.Label = Gtk.Label.new("Scheduler")
         comboboxtext_23_scheduler: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -615,8 +633,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_23_scheduler
             selected_index = combo_values_23_scheduler.index(a_val)
             comboboxtext_23_scheduler.set_active(selected_index)
-        widget_getters[comboboxtext_23_scheduler.get_name()] = comboboxtext_23_scheduler.get_active_text
-        widget_setters[comboboxtext_23_scheduler.get_name()] = setter_23_scheduler
+        widget_getters[comboboxtext_23_scheduler.get_name()] = comboboxtext_23_scheduler.get_active_text  # noqa
+        widget_setters[comboboxtext_23_scheduler.get_name()] = setter_23_scheduler  # noqa
 
         label_23_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_23_start_at_step.set_margin_start(8)
@@ -639,8 +657,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_23_start_at_step(a_val: int):
             entry_23_start_at_step.set_text(str(a_val))
-        widget_getters[entry_23_start_at_step.get_name()] = getter_23_start_at_step
-        widget_setters[entry_23_start_at_step.get_name()] = setter_23_start_at_step
+        widget_getters[entry_23_start_at_step.get_name()] = getter_23_start_at_step  # noqa
+        widget_setters[entry_23_start_at_step.get_name()] = setter_23_start_at_step  # noqa
 
         label_23_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_23_end_at_step.set_margin_start(8)
@@ -663,34 +681,45 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_23_end_at_step(a_val: int):
             entry_23_end_at_step.set_text(str(a_val))
-        widget_getters[entry_23_end_at_step.get_name()] = getter_23_end_at_step
-        widget_setters[entry_23_end_at_step.get_name()] = setter_23_end_at_step
+        widget_getters[entry_23_end_at_step.get_name()] = getter_23_end_at_step  # noqa
+        widget_setters[entry_23_end_at_step.get_name()] = setter_23_end_at_step  # noqa
 
-        checkbutton_23_return_with_leftover_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Return_With_Leftover_Noise")  # noqa
+        checkbutton_23_return_with_leftover_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Return With Leftover Noise")  # noqa
+        checkbutton_23_return_with_leftover_noise.set_active(False)
+        checkbutton_23_return_with_leftover_noise.set_name("checkbutton_23_return_with_leftover_noise")
+        checkbutton_23_return_with_leftover_noise.set_hexpand(False)
+
+        def toggled_handler_23_return_with_leftover_noise(source, **args):  # noqa
+            pass
+        checkbutton_23_return_with_leftover_noise.connect(SIG_TOGGLED, toggled_handler_23_return_with_leftover_noise)
+
+        def getter_23_return_with_leftover_noise():
+            return "enable" if checkbutton_23_return_with_leftover_noise.get_active() else "disable"
+        widget_getters[checkbutton_23_return_with_leftover_noise.get_name()] = getter_23_return_with_leftover_noise  # noqa
 
         grid_23: Gtk.Grid = Gtk.Grid.new()
-        grid_23.attach(checkbutton_23_add_noise,                  left=0, top=0, width=3, height=1)  # noqa
-        grid_23.attach(label_23_noise_seed,                       left=3, top=0, width=1, height=1)  # noqa
-        grid_23.attach(entry_23_noise_seed,                       left=4, top=0, width=3, height=1)  # noqa
-        grid_23.attach(label_23_steps,                            left=7, top=0, width=1, height=1)  # noqa
-        grid_23.attach(entry_23_steps,                            left=8, top=0, width=3, height=1)  # noqa
-        grid_23.attach(label_23_cfg,                              left=0, top=1, width=1, height=1)  # noqa
-        grid_23.attach(scale_23_cfg,                              left=1, top=1, width=10, height=1)  # noqa
-        grid_23.attach(label_23_sampler_name,                     left=0, top=2, width=1, height=1)  # noqa
-        grid_23.attach(comboboxtext_23_sampler_name,              left=1, top=2, width=10, height=1)  # noqa
-        grid_23.attach(label_23_scheduler,                        left=0, top=3, width=1, height=1)  # noqa
-        grid_23.attach(comboboxtext_23_scheduler,                 left=1, top=3, width=10, height=1)  # noqa
-        grid_23.attach(label_23_start_at_step,                    left=0, top=4, width=1, height=1)  # noqa
-        grid_23.attach(entry_23_start_at_step,                    left=1, top=4, width=3, height=1)  # noqa
-        grid_23.attach(label_23_end_at_step,                      left=4, top=4, width=1, height=1)  # noqa
-        grid_23.attach(entry_23_end_at_step,                      left=5, top=4, width=6, height=1)  # noqa
-        grid_23.attach(checkbutton_23_return_with_leftover_noise, left=0, top=5, width=11, height=1)  # noqa
+        grid_23.attach(checkbutton_23_add_noise,                  left=0, top=0, width=8, height=1)  # noqa
+        grid_23.attach(label_23_noise_seed,                       left=0, top=1, width=1, height=1)  # noqa
+        grid_23.attach(entry_23_noise_seed,                       left=1, top=1, width=7, height=1)  # noqa
+        grid_23.attach(label_23_steps,                            left=0, top=2, width=1, height=1)  # noqa
+        grid_23.attach(entry_23_steps,                            left=1, top=2, width=7, height=1)  # noqa
+        grid_23.attach(label_23_cfg,                              left=0, top=3, width=1, height=1)  # noqa
+        grid_23.attach(scale_23_cfg,                              left=1, top=3, width=7, height=1)  # noqa
+        grid_23.attach(label_23_sampler_name,                     left=0, top=4, width=1, height=1)  # noqa
+        grid_23.attach(comboboxtext_23_sampler_name,              left=1, top=4, width=7, height=1)  # noqa
+        grid_23.attach(label_23_scheduler,                        left=0, top=5, width=1, height=1)  # noqa
+        grid_23.attach(comboboxtext_23_scheduler,                 left=1, top=5, width=7, height=1)  # noqa
+        grid_23.attach(label_23_start_at_step,                    left=0, top=6, width=1, height=1)  # noqa
+        grid_23.attach(entry_23_start_at_step,                    left=1, top=6, width=3, height=1)  # noqa
+        grid_23.attach(label_23_end_at_step,                      left=4, top=6, width=1, height=1)  # noqa
+        grid_23.attach(entry_23_end_at_step,                      left=5, top=6, width=3, height=1)  # noqa
+        grid_23.attach(checkbutton_23_return_with_leftover_noise, left=0, top=7, width=8, height=1)  # noqa
         grid_23.set_column_homogeneous(False)
         grid_23.set_row_homogeneous(False)
         frame_ksampleradvanced_023refiner_pass.add(widget=grid_23)  # noqa
 
         # New Frame
-        frame_cliptextencodesdxl_075positive_base: Gtk.Frame = Gtk.Frame.new(label="Positive Base")  # noqa
+        frame_cliptextencodesdxl_075positive_base: Gtk.Frame = Gtk.Frame.new(label="Positive Base        #75")  # noqa
         frame_cliptextencodesdxl_075positive_base.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_75_width: Gtk.Label = Gtk.Label.new("Width")
         label_75_width.set_margin_start(8)
@@ -713,8 +742,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_75_width(a_val: int):
             entry_75_width.set_text(str(a_val))
-        widget_getters[entry_75_width.get_name()] = getter_75_width
-        widget_setters[entry_75_width.get_name()] = setter_75_width
+        widget_getters[entry_75_width.get_name()] = getter_75_width  # noqa
+        widget_setters[entry_75_width.get_name()] = setter_75_width  # noqa
 
         label_75_height: Gtk.Label = Gtk.Label.new("Height")
         label_75_height.set_margin_start(8)
@@ -737,8 +766,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_75_height(a_val: int):
             entry_75_height.set_text(str(a_val))
-        widget_getters[entry_75_height.get_name()] = getter_75_height
-        widget_setters[entry_75_height.get_name()] = setter_75_height
+        widget_getters[entry_75_height.get_name()] = getter_75_height  # noqa
+        widget_setters[entry_75_height.get_name()] = setter_75_height  # noqa
 
         label_75_crop_w: Gtk.Label = Gtk.Label.new("Crop_W")
         label_75_crop_w.set_margin_start(8)
@@ -761,8 +790,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_75_crop_w(a_val: int):
             entry_75_crop_w.set_text(str(a_val))
-        widget_getters[entry_75_crop_w.get_name()] = getter_75_crop_w
-        widget_setters[entry_75_crop_w.get_name()] = setter_75_crop_w
+        widget_getters[entry_75_crop_w.get_name()] = getter_75_crop_w  # noqa
+        widget_setters[entry_75_crop_w.get_name()] = setter_75_crop_w  # noqa
 
         label_75_crop_h: Gtk.Label = Gtk.Label.new("Crop_H")
         label_75_crop_h.set_margin_start(8)
@@ -785,8 +814,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_75_crop_h(a_val: int):
             entry_75_crop_h.set_text(str(a_val))
-        widget_getters[entry_75_crop_h.get_name()] = getter_75_crop_h
-        widget_setters[entry_75_crop_h.get_name()] = setter_75_crop_h
+        widget_getters[entry_75_crop_h.get_name()] = getter_75_crop_h  # noqa
+        widget_setters[entry_75_crop_h.get_name()] = setter_75_crop_h  # noqa
 
         label_75_target_width: Gtk.Label = Gtk.Label.new("Target_Width")
         label_75_target_width.set_margin_start(8)
@@ -809,8 +838,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_75_target_width(a_val: int):
             entry_75_target_width.set_text(str(a_val))
-        widget_getters[entry_75_target_width.get_name()] = getter_75_target_width
-        widget_setters[entry_75_target_width.get_name()] = setter_75_target_width
+        widget_getters[entry_75_target_width.get_name()] = getter_75_target_width  # noqa
+        widget_setters[entry_75_target_width.get_name()] = setter_75_target_width  # noqa
 
         label_75_target_height: Gtk.Label = Gtk.Label.new("Target_Height")
         label_75_target_height.set_margin_start(8)
@@ -833,8 +862,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_75_target_height(a_val: int):
             entry_75_target_height.set_text(str(a_val))
-        widget_getters[entry_75_target_height.get_name()] = getter_75_target_height
-        widget_setters[entry_75_target_height.get_name()] = setter_75_target_height
+        widget_getters[entry_75_target_height.get_name()] = getter_75_target_height  # noqa
+        widget_setters[entry_75_target_height.get_name()] = setter_75_target_height  # noqa
 
         label_75_text_g: Gtk.Label = Gtk.Label.new("Text_G")
         textview_75_text_g: Gtk.TextView = Gtk.TextView.new()
@@ -843,6 +872,10 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         textview_75_text_g.set_hexpand(True)
         textview_75_text_g.set_vexpand(True)
         textview_75_text_g.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_75_text_g = Gtk.ScrolledWindow()
+        scrolled_window_75_text_g.add(textview_75_text_g)  # noqa
+        scrolled_window_75_text_g.set_size_request(864, 288)
 
         def preedit_handler_75_text_g(source, **args):  # noqa
             pass
@@ -867,6 +900,10 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         textview_75_text_l.set_hexpand(True)
         textview_75_text_l.set_vexpand(True)
         textview_75_text_l.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_75_text_l = Gtk.ScrolledWindow()
+        scrolled_window_75_text_l.add(textview_75_text_l)  # noqa
+        scrolled_window_75_text_l.set_size_request(864, 288)
 
         def preedit_handler_75_text_l(source, **args):  # noqa
             pass
@@ -885,28 +922,28 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         widget_setters[textview_75_text_l.get_name()] = setter_75_text_l
 
         grid_75: Gtk.Grid = Gtk.Grid.new()
-        grid_75.attach(label_75_width,         left=0, top=0, width=1, height=1)  # noqa
-        grid_75.attach(entry_75_width,         left=1, top=0, width=3, height=1)  # noqa
-        grid_75.attach(label_75_height,        left=4, top=0, width=1, height=1)  # noqa
-        grid_75.attach(entry_75_height,        left=5, top=0, width=3, height=1)  # noqa
-        grid_75.attach(label_75_crop_w,        left=8, top=0, width=1, height=1)  # noqa
-        grid_75.attach(entry_75_crop_w,        left=9, top=0, width=3, height=1)  # noqa
-        grid_75.attach(label_75_crop_h,        left=12, top=0, width=1, height=1)  # noqa
-        grid_75.attach(entry_75_crop_h,        left=13, top=0, width=3, height=1)  # noqa
-        grid_75.attach(label_75_target_width,  left=16, top=0, width=1, height=1)  # noqa
-        grid_75.attach(entry_75_target_width,  left=17, top=0, width=3, height=1)  # noqa
-        grid_75.attach(label_75_target_height, left=20, top=0, width=1, height=1)  # noqa
-        grid_75.attach(entry_75_target_height, left=21, top=0, width=3, height=1)  # noqa
-        grid_75.attach(label_75_text_g,        left=0, top=1, width=1, height=1)  # noqa
-        grid_75.attach(textview_75_text_g,     left=1, top=1, width=23, height=1)  # noqa
-        grid_75.attach(label_75_text_l,        left=0, top=2, width=1, height=1)  # noqa
-        grid_75.attach(textview_75_text_l,     left=1, top=2, width=23, height=1)  # noqa
+        grid_75.attach(label_75_width,            left=0, top=0, width=1, height=1)  # noqa
+        grid_75.attach(entry_75_width,            left=1, top=0, width=3, height=1)  # noqa
+        grid_75.attach(label_75_height,           left=4, top=0, width=1, height=1)  # noqa
+        grid_75.attach(entry_75_height,           left=5, top=0, width=3, height=1)  # noqa
+        grid_75.attach(label_75_crop_w,           left=8, top=0, width=1, height=1)  # noqa
+        grid_75.attach(entry_75_crop_w,           left=9, top=0, width=3, height=1)  # noqa
+        grid_75.attach(label_75_crop_h,           left=12, top=0, width=1, height=1)  # noqa
+        grid_75.attach(entry_75_crop_h,           left=13, top=0, width=3, height=1)  # noqa
+        grid_75.attach(label_75_target_width,     left=16, top=0, width=1, height=1)  # noqa
+        grid_75.attach(entry_75_target_width,     left=17, top=0, width=3, height=1)  # noqa
+        grid_75.attach(label_75_target_height,    left=20, top=0, width=1, height=1)  # noqa
+        grid_75.attach(entry_75_target_height,    left=21, top=0, width=3, height=1)  # noqa
+        grid_75.attach(label_75_text_g,           left=0, top=1, width=1, height=1)  # noqa
+        grid_75.attach(scrolled_window_75_text_g, left=1, top=1, width=23, height=1)  # noqa
+        grid_75.attach(label_75_text_l,           left=0, top=2, width=1, height=1)  # noqa
+        grid_75.attach(scrolled_window_75_text_l, left=1, top=2, width=23, height=1)  # noqa
         grid_75.set_column_homogeneous(False)
         grid_75.set_row_homogeneous(False)
         frame_cliptextencodesdxl_075positive_base.add(widget=grid_75)  # noqa
 
         # New Frame
-        frame_cliptextencodesdxlrefiner_081negative_refiner: Gtk.Frame = Gtk.Frame.new(label="Negative Refiner")  # noqa
+        frame_cliptextencodesdxlrefiner_081negative_refiner: Gtk.Frame = Gtk.Frame.new(label="Negative Refiner        #81")  # noqa
         frame_cliptextencodesdxlrefiner_081negative_refiner.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_81_ascore: Gtk.Label = Gtk.Label.new("Ascore")
         label_81_ascore.set_margin_start(8)
@@ -929,8 +966,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_81_ascore(a_val: int):
             entry_81_ascore.set_text(str(a_val))
-        widget_getters[entry_81_ascore.get_name()] = getter_81_ascore
-        widget_setters[entry_81_ascore.get_name()] = setter_81_ascore
+        widget_getters[entry_81_ascore.get_name()] = getter_81_ascore  # noqa
+        widget_setters[entry_81_ascore.get_name()] = setter_81_ascore  # noqa
 
         label_81_width: Gtk.Label = Gtk.Label.new("Width")
         label_81_width.set_margin_start(8)
@@ -953,8 +990,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_81_width(a_val: int):
             entry_81_width.set_text(str(a_val))
-        widget_getters[entry_81_width.get_name()] = getter_81_width
-        widget_setters[entry_81_width.get_name()] = setter_81_width
+        widget_getters[entry_81_width.get_name()] = getter_81_width  # noqa
+        widget_setters[entry_81_width.get_name()] = setter_81_width  # noqa
 
         label_81_height: Gtk.Label = Gtk.Label.new("Height")
         label_81_height.set_margin_start(8)
@@ -977,8 +1014,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_81_height(a_val: int):
             entry_81_height.set_text(str(a_val))
-        widget_getters[entry_81_height.get_name()] = getter_81_height
-        widget_setters[entry_81_height.get_name()] = setter_81_height
+        widget_getters[entry_81_height.get_name()] = getter_81_height  # noqa
+        widget_setters[entry_81_height.get_name()] = setter_81_height  # noqa
 
         label_81_text: Gtk.Label = Gtk.Label.new("Text")
         textview_81_text: Gtk.TextView = Gtk.TextView.new()
@@ -987,6 +1024,10 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         textview_81_text.set_hexpand(True)
         textview_81_text.set_vexpand(True)
         textview_81_text.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_81_text = Gtk.ScrolledWindow()
+        scrolled_window_81_text.add(textview_81_text)  # noqa
+        scrolled_window_81_text.set_size_request(864, 288)
 
         def preedit_handler_81_text(source, **args):  # noqa
             pass
@@ -1005,20 +1046,20 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         widget_setters[textview_81_text.get_name()] = setter_81_text
 
         grid_81: Gtk.Grid = Gtk.Grid.new()
-        grid_81.attach(label_81_ascore,  left=0, top=0, width=1, height=1)  # noqa
-        grid_81.attach(entry_81_ascore,  left=1, top=0, width=3, height=1)  # noqa
-        grid_81.attach(label_81_width,   left=4, top=0, width=1, height=1)  # noqa
-        grid_81.attach(entry_81_width,   left=5, top=0, width=3, height=1)  # noqa
-        grid_81.attach(label_81_height,  left=8, top=0, width=1, height=1)  # noqa
-        grid_81.attach(entry_81_height,  left=9, top=0, width=3, height=1)  # noqa
-        grid_81.attach(label_81_text,    left=12, top=0, width=1, height=1)  # noqa
-        grid_81.attach(textview_81_text, left=13, top=0, width=3, height=1)  # noqa
+        grid_81.attach(label_81_ascore,         left=0, top=0, width=1, height=1)  # noqa
+        grid_81.attach(entry_81_ascore,         left=1, top=0, width=3, height=1)  # noqa
+        grid_81.attach(label_81_width,          left=4, top=0, width=1, height=1)  # noqa
+        grid_81.attach(entry_81_width,          left=5, top=0, width=3, height=1)  # noqa
+        grid_81.attach(label_81_height,         left=8, top=0, width=1, height=1)  # noqa
+        grid_81.attach(entry_81_height,         left=9, top=0, width=3, height=1)  # noqa
+        grid_81.attach(label_81_text,           left=0, top=1, width=1, height=1)  # noqa
+        grid_81.attach(scrolled_window_81_text, left=1, top=1, width=11, height=1)  # noqa
         grid_81.set_column_homogeneous(False)
         grid_81.set_row_homogeneous(False)
         frame_cliptextencodesdxlrefiner_081negative_refiner.add(widget=grid_81)  # noqa
 
         # New Frame
-        frame_cliptextencodesdxl_082negative_base: Gtk.Frame = Gtk.Frame.new(label="Negative Base")  # noqa
+        frame_cliptextencodesdxl_082negative_base: Gtk.Frame = Gtk.Frame.new(label="Negative Base        #82")  # noqa
         frame_cliptextencodesdxl_082negative_base.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_82_width: Gtk.Label = Gtk.Label.new("Width")
         label_82_width.set_margin_start(8)
@@ -1041,8 +1082,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_82_width(a_val: int):
             entry_82_width.set_text(str(a_val))
-        widget_getters[entry_82_width.get_name()] = getter_82_width
-        widget_setters[entry_82_width.get_name()] = setter_82_width
+        widget_getters[entry_82_width.get_name()] = getter_82_width  # noqa
+        widget_setters[entry_82_width.get_name()] = setter_82_width  # noqa
 
         label_82_height: Gtk.Label = Gtk.Label.new("Height")
         label_82_height.set_margin_start(8)
@@ -1065,8 +1106,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_82_height(a_val: int):
             entry_82_height.set_text(str(a_val))
-        widget_getters[entry_82_height.get_name()] = getter_82_height
-        widget_setters[entry_82_height.get_name()] = setter_82_height
+        widget_getters[entry_82_height.get_name()] = getter_82_height  # noqa
+        widget_setters[entry_82_height.get_name()] = setter_82_height  # noqa
 
         label_82_crop_w: Gtk.Label = Gtk.Label.new("Crop_W")
         label_82_crop_w.set_margin_start(8)
@@ -1089,8 +1130,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_82_crop_w(a_val: int):
             entry_82_crop_w.set_text(str(a_val))
-        widget_getters[entry_82_crop_w.get_name()] = getter_82_crop_w
-        widget_setters[entry_82_crop_w.get_name()] = setter_82_crop_w
+        widget_getters[entry_82_crop_w.get_name()] = getter_82_crop_w  # noqa
+        widget_setters[entry_82_crop_w.get_name()] = setter_82_crop_w  # noqa
 
         label_82_crop_h: Gtk.Label = Gtk.Label.new("Crop_H")
         label_82_crop_h.set_margin_start(8)
@@ -1113,8 +1154,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_82_crop_h(a_val: int):
             entry_82_crop_h.set_text(str(a_val))
-        widget_getters[entry_82_crop_h.get_name()] = getter_82_crop_h
-        widget_setters[entry_82_crop_h.get_name()] = setter_82_crop_h
+        widget_getters[entry_82_crop_h.get_name()] = getter_82_crop_h  # noqa
+        widget_setters[entry_82_crop_h.get_name()] = setter_82_crop_h  # noqa
 
         label_82_target_width: Gtk.Label = Gtk.Label.new("Target_Width")
         label_82_target_width.set_margin_start(8)
@@ -1137,8 +1178,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_82_target_width(a_val: int):
             entry_82_target_width.set_text(str(a_val))
-        widget_getters[entry_82_target_width.get_name()] = getter_82_target_width
-        widget_setters[entry_82_target_width.get_name()] = setter_82_target_width
+        widget_getters[entry_82_target_width.get_name()] = getter_82_target_width  # noqa
+        widget_setters[entry_82_target_width.get_name()] = setter_82_target_width  # noqa
 
         label_82_target_height: Gtk.Label = Gtk.Label.new("Target_Height")
         label_82_target_height.set_margin_start(8)
@@ -1161,8 +1202,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_82_target_height(a_val: int):
             entry_82_target_height.set_text(str(a_val))
-        widget_getters[entry_82_target_height.get_name()] = getter_82_target_height
-        widget_setters[entry_82_target_height.get_name()] = setter_82_target_height
+        widget_getters[entry_82_target_height.get_name()] = getter_82_target_height  # noqa
+        widget_setters[entry_82_target_height.get_name()] = setter_82_target_height  # noqa
 
         label_82_text_g: Gtk.Label = Gtk.Label.new("Text_G")
         textview_82_text_g: Gtk.TextView = Gtk.TextView.new()
@@ -1171,6 +1212,10 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         textview_82_text_g.set_hexpand(True)
         textview_82_text_g.set_vexpand(True)
         textview_82_text_g.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_82_text_g = Gtk.ScrolledWindow()
+        scrolled_window_82_text_g.add(textview_82_text_g)  # noqa
+        scrolled_window_82_text_g.set_size_request(864, 288)
 
         def preedit_handler_82_text_g(source, **args):  # noqa
             pass
@@ -1195,6 +1240,10 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         textview_82_text_l.set_hexpand(True)
         textview_82_text_l.set_vexpand(True)
         textview_82_text_l.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_82_text_l = Gtk.ScrolledWindow()
+        scrolled_window_82_text_l.add(textview_82_text_l)  # noqa
+        scrolled_window_82_text_l.set_size_request(864, 288)
 
         def preedit_handler_82_text_l(source, **args):  # noqa
             pass
@@ -1213,28 +1262,28 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         widget_setters[textview_82_text_l.get_name()] = setter_82_text_l
 
         grid_82: Gtk.Grid = Gtk.Grid.new()
-        grid_82.attach(label_82_width,         left=0, top=0, width=1, height=1)  # noqa
-        grid_82.attach(entry_82_width,         left=1, top=0, width=3, height=1)  # noqa
-        grid_82.attach(label_82_height,        left=4, top=0, width=1, height=1)  # noqa
-        grid_82.attach(entry_82_height,        left=5, top=0, width=3, height=1)  # noqa
-        grid_82.attach(label_82_crop_w,        left=8, top=0, width=1, height=1)  # noqa
-        grid_82.attach(entry_82_crop_w,        left=9, top=0, width=3, height=1)  # noqa
-        grid_82.attach(label_82_crop_h,        left=12, top=0, width=1, height=1)  # noqa
-        grid_82.attach(entry_82_crop_h,        left=13, top=0, width=3, height=1)  # noqa
-        grid_82.attach(label_82_target_width,  left=16, top=0, width=1, height=1)  # noqa
-        grid_82.attach(entry_82_target_width,  left=17, top=0, width=3, height=1)  # noqa
-        grid_82.attach(label_82_target_height, left=20, top=0, width=1, height=1)  # noqa
-        grid_82.attach(entry_82_target_height, left=21, top=0, width=3, height=1)  # noqa
-        grid_82.attach(label_82_text_g,        left=0, top=1, width=1, height=1)  # noqa
-        grid_82.attach(textview_82_text_g,     left=1, top=1, width=23, height=1)  # noqa
-        grid_82.attach(label_82_text_l,        left=0, top=2, width=1, height=1)  # noqa
-        grid_82.attach(textview_82_text_l,     left=1, top=2, width=23, height=1)  # noqa
+        grid_82.attach(label_82_width,            left=0, top=0, width=1, height=1)  # noqa
+        grid_82.attach(entry_82_width,            left=1, top=0, width=3, height=1)  # noqa
+        grid_82.attach(label_82_height,           left=4, top=0, width=1, height=1)  # noqa
+        grid_82.attach(entry_82_height,           left=5, top=0, width=3, height=1)  # noqa
+        grid_82.attach(label_82_crop_w,           left=8, top=0, width=1, height=1)  # noqa
+        grid_82.attach(entry_82_crop_w,           left=9, top=0, width=3, height=1)  # noqa
+        grid_82.attach(label_82_crop_h,           left=12, top=0, width=1, height=1)  # noqa
+        grid_82.attach(entry_82_crop_h,           left=13, top=0, width=3, height=1)  # noqa
+        grid_82.attach(label_82_target_width,     left=16, top=0, width=1, height=1)  # noqa
+        grid_82.attach(entry_82_target_width,     left=17, top=0, width=3, height=1)  # noqa
+        grid_82.attach(label_82_target_height,    left=20, top=0, width=1, height=1)  # noqa
+        grid_82.attach(entry_82_target_height,    left=21, top=0, width=3, height=1)  # noqa
+        grid_82.attach(label_82_text_g,           left=0, top=1, width=1, height=1)  # noqa
+        grid_82.attach(scrolled_window_82_text_g, left=1, top=1, width=23, height=1)  # noqa
+        grid_82.attach(label_82_text_l,           left=0, top=2, width=1, height=1)  # noqa
+        grid_82.attach(scrolled_window_82_text_l, left=1, top=2, width=23, height=1)  # noqa
         grid_82.set_column_homogeneous(False)
         grid_82.set_row_homogeneous(False)
         frame_cliptextencodesdxl_082negative_base.add(widget=grid_82)  # noqa
 
         # New Frame
-        frame_cliptextencodesdxlrefiner_120positive_refiner: Gtk.Frame = Gtk.Frame.new(label="Positive Refiner")  # noqa
+        frame_cliptextencodesdxlrefiner_120positive_refiner: Gtk.Frame = Gtk.Frame.new(label="Positive Refiner        #120")  # noqa
         frame_cliptextencodesdxlrefiner_120positive_refiner.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_120_ascore: Gtk.Label = Gtk.Label.new("Ascore")
         label_120_ascore.set_margin_start(8)
@@ -1257,8 +1306,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_120_ascore(a_val: int):
             entry_120_ascore.set_text(str(a_val))
-        widget_getters[entry_120_ascore.get_name()] = getter_120_ascore
-        widget_setters[entry_120_ascore.get_name()] = setter_120_ascore
+        widget_getters[entry_120_ascore.get_name()] = getter_120_ascore  # noqa
+        widget_setters[entry_120_ascore.get_name()] = setter_120_ascore  # noqa
 
         label_120_width: Gtk.Label = Gtk.Label.new("Width")
         label_120_width.set_margin_start(8)
@@ -1281,8 +1330,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_120_width(a_val: int):
             entry_120_width.set_text(str(a_val))
-        widget_getters[entry_120_width.get_name()] = getter_120_width
-        widget_setters[entry_120_width.get_name()] = setter_120_width
+        widget_getters[entry_120_width.get_name()] = getter_120_width  # noqa
+        widget_setters[entry_120_width.get_name()] = setter_120_width  # noqa
 
         label_120_height: Gtk.Label = Gtk.Label.new("Height")
         label_120_height.set_margin_start(8)
@@ -1305,8 +1354,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_120_height(a_val: int):
             entry_120_height.set_text(str(a_val))
-        widget_getters[entry_120_height.get_name()] = getter_120_height
-        widget_setters[entry_120_height.get_name()] = setter_120_height
+        widget_getters[entry_120_height.get_name()] = getter_120_height  # noqa
+        widget_setters[entry_120_height.get_name()] = setter_120_height  # noqa
 
         label_120_text: Gtk.Label = Gtk.Label.new("Text")
         textview_120_text: Gtk.TextView = Gtk.TextView.new()
@@ -1315,6 +1364,10 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         textview_120_text.set_hexpand(True)
         textview_120_text.set_vexpand(True)
         textview_120_text.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_120_text = Gtk.ScrolledWindow()
+        scrolled_window_120_text.add(textview_120_text)  # noqa
+        scrolled_window_120_text.set_size_request(864, 288)
 
         def preedit_handler_120_text(source, **args):  # noqa
             pass
@@ -1333,24 +1386,24 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         widget_setters[textview_120_text.get_name()] = setter_120_text
 
         grid_120: Gtk.Grid = Gtk.Grid.new()
-        grid_120.attach(label_120_ascore,  left=0, top=0, width=1, height=1)  # noqa
-        grid_120.attach(entry_120_ascore,  left=1, top=0, width=3, height=1)  # noqa
-        grid_120.attach(label_120_width,   left=4, top=0, width=1, height=1)  # noqa
-        grid_120.attach(entry_120_width,   left=5, top=0, width=3, height=1)  # noqa
-        grid_120.attach(label_120_height,  left=8, top=0, width=1, height=1)  # noqa
-        grid_120.attach(entry_120_height,  left=9, top=0, width=3, height=1)  # noqa
-        grid_120.attach(label_120_text,    left=12, top=0, width=1, height=1)  # noqa
-        grid_120.attach(textview_120_text, left=13, top=0, width=3, height=1)  # noqa
+        grid_120.attach(label_120_ascore,         left=0, top=0, width=1, height=1)  # noqa
+        grid_120.attach(entry_120_ascore,         left=1, top=0, width=3, height=1)  # noqa
+        grid_120.attach(label_120_width,          left=4, top=0, width=1, height=1)  # noqa
+        grid_120.attach(entry_120_width,          left=5, top=0, width=3, height=1)  # noqa
+        grid_120.attach(label_120_height,         left=8, top=0, width=1, height=1)  # noqa
+        grid_120.attach(entry_120_height,         left=9, top=0, width=3, height=1)  # noqa
+        grid_120.attach(label_120_text,           left=0, top=1, width=1, height=1)  # noqa
+        grid_120.attach(scrolled_window_120_text, left=1, top=1, width=11, height=1)  # noqa
         grid_120.set_column_homogeneous(False)
         grid_120.set_row_homogeneous(False)
         frame_cliptextencodesdxlrefiner_120positive_refiner.add(widget=grid_120)  # noqa
 
         # New Frame
-        frame_saveimage_184sytan_workflow: Gtk.Frame = Gtk.Frame.new(label="Sytan Workflow")  # noqa
+        frame_saveimage_184sytan_workflow: Gtk.Frame = Gtk.Frame.new(label="Sytan Workflow        #184")  # noqa
         frame_saveimage_184sytan_workflow.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_184_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
         entry_184_filename_prefix: Gtk.Entry = Gtk.Entry.new()
-        entry_184_filename_prefix.set_text("generated")
+        entry_184_filename_prefix.set_text("gimp_generated")
         entry_184_filename_prefix.set_name("entry_184_filename_prefix")
         entry_184_filename_prefix.set_hexpand(True)
         widget_getters[entry_184_filename_prefix.get_name()] = entry_184_filename_prefix.get_text
@@ -1358,13 +1411,13 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         grid_184: Gtk.Grid = Gtk.Grid.new()
         grid_184.attach(label_184_filename_prefix, left=0, top=0, width=1, height=1)  # noqa
-        grid_184.attach(entry_184_filename_prefix, left=1, top=0, width=2, height=1)  # noqa
+        grid_184.attach(entry_184_filename_prefix, left=1, top=0, width=3, height=1)  # noqa
         grid_184.set_column_homogeneous(False)
         grid_184.set_row_homogeneous(False)
         frame_saveimage_184sytan_workflow.add(widget=grid_184)  # noqa
 
         # New Frame
-        frame_upscalemodelloader_187upscale_model: Gtk.Frame = Gtk.Frame.new(label="Upscale Model")  # noqa
+        frame_upscalemodelloader_187upscale_model: Gtk.Frame = Gtk.Frame.new(label="Upscale Model        #187")  # noqa
         frame_upscalemodelloader_187upscale_model.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_187_model_name: Gtk.Label = Gtk.Label.new("Model_Name")
         comboboxtext_187_model_name: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1374,7 +1427,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         if combo_values_187_model_name is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_187_model_name:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
         for combo_item_path in combo_values_187_model_name:
             comboboxtext_187_model_name.append_text(combo_item_path)
         comboboxtext_187_model_name.set_name("comboboxtext_187_model_name")
@@ -1389,18 +1442,18 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_187_model_name
             selected_index = combo_values_187_model_name.index(a_val)
             comboboxtext_187_model_name.set_active(selected_index)
-        widget_getters[comboboxtext_187_model_name.get_name()] = comboboxtext_187_model_name.get_active_text
-        widget_setters[comboboxtext_187_model_name.get_name()] = setter_187_model_name
+        widget_getters[comboboxtext_187_model_name.get_name()] = comboboxtext_187_model_name.get_active_text  # noqa
+        widget_setters[comboboxtext_187_model_name.get_name()] = setter_187_model_name  # noqa
 
         grid_187: Gtk.Grid = Gtk.Grid.new()
         grid_187.attach(label_187_model_name,        left=0, top=0, width=1, height=1)  # noqa
-        grid_187.attach(comboboxtext_187_model_name, left=1, top=0, width=2, height=1)  # noqa
+        grid_187.attach(comboboxtext_187_model_name, left=1, top=0, width=3, height=1)  # noqa
         grid_187.set_column_homogeneous(False)
         grid_187.set_row_homogeneous(False)
         frame_upscalemodelloader_187upscale_model.add(widget=grid_187)  # noqa
 
         # New Frame
-        frame_saveimage_2012048x_upscale: Gtk.Frame = Gtk.Frame.new(label="2048x Upscale")  # noqa
+        frame_saveimage_2012048x_upscale: Gtk.Frame = Gtk.Frame.new(label="2048x Upscale        #201")  # noqa
         frame_saveimage_2012048x_upscale.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_201_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
         entry_201_filename_prefix: Gtk.Entry = Gtk.Entry.new()
@@ -1412,21 +1465,13 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         grid_201: Gtk.Grid = Gtk.Grid.new()
         grid_201.attach(label_201_filename_prefix, left=0, top=0, width=1, height=1)  # noqa
-        grid_201.attach(entry_201_filename_prefix, left=1, top=0, width=2, height=1)  # noqa
+        grid_201.attach(entry_201_filename_prefix, left=1, top=0, width=3, height=1)  # noqa
         grid_201.set_column_homogeneous(False)
         grid_201.set_row_homogeneous(False)
         frame_saveimage_2012048x_upscale.add(widget=grid_201)  # noqa
 
         # New Frame
-        frame_imageupscalewithmodel_213pixel_upscale_x4: Gtk.Frame = Gtk.Frame.new(label="Pixel Upscale x4")  # noqa
-        frame_imageupscalewithmodel_213pixel_upscale_x4.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        grid_213: Gtk.Grid = Gtk.Grid.new()
-        grid_213.set_column_homogeneous(False)
-        grid_213.set_row_homogeneous(False)
-        frame_imageupscalewithmodel_213pixel_upscale_x4.add(widget=grid_213)  # noqa
-
-        # New Frame
-        frame_imagescaleby_215downscale: Gtk.Frame = Gtk.Frame.new(label="Downscale")  # noqa
+        frame_imagescaleby_215downscale: Gtk.Frame = Gtk.Frame.new(label="Downscale        #215")  # noqa
         frame_imagescaleby_215downscale.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_215_upscale_method: Gtk.Label = Gtk.Label.new("Upscale_Method")
         comboboxtext_215_upscale_method: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1445,8 +1490,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_215_upscale_method
             selected_index = combo_values_215_upscale_method.index(a_val)
             comboboxtext_215_upscale_method.set_active(selected_index)
-        widget_getters[comboboxtext_215_upscale_method.get_name()] = comboboxtext_215_upscale_method.get_active_text
-        widget_setters[comboboxtext_215_upscale_method.get_name()] = setter_215_upscale_method
+        widget_getters[comboboxtext_215_upscale_method.get_name()] = comboboxtext_215_upscale_method.get_active_text  # noqa
+        widget_setters[comboboxtext_215_upscale_method.get_name()] = setter_215_upscale_method  # noqa
 
         label_215_scale_by: Gtk.Label = Gtk.Label.new("Scale_By")
         label_215_scale_by.set_margin_start(8)
@@ -1468,20 +1513,20 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_215_scale_by(a_val: float):
             entry_215_scale_by.set_text(str(a_val))
-        widget_getters[entry_215_scale_by.get_name()] = getter_215_scale_by
-        widget_setters[entry_215_scale_by.get_name()] = setter_215_scale_by
+        widget_getters[entry_215_scale_by.get_name()] = getter_215_scale_by  # noqa
+        widget_setters[entry_215_scale_by.get_name()] = setter_215_scale_by  # noqa
 
         grid_215: Gtk.Grid = Gtk.Grid.new()
         grid_215.attach(label_215_upscale_method,        left=0, top=0, width=1, height=1)  # noqa
-        grid_215.attach(comboboxtext_215_upscale_method, left=1, top=0, width=2, height=1)  # noqa
+        grid_215.attach(comboboxtext_215_upscale_method, left=1, top=0, width=3, height=1)  # noqa
         grid_215.attach(label_215_scale_by,              left=0, top=1, width=1, height=1)  # noqa
-        grid_215.attach(entry_215_scale_by,              left=1, top=1, width=2, height=1)  # noqa
+        grid_215.attach(entry_215_scale_by,              left=1, top=1, width=3, height=1)  # noqa
         grid_215.set_column_homogeneous(False)
         grid_215.set_row_homogeneous(False)
         frame_imagescaleby_215downscale.add(widget=grid_215)  # noqa
 
         # New Frame
-        frame_ksampleradvanced_216upscale_mixed_diff: Gtk.Frame = Gtk.Frame.new(label="Upscale Mixed Diff")  # noqa
+        frame_ksampleradvanced_216upscale_mixed_diff: Gtk.Frame = Gtk.Frame.new(label="Upscale Mixed Diff        #216")  # noqa
         frame_ksampleradvanced_216upscale_mixed_diff.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         checkbutton_216_add_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Add Noise")  # noqa
         checkbutton_216_add_noise.set_active(True)
@@ -1494,7 +1539,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def getter_216_add_noise():
             return "enable" if checkbutton_216_add_noise.get_active() else "disable"
-        widget_getters[checkbutton_216_add_noise.get_name()] = getter_216_add_noise
+        widget_getters[checkbutton_216_add_noise.get_name()] = getter_216_add_noise  # noqa
 
         label_216_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_216_noise_seed.set_margin_start(8)
@@ -1517,8 +1562,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_216_noise_seed(a_val: int):
             entry_216_noise_seed.set_text(str(a_val))
-        widget_getters[entry_216_noise_seed.get_name()] = getter_216_noise_seed
-        widget_setters[entry_216_noise_seed.get_name()] = setter_216_noise_seed
+        widget_getters[entry_216_noise_seed.get_name()] = getter_216_noise_seed  # noqa
+        widget_setters[entry_216_noise_seed.get_name()] = setter_216_noise_seed  # noqa
 
         label_216_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_216_steps.set_margin_start(8)
@@ -1528,7 +1573,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         entry_216_steps.set_name("entry_216_steps")
         entry_216_steps.set_hexpand(True)
         validate_in_bounds(entry_widget=entry_216_steps,
-                           minimum=1, maximum=None,  # noqa
+                           minimum=1, maximum=128,  # noqa
                            int_only=True,
                            track_invalid_widgets=track_invalid_widgets)
 
@@ -1541,8 +1586,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_216_steps(a_val: int):
             entry_216_steps.set_text(str(a_val))
-        widget_getters[entry_216_steps.get_name()] = getter_216_steps
-        widget_setters[entry_216_steps.get_name()] = setter_216_steps
+        widget_getters[entry_216_steps.get_name()] = getter_216_steps  # noqa
+        widget_setters[entry_216_steps.get_name()] = setter_216_steps  # noqa
 
         label_216_cfg: Gtk.Label = Gtk.Label.new("Cfg")
         label_216_cfg.set_margin_start(8)
@@ -1580,8 +1625,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_216_sampler_name
             selected_index = combo_values_216_sampler_name.index(a_val)
             comboboxtext_216_sampler_name.set_active(selected_index)
-        widget_getters[comboboxtext_216_sampler_name.get_name()] = comboboxtext_216_sampler_name.get_active_text
-        widget_setters[comboboxtext_216_sampler_name.get_name()] = setter_216_sampler_name
+        widget_getters[comboboxtext_216_sampler_name.get_name()] = comboboxtext_216_sampler_name.get_active_text  # noqa
+        widget_setters[comboboxtext_216_sampler_name.get_name()] = setter_216_sampler_name  # noqa
 
         label_216_scheduler: Gtk.Label = Gtk.Label.new("Scheduler")
         comboboxtext_216_scheduler: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1600,8 +1645,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_216_scheduler
             selected_index = combo_values_216_scheduler.index(a_val)
             comboboxtext_216_scheduler.set_active(selected_index)
-        widget_getters[comboboxtext_216_scheduler.get_name()] = comboboxtext_216_scheduler.get_active_text
-        widget_setters[comboboxtext_216_scheduler.get_name()] = setter_216_scheduler
+        widget_getters[comboboxtext_216_scheduler.get_name()] = comboboxtext_216_scheduler.get_active_text  # noqa
+        widget_setters[comboboxtext_216_scheduler.get_name()] = setter_216_scheduler  # noqa
 
         label_216_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_216_start_at_step.set_margin_start(8)
@@ -1624,8 +1669,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_216_start_at_step(a_val: int):
             entry_216_start_at_step.set_text(str(a_val))
-        widget_getters[entry_216_start_at_step.get_name()] = getter_216_start_at_step
-        widget_setters[entry_216_start_at_step.get_name()] = setter_216_start_at_step
+        widget_getters[entry_216_start_at_step.get_name()] = getter_216_start_at_step  # noqa
+        widget_setters[entry_216_start_at_step.get_name()] = setter_216_start_at_step  # noqa
 
         label_216_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_216_end_at_step.set_margin_start(8)
@@ -1648,50 +1693,45 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_216_end_at_step(a_val: int):
             entry_216_end_at_step.set_text(str(a_val))
-        widget_getters[entry_216_end_at_step.get_name()] = getter_216_end_at_step
-        widget_setters[entry_216_end_at_step.get_name()] = setter_216_end_at_step
+        widget_getters[entry_216_end_at_step.get_name()] = getter_216_end_at_step  # noqa
+        widget_setters[entry_216_end_at_step.get_name()] = setter_216_end_at_step  # noqa
 
-        checkbutton_216_return_with_leftover_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Return_With_Leftover_Noise")  # noqa
+        checkbutton_216_return_with_leftover_noise: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Return With Leftover Noise")  # noqa
+        checkbutton_216_return_with_leftover_noise.set_active(False)
+        checkbutton_216_return_with_leftover_noise.set_name("checkbutton_216_return_with_leftover_noise")
+        checkbutton_216_return_with_leftover_noise.set_hexpand(False)
+
+        def toggled_handler_216_return_with_leftover_noise(source, **args):  # noqa
+            pass
+        checkbutton_216_return_with_leftover_noise.connect(SIG_TOGGLED, toggled_handler_216_return_with_leftover_noise)
+
+        def getter_216_return_with_leftover_noise():
+            return "enable" if checkbutton_216_return_with_leftover_noise.get_active() else "disable"
+        widget_getters[checkbutton_216_return_with_leftover_noise.get_name()] = getter_216_return_with_leftover_noise  # noqa
 
         grid_216: Gtk.Grid = Gtk.Grid.new()
-        grid_216.attach(checkbutton_216_add_noise,                  left=0, top=0, width=3, height=1)  # noqa
-        grid_216.attach(label_216_noise_seed,                       left=3, top=0, width=1, height=1)  # noqa
-        grid_216.attach(entry_216_noise_seed,                       left=4, top=0, width=3, height=1)  # noqa
-        grid_216.attach(label_216_steps,                            left=7, top=0, width=1, height=1)  # noqa
-        grid_216.attach(entry_216_steps,                            left=8, top=0, width=3, height=1)  # noqa
-        grid_216.attach(label_216_cfg,                              left=0, top=1, width=1, height=1)  # noqa
-        grid_216.attach(scale_216_cfg,                              left=1, top=1, width=10, height=1)  # noqa
-        grid_216.attach(label_216_sampler_name,                     left=0, top=2, width=1, height=1)  # noqa
-        grid_216.attach(comboboxtext_216_sampler_name,              left=1, top=2, width=10, height=1)  # noqa
-        grid_216.attach(label_216_scheduler,                        left=0, top=3, width=1, height=1)  # noqa
-        grid_216.attach(comboboxtext_216_scheduler,                 left=1, top=3, width=10, height=1)  # noqa
-        grid_216.attach(label_216_start_at_step,                    left=0, top=4, width=1, height=1)  # noqa
-        grid_216.attach(entry_216_start_at_step,                    left=1, top=4, width=3, height=1)  # noqa
-        grid_216.attach(label_216_end_at_step,                      left=4, top=4, width=1, height=1)  # noqa
-        grid_216.attach(entry_216_end_at_step,                      left=5, top=4, width=6, height=1)  # noqa
-        grid_216.attach(checkbutton_216_return_with_leftover_noise, left=0, top=5, width=11, height=1)  # noqa
+        grid_216.attach(checkbutton_216_add_noise,                  left=0, top=0, width=8, height=1)  # noqa
+        grid_216.attach(label_216_noise_seed,                       left=0, top=1, width=1, height=1)  # noqa
+        grid_216.attach(entry_216_noise_seed,                       left=1, top=1, width=7, height=1)  # noqa
+        grid_216.attach(label_216_steps,                            left=0, top=2, width=1, height=1)  # noqa
+        grid_216.attach(entry_216_steps,                            left=1, top=2, width=7, height=1)  # noqa
+        grid_216.attach(label_216_cfg,                              left=0, top=3, width=1, height=1)  # noqa
+        grid_216.attach(scale_216_cfg,                              left=1, top=3, width=7, height=1)  # noqa
+        grid_216.attach(label_216_sampler_name,                     left=0, top=4, width=1, height=1)  # noqa
+        grid_216.attach(comboboxtext_216_sampler_name,              left=1, top=4, width=7, height=1)  # noqa
+        grid_216.attach(label_216_scheduler,                        left=0, top=5, width=1, height=1)  # noqa
+        grid_216.attach(comboboxtext_216_scheduler,                 left=1, top=5, width=7, height=1)  # noqa
+        grid_216.attach(label_216_start_at_step,                    left=0, top=6, width=1, height=1)  # noqa
+        grid_216.attach(entry_216_start_at_step,                    left=1, top=6, width=3, height=1)  # noqa
+        grid_216.attach(label_216_end_at_step,                      left=4, top=6, width=1, height=1)  # noqa
+        grid_216.attach(entry_216_end_at_step,                      left=5, top=6, width=3, height=1)  # noqa
+        grid_216.attach(checkbutton_216_return_with_leftover_noise, left=0, top=7, width=8, height=1)  # noqa
         grid_216.set_column_homogeneous(False)
         grid_216.set_row_homogeneous(False)
         frame_ksampleradvanced_216upscale_mixed_diff.add(widget=grid_216)  # noqa
 
         # New Frame
-        frame_vaeencode_217vae_encode: Gtk.Frame = Gtk.Frame.new(label="VAE Encode")  # noqa
-        frame_vaeencode_217vae_encode.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        grid_217: Gtk.Grid = Gtk.Grid.new()
-        grid_217.set_column_homogeneous(False)
-        grid_217.set_row_homogeneous(False)
-        frame_vaeencode_217vae_encode.add(widget=grid_217)  # noqa
-
-        # New Frame
-        frame_vaedecode_218vae_decode: Gtk.Frame = Gtk.Frame.new(label="VAE Decode")  # noqa
-        frame_vaedecode_218vae_decode.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        grid_218: Gtk.Grid = Gtk.Grid.new()
-        grid_218.set_column_homogeneous(False)
-        grid_218.set_row_homogeneous(False)
-        frame_vaedecode_218vae_decode.add(widget=grid_218)  # noqa
-
-        # New Frame
-        frame_imageblend_221contrast_fix: Gtk.Frame = Gtk.Frame.new(label="Contrast Fix")  # noqa
+        frame_imageblend_221contrast_fix: Gtk.Frame = Gtk.Frame.new(label="Contrast Fix        #221")  # noqa
         frame_imageblend_221contrast_fix.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_221_blend_factor: Gtk.Label = Gtk.Label.new("Blend_Factor")
         label_221_blend_factor.set_margin_start(8)
@@ -1713,8 +1753,8 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         def setter_221_blend_factor(a_val: float):
             entry_221_blend_factor.set_text(str(a_val))
-        widget_getters[entry_221_blend_factor.get_name()] = getter_221_blend_factor
-        widget_setters[entry_221_blend_factor.get_name()] = setter_221_blend_factor
+        widget_getters[entry_221_blend_factor.get_name()] = getter_221_blend_factor  # noqa
+        widget_setters[entry_221_blend_factor.get_name()] = setter_221_blend_factor  # noqa
 
         label_221_blend_mode: Gtk.Label = Gtk.Label.new("Blend_Mode")
         comboboxtext_221_blend_mode: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -1733,37 +1773,45 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             nonlocal combo_values_221_blend_mode
             selected_index = combo_values_221_blend_mode.index(a_val)
             comboboxtext_221_blend_mode.set_active(selected_index)
-        widget_getters[comboboxtext_221_blend_mode.get_name()] = comboboxtext_221_blend_mode.get_active_text
-        widget_setters[comboboxtext_221_blend_mode.get_name()] = setter_221_blend_mode
+        widget_getters[comboboxtext_221_blend_mode.get_name()] = comboboxtext_221_blend_mode.get_active_text  # noqa
+        widget_setters[comboboxtext_221_blend_mode.get_name()] = setter_221_blend_mode  # noqa
 
         grid_221: Gtk.Grid = Gtk.Grid.new()
         grid_221.attach(label_221_blend_factor,      left=0, top=0, width=1, height=1)  # noqa
-        grid_221.attach(entry_221_blend_factor,      left=1, top=0, width=2, height=1)  # noqa
+        grid_221.attach(entry_221_blend_factor,      left=1, top=0, width=3, height=1)  # noqa
         grid_221.attach(label_221_blend_mode,        left=0, top=1, width=1, height=1)  # noqa
-        grid_221.attach(comboboxtext_221_blend_mode, left=1, top=1, width=2, height=1)  # noqa
+        grid_221.attach(comboboxtext_221_blend_mode, left=1, top=1, width=3, height=1)  # noqa
         grid_221.set_column_homogeneous(False)
         grid_221.set_row_homogeneous(False)
         frame_imageblend_221contrast_fix.add(widget=grid_221)  # noqa
+
         content_area: Gtk.Box = dialog.get_content_area()
-        content_area.pack_start(child=frame_checkpointloadersimple_004refiner_model, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_emptylatentimage_005image_resolution, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_vaedecode_008vae_decode, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_checkpointloadersimple_010base_model, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_ksampleradvanced_022base_pass, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_ksampleradvanced_023refiner_pass, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_cliptextencodesdxl_075positive_base, expand=True, fill=True, padding=0)  # noqa
-        content_area.pack_start(child=frame_cliptextencodesdxlrefiner_081negative_refiner, expand=True, fill=True, padding=0)  # noqa
-        content_area.pack_start(child=frame_cliptextencodesdxl_082negative_base, expand=True, fill=True, padding=0)  # noqa
-        content_area.pack_start(child=frame_cliptextencodesdxlrefiner_120positive_refiner, expand=True, fill=True, padding=0)  # noqa
-        content_area.pack_start(child=frame_saveimage_184sytan_workflow, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_upscalemodelloader_187upscale_model, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_saveimage_2012048x_upscale, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_imageupscalewithmodel_213pixel_upscale_x4, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_imagescaleby_215downscale, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_ksampleradvanced_216upscale_mixed_diff, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_vaeencode_217vae_encode, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_vaedecode_218vae_decode, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_imageblend_221contrast_fix, expand=False, fill=False, padding=0)  # noqa
+        main_scrollable: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
+        subject_box: Gtk.Box = Gtk.Box()
+        subject_box.set_orientation(Gtk.Orientation.VERTICAL)
+
+        subject_box.pack_start(child=frame_checkpointloadersimple_004refiner_model, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_emptylatentimage_005image_resolution, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_checkpointloadersimple_010base_model, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_ksampleradvanced_022base_pass, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_ksampleradvanced_023refiner_pass, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_cliptextencodesdxl_075positive_base, expand=True, fill=True, padding=0)  # noqa
+        subject_box.pack_start(child=frame_cliptextencodesdxlrefiner_081negative_refiner, expand=True, fill=True, padding=0)  # noqa
+        subject_box.pack_start(child=frame_cliptextencodesdxl_082negative_base, expand=True, fill=True, padding=0)  # noqa
+        subject_box.pack_start(child=frame_cliptextencodesdxlrefiner_120positive_refiner, expand=True, fill=True, padding=0)  # noqa
+        subject_box.pack_start(child=frame_saveimage_184sytan_workflow, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_upscalemodelloader_187upscale_model, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_saveimage_2012048x_upscale, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_imagescaleby_215downscale, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_ksampleradvanced_216upscale_mixed_diff, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_imageblend_221contrast_fix, expand=False, fill=False, padding=0)  # noqa
+
+        subject_box.set_vexpand(True)
+        subject_box.set_hexpand(True)
+        main_scrollable.add(subject_box)  # noqa
+        main_scrollable.set_size_request(1280, 928)
+        main_scrollable.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
+        content_area.add(main_scrollable)  # noqa
 
         button_cancel.connect("clicked", delete_results)
         button_apply.connect("clicked", assign_results)
