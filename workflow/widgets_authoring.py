@@ -1538,6 +1538,24 @@ class WidgetAuthor:
                                                   items=WidgetAuthor._SCHEDULER_NAMES,
                                                   selected_index=sel_idx
                                                   )
+                    case "noise_seed" | "seed":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(-1, INT_MAX)
+                        )
+                    case "steps":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(1, 128)
+                        )
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)

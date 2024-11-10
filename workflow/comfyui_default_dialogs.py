@@ -90,9 +90,25 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
                 key_name: str = consumers[0]
                 setter = consumers[1]
                 try:
-                    setter(dialog_data[key_name])
-                except KeyError as k_err:  # noqa
-                    pass
+                    if key_name in dialog_data:
+                        arg_value = dialog_data[key_name]
+                        if arg_value is None:
+                            err_msg: str = f"Value for key \"{key_name}\" is None."
+                            LOGGER_SDGUIU.debug(err_msg)
+                            # raise ValueError(err_msg)
+                        setter(arg_value)
+                    else:
+                        err_msg: str = f"Key \"{key_name}\" not present in dialog_data."
+                        dd_data_str: str = json.dumps(dialog_data, indent=2, sort_keys=True)
+                        LOGGER_SDGUIU.debug(err_msg)
+                        LOGGER_SDGUIU.debug(dd_data_str)
+                        # raise KeyError(err_msg)
+                except KeyError as k_err:  # Not an exception if data not persisted.
+                    LOGGER_SDGUIU.debug(k_err)
+                    # raise k_err  # For debugging new workflows.
+                except ValueError as v_err:  # Not an exception if data not persisted.
+                    LOGGER_SDGUIU.debug(v_err)
+                    # raise v_err  # For debugging new workflows.
         
         dialog_box = dialog.get_content_area()
         if blurb_in:
@@ -134,9 +150,8 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
             persister.store_config()
             self.put_inputs(dialog_data=dialog_data)
 
-
         # New Frame
-        frame_ksampler_003ksampler: Gtk.Frame = Gtk.Frame.new(label="KSampler")  # noqa
+        frame_ksampler_003ksampler: Gtk.Frame = Gtk.Frame.new(label="KSampler        #3")  # noqa
         frame_ksampler_003ksampler.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_3_seed: Gtk.Label = Gtk.Label.new("Seed")
         label_3_seed.set_margin_start(8)
@@ -159,8 +174,8 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
 
         def setter_3_seed(a_val: int):
             entry_3_seed.set_text(str(a_val))
-        widget_getters[entry_3_seed.get_name()] = getter_3_seed
-        widget_setters[entry_3_seed.get_name()] = setter_3_seed
+        widget_getters[entry_3_seed.get_name()] = getter_3_seed  # noqa
+        widget_setters[entry_3_seed.get_name()] = setter_3_seed  # noqa
 
         label_3_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_3_steps.set_margin_start(8)
@@ -170,7 +185,7 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
         entry_3_steps.set_name("entry_3_steps")
         entry_3_steps.set_hexpand(True)
         validate_in_bounds(entry_widget=entry_3_steps,
-                           minimum=1, maximum=None,  # noqa
+                           minimum=1, maximum=128,  # noqa
                            int_only=True,
                            track_invalid_widgets=track_invalid_widgets)
 
@@ -183,8 +198,8 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
 
         def setter_3_steps(a_val: int):
             entry_3_steps.set_text(str(a_val))
-        widget_getters[entry_3_steps.get_name()] = getter_3_steps
-        widget_setters[entry_3_steps.get_name()] = setter_3_steps
+        widget_getters[entry_3_steps.get_name()] = getter_3_steps  # noqa
+        widget_setters[entry_3_steps.get_name()] = setter_3_steps  # noqa
 
         label_3_cfg: Gtk.Label = Gtk.Label.new("Cfg")
         label_3_cfg.set_margin_start(8)
@@ -223,8 +238,8 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
             nonlocal combo_values_3_sampler_name
             selected_index = combo_values_3_sampler_name.index(a_val)
             comboboxtext_3_sampler_name.set_active(selected_index)
-        widget_getters[comboboxtext_3_sampler_name.get_name()] = comboboxtext_3_sampler_name.get_active_text
-        widget_setters[comboboxtext_3_sampler_name.get_name()] = setter_3_sampler_name
+        widget_getters[comboboxtext_3_sampler_name.get_name()] = comboboxtext_3_sampler_name.get_active_text  # noqa
+        widget_setters[comboboxtext_3_sampler_name.get_name()] = setter_3_sampler_name  # noqa
 
         label_3_scheduler: Gtk.Label = Gtk.Label.new("Scheduler")
         comboboxtext_3_scheduler: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -243,14 +258,14 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
             nonlocal combo_values_3_scheduler
             selected_index = combo_values_3_scheduler.index(a_val)
             comboboxtext_3_scheduler.set_active(selected_index)
-        widget_getters[comboboxtext_3_scheduler.get_name()] = comboboxtext_3_scheduler.get_active_text
-        widget_setters[comboboxtext_3_scheduler.get_name()] = setter_3_scheduler
+        widget_getters[comboboxtext_3_scheduler.get_name()] = comboboxtext_3_scheduler.get_active_text  # noqa
+        widget_setters[comboboxtext_3_scheduler.get_name()] = setter_3_scheduler  # noqa
 
         label_3_denoise: Gtk.Label = Gtk.Label.new("Denoise")
         label_3_denoise.set_margin_start(8)
         label_3_denoise.set_alignment(0.95, 0)
         adjustment_3_denoise: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
-                                                              lower=0.00000,
+                                                              lower=0.00001,
                                                               upper=1.00000,
                                                               step_increment=0.001,
                                                               page_increment=0.010,
@@ -270,22 +285,22 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
         grid_3: Gtk.Grid = Gtk.Grid.new()
         grid_3.attach(label_3_seed,                left=0, top=0, width=1, height=1)  # noqa
         grid_3.attach(entry_3_seed,                left=1, top=0, width=3, height=1)  # noqa
-        grid_3.attach(label_3_steps,               left=4, top=0, width=1, height=1)  # noqa
-        grid_3.attach(entry_3_steps,               left=5, top=0, width=3, height=1)  # noqa
-        grid_3.attach(label_3_cfg,                 left=0, top=1, width=1, height=1)  # noqa
-        grid_3.attach(scale_3_cfg,                 left=1, top=1, width=7, height=1)  # noqa
-        grid_3.attach(label_3_sampler_name,        left=0, top=2, width=1, height=1)  # noqa
-        grid_3.attach(comboboxtext_3_sampler_name, left=1, top=2, width=7, height=1)  # noqa
-        grid_3.attach(label_3_scheduler,           left=0, top=3, width=1, height=1)  # noqa
-        grid_3.attach(comboboxtext_3_scheduler,    left=1, top=3, width=7, height=1)  # noqa
-        grid_3.attach(label_3_denoise,             left=0, top=4, width=1, height=1)  # noqa
-        grid_3.attach(scale_3_denoise,             left=1, top=4, width=7, height=1)  # noqa
+        grid_3.attach(label_3_steps,               left=0, top=1, width=1, height=1)  # noqa
+        grid_3.attach(entry_3_steps,               left=1, top=1, width=3, height=1)  # noqa
+        grid_3.attach(label_3_cfg,                 left=0, top=2, width=1, height=1)  # noqa
+        grid_3.attach(scale_3_cfg,                 left=1, top=2, width=3, height=1)  # noqa
+        grid_3.attach(label_3_sampler_name,        left=0, top=3, width=1, height=1)  # noqa
+        grid_3.attach(comboboxtext_3_sampler_name, left=1, top=3, width=3, height=1)  # noqa
+        grid_3.attach(label_3_scheduler,           left=0, top=4, width=1, height=1)  # noqa
+        grid_3.attach(comboboxtext_3_scheduler,    left=1, top=4, width=3, height=1)  # noqa
+        grid_3.attach(label_3_denoise,             left=0, top=5, width=1, height=1)  # noqa
+        grid_3.attach(scale_3_denoise,             left=1, top=5, width=3, height=1)  # noqa
         grid_3.set_column_homogeneous(False)
         grid_3.set_row_homogeneous(False)
         frame_ksampler_003ksampler.add(widget=grid_3)  # noqa
 
         # New Frame
-        frame_checkpointloadersimple_004load_checkpoint: Gtk.Frame = Gtk.Frame.new(label="Load Checkpoint")  # noqa
+        frame_checkpointloadersimple_004load_checkpoint: Gtk.Frame = Gtk.Frame.new(label="Load Checkpoint        #4")  # noqa
         frame_checkpointloadersimple_004load_checkpoint.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_4_ckpt_name: Gtk.Label = Gtk.Label.new("Ckpt_Name")
         comboboxtext_4_ckpt_name: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
@@ -295,12 +310,12 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
         if combo_values_4_ckpt_name is None:
             raise SystemError(f"get_models_filenames() returned None.")
         if not combo_values_4_ckpt_name:
-            raise ValueError(fr"No models retrieved from ComfyUI")  # noqa
+            raise ValueError(fr"No models retrieved from ComfyUI")
         for combo_item_path in combo_values_4_ckpt_name:
             comboboxtext_4_ckpt_name.append_text(combo_item_path)
         comboboxtext_4_ckpt_name.set_name("comboboxtext_4_ckpt_name")
         comboboxtext_4_ckpt_name.set_hexpand(True)
-        comboboxtext_4_ckpt_name.set_active(14)
+        comboboxtext_4_ckpt_name.set_active(15)
 
         def change_handler_4_ckpt_name(source, **args):  # noqa
             pass
@@ -310,18 +325,18 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
             nonlocal combo_values_4_ckpt_name
             selected_index = combo_values_4_ckpt_name.index(a_val)
             comboboxtext_4_ckpt_name.set_active(selected_index)
-        widget_getters[comboboxtext_4_ckpt_name.get_name()] = comboboxtext_4_ckpt_name.get_active_text
-        widget_setters[comboboxtext_4_ckpt_name.get_name()] = setter_4_ckpt_name
+        widget_getters[comboboxtext_4_ckpt_name.get_name()] = comboboxtext_4_ckpt_name.get_active_text  # noqa
+        widget_setters[comboboxtext_4_ckpt_name.get_name()] = setter_4_ckpt_name  # noqa
 
         grid_4: Gtk.Grid = Gtk.Grid.new()
         grid_4.attach(label_4_ckpt_name,        left=0, top=0, width=1, height=1)  # noqa
-        grid_4.attach(comboboxtext_4_ckpt_name, left=1, top=0, width=2, height=1)  # noqa
+        grid_4.attach(comboboxtext_4_ckpt_name, left=1, top=0, width=3, height=1)  # noqa
         grid_4.set_column_homogeneous(False)
         grid_4.set_row_homogeneous(False)
         frame_checkpointloadersimple_004load_checkpoint.add(widget=grid_4)  # noqa
 
         # New Frame
-        frame_emptylatentimage_005empty_latent_image: Gtk.Frame = Gtk.Frame.new(label="Empty Latent Image")  # noqa
+        frame_emptylatentimage_005empty_latent_image: Gtk.Frame = Gtk.Frame.new(label="Empty Latent Image        #5")  # noqa
         frame_emptylatentimage_005empty_latent_image.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_5_width: Gtk.Label = Gtk.Label.new("Width")
         label_5_width.set_margin_start(8)
@@ -344,8 +359,8 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
 
         def setter_5_width(a_val: int):
             entry_5_width.set_text(str(a_val))
-        widget_getters[entry_5_width.get_name()] = getter_5_width
-        widget_setters[entry_5_width.get_name()] = setter_5_width
+        widget_getters[entry_5_width.get_name()] = getter_5_width  # noqa
+        widget_setters[entry_5_width.get_name()] = setter_5_width  # noqa
 
         label_5_height: Gtk.Label = Gtk.Label.new("Height")
         label_5_height.set_margin_start(8)
@@ -368,8 +383,8 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
 
         def setter_5_height(a_val: int):
             entry_5_height.set_text(str(a_val))
-        widget_getters[entry_5_height.get_name()] = getter_5_height
-        widget_setters[entry_5_height.get_name()] = setter_5_height
+        widget_getters[entry_5_height.get_name()] = getter_5_height  # noqa
+        widget_setters[entry_5_height.get_name()] = setter_5_height  # noqa
 
         label_5_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_5_batch_size.set_margin_start(8)
@@ -392,8 +407,8 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
 
         def setter_5_batch_size(a_val: int):
             entry_5_batch_size.set_text(str(a_val))
-        widget_getters[entry_5_batch_size.get_name()] = getter_5_batch_size
-        widget_setters[entry_5_batch_size.get_name()] = setter_5_batch_size
+        widget_getters[entry_5_batch_size.get_name()] = getter_5_batch_size  # noqa
+        widget_setters[entry_5_batch_size.get_name()] = setter_5_batch_size  # noqa
 
         grid_5: Gtk.Grid = Gtk.Grid.new()
         grid_5.attach(label_5_width,      left=0, top=0, width=1, height=1)  # noqa
@@ -407,7 +422,7 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
         frame_emptylatentimage_005empty_latent_image.add(widget=grid_5)  # noqa
 
         # New Frame
-        frame_cliptextencode_006positive_prompt: Gtk.Frame = Gtk.Frame.new(label="Positive Prompt")  # noqa
+        frame_cliptextencode_006positive_prompt: Gtk.Frame = Gtk.Frame.new(label="Positive Prompt        #6")  # noqa
         frame_cliptextencode_006positive_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_6_text: Gtk.Label = Gtk.Label.new("Text")
         textview_6_text: Gtk.TextView = Gtk.TextView.new()
@@ -416,6 +431,10 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
         textview_6_text.set_hexpand(True)
         textview_6_text.set_vexpand(True)
         textview_6_text.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_6_text = Gtk.ScrolledWindow()
+        scrolled_window_6_text.add(textview_6_text)  # noqa
+        scrolled_window_6_text.set_size_request(864, 288)
 
         def preedit_handler_6_text(source, **args):  # noqa
             pass
@@ -434,14 +453,14 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
         widget_setters[textview_6_text.get_name()] = setter_6_text
 
         grid_6: Gtk.Grid = Gtk.Grid.new()
-        grid_6.attach(label_6_text,    left=0, top=0, width=1, height=1)  # noqa
-        grid_6.attach(textview_6_text, left=1, top=0, width=2, height=1)  # noqa
+        grid_6.attach(label_6_text,           left=0, top=0, width=1, height=1)  # noqa
+        grid_6.attach(scrolled_window_6_text, left=1, top=0, width=3, height=1)  # noqa
         grid_6.set_column_homogeneous(False)
         grid_6.set_row_homogeneous(False)
         frame_cliptextencode_006positive_prompt.add(widget=grid_6)  # noqa
 
         # New Frame
-        frame_cliptextencode_007negative_prompt: Gtk.Frame = Gtk.Frame.new(label="Negative Prompt")  # noqa
+        frame_cliptextencode_007negative_prompt: Gtk.Frame = Gtk.Frame.new(label="Negative Prompt        #7")  # noqa
         frame_cliptextencode_007negative_prompt.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_7_text: Gtk.Label = Gtk.Label.new("Text")
         textview_7_text: Gtk.TextView = Gtk.TextView.new()
@@ -450,6 +469,10 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
         textview_7_text.set_hexpand(True)
         textview_7_text.set_vexpand(True)
         textview_7_text.set_valign(Gtk.Align.FILL)
+        # Create a ScrolledWindow to hold the TextView
+        scrolled_window_7_text = Gtk.ScrolledWindow()
+        scrolled_window_7_text.add(textview_7_text)  # noqa
+        scrolled_window_7_text.set_size_request(288, 96)
 
         def preedit_handler_7_text(source, **args):  # noqa
             pass
@@ -468,26 +491,18 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
         widget_setters[textview_7_text.get_name()] = setter_7_text
 
         grid_7: Gtk.Grid = Gtk.Grid.new()
-        grid_7.attach(label_7_text,    left=0, top=0, width=1, height=1)  # noqa
-        grid_7.attach(textview_7_text, left=1, top=0, width=2, height=1)  # noqa
+        grid_7.attach(label_7_text,           left=0, top=0, width=1, height=1)  # noqa
+        grid_7.attach(scrolled_window_7_text, left=1, top=0, width=3, height=1)  # noqa
         grid_7.set_column_homogeneous(False)
         grid_7.set_row_homogeneous(False)
         frame_cliptextencode_007negative_prompt.add(widget=grid_7)  # noqa
 
         # New Frame
-        frame_vaedecode_008vae_decode: Gtk.Frame = Gtk.Frame.new(label="VAE Decode")  # noqa
-        frame_vaedecode_008vae_decode.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
-        grid_8: Gtk.Grid = Gtk.Grid.new()
-        grid_8.set_column_homogeneous(False)
-        grid_8.set_row_homogeneous(False)
-        frame_vaedecode_008vae_decode.add(widget=grid_8)  # noqa
-
-        # New Frame
-        frame_saveimage_009save_image: Gtk.Frame = Gtk.Frame.new(label="Save Image")  # noqa
+        frame_saveimage_009save_image: Gtk.Frame = Gtk.Frame.new(label="Save Image        #9")  # noqa
         frame_saveimage_009save_image.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_9_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
         entry_9_filename_prefix: Gtk.Entry = Gtk.Entry.new()
-        entry_9_filename_prefix.set_text("generated")
+        entry_9_filename_prefix.set_text("gimp_generated")
         entry_9_filename_prefix.set_name("entry_9_filename_prefix")
         entry_9_filename_prefix.set_hexpand(True)
         widget_getters[entry_9_filename_prefix.get_name()] = entry_9_filename_prefix.get_text
@@ -495,18 +510,29 @@ class ComfyuiDefaultDialogs(WorkflowDialogFactory):
 
         grid_9: Gtk.Grid = Gtk.Grid.new()
         grid_9.attach(label_9_filename_prefix, left=0, top=0, width=1, height=1)  # noqa
-        grid_9.attach(entry_9_filename_prefix, left=1, top=0, width=2, height=1)  # noqa
+        grid_9.attach(entry_9_filename_prefix, left=1, top=0, width=3, height=1)  # noqa
         grid_9.set_column_homogeneous(False)
         grid_9.set_row_homogeneous(False)
         frame_saveimage_009save_image.add(widget=grid_9)  # noqa
+
         content_area: Gtk.Box = dialog.get_content_area()
-        content_area.pack_start(child=frame_ksampler_003ksampler, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_checkpointloadersimple_004load_checkpoint, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_emptylatentimage_005empty_latent_image, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_cliptextencode_006positive_prompt, expand=True, fill=True, padding=0)  # noqa
-        content_area.pack_start(child=frame_cliptextencode_007negative_prompt, expand=True, fill=True, padding=0)  # noqa
-        content_area.pack_start(child=frame_vaedecode_008vae_decode, expand=False, fill=False, padding=0)  # noqa
-        content_area.pack_start(child=frame_saveimage_009save_image, expand=False, fill=False, padding=0)  # noqa
+        main_scrollable: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
+        subject_box: Gtk.Box = Gtk.Box()
+        subject_box.set_orientation(Gtk.Orientation.VERTICAL)
+
+        subject_box.pack_start(child=frame_ksampler_003ksampler, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_checkpointloadersimple_004load_checkpoint, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_emptylatentimage_005empty_latent_image, expand=False, fill=False, padding=0)  # noqa
+        subject_box.pack_start(child=frame_cliptextencode_006positive_prompt, expand=True, fill=True, padding=0)  # noqa
+        subject_box.pack_start(child=frame_cliptextencode_007negative_prompt, expand=True, fill=True, padding=0)  # noqa
+        subject_box.pack_start(child=frame_saveimage_009save_image, expand=False, fill=False, padding=0)  # noqa
+
+        subject_box.set_vexpand(True)
+        subject_box.set_hexpand(True)
+        main_scrollable.add(subject_box)  # noqa
+        main_scrollable.set_size_request(1280, 928)
+        main_scrollable.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
+        content_area.add(main_scrollable)  # noqa
 
         button_cancel.connect("clicked", delete_results)
         button_apply.connect("clicked", assign_results)

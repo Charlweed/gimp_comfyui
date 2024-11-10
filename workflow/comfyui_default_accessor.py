@@ -14,7 +14,7 @@ class ComfyuiDefaultAccessor(NodesAccessor):
         NODE_VAE_DECODE = "8"
         NODE_SAVE_IMAGE = "9"
 
-    class KSampler003Ksampler:
+    class KSampler003Ksampler:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -67,7 +67,7 @@ class ComfyuiDefaultAccessor(NodesAccessor):
         def denoise(self, value: int):
             self._outer.nodes_dict[ComfyuiDefaultAccessor.NodeIndexes.NODE_KSAMPLER.value]["inputs"]["denoise"] = value  # noqa
 
-    class CheckpointLoaderSimple004LoadCheckpoint:
+    class CheckpointLoaderSimple004LoadCheckpoint:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -80,7 +80,7 @@ class ComfyuiDefaultAccessor(NodesAccessor):
         def ckpt_name(self, value: str):
             self._outer.nodes_dict[ComfyuiDefaultAccessor.NodeIndexes.NODE_LOAD_CHECKPOINT.value]["inputs"]["ckpt_name"] = value  # noqa
 
-    class EmptyLatentImage005EmptyLatentImage:
+    class EmptyLatentImage005EmptyLatentImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -109,7 +109,7 @@ class ComfyuiDefaultAccessor(NodesAccessor):
         def batch_size(self, value: int):
             self._outer.nodes_dict[ComfyuiDefaultAccessor.NodeIndexes.NODE_EMPTY_LATENT_IMAGE.value]["inputs"]["batch_size"] = value  # noqa
 
-    class CLIPTextEncode006PositivePrompt:
+    class CLIPTextEncode006PositivePrompt:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -122,7 +122,7 @@ class ComfyuiDefaultAccessor(NodesAccessor):
         def text(self, value: str):
             self._outer.nodes_dict[ComfyuiDefaultAccessor.NodeIndexes.NODE_POSITIVE_PROMPT.value]["inputs"]["text"] = value  # noqa
 
-    class CLIPTextEncode007NegativePrompt:
+    class CLIPTextEncode007NegativePrompt:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -135,12 +135,12 @@ class ComfyuiDefaultAccessor(NodesAccessor):
         def text(self, value: str):
             self._outer.nodes_dict[ComfyuiDefaultAccessor.NodeIndexes.NODE_NEGATIVE_PROMPT.value]["inputs"]["text"] = value  # noqa
 
-    class VAEDecode008VaeDecode:
+    class VAEDecode008VaeDecode:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class SaveImage009SaveImage:
+    class SaveImage009SaveImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
