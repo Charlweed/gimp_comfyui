@@ -252,7 +252,7 @@ def seems_controlnet(file_path: str) -> bool:
 
 
 def seems_diffuser(file_path: str) -> bool:
-    return seems_legit_file(file_path=file_path, extensions=[".diff", ".diffuse"])
+    return seems_legit_file(file_path=file_path, extensions=[".diff", ".diffuse", ".safetensors", ".sft"])
 
 
 def seems_embedding(file_path: str) -> bool:
@@ -338,7 +338,7 @@ def list_from_fs(fs_path: str,
     # LOGGER_PRSTU.debug(f"Found {len_filtered} matched items in {fs_path}")
     if len_filtered == 0:
         complaint: str = f"Predicate \"{predicate.__name__}\" filtered out all items from listing of {fs_path}!"
-        LOGGER_PRSTU.warning(complaint)
+        LOGGER_PRSTU.debug(complaint)
         # Disable and enable the following exception as the situation demands.
         if len_raw >= 2:  # USUALLY Not a problem if dir is practically empty.
             raise IOError(complaint)
