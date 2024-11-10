@@ -341,7 +341,7 @@ class Workflow2PythonGenerator(ABC):
             if flag in file_name:
                 LOGGER_WF2PY.debug(f"Found {flag} in {file_name}")
                 doomed_file = join(data_path, file_name)
-                LOGGER_WF2PY.warning(f"Deleting old \"{doomed_file}\"")
+                LOGGER_WF2PY.debug(f"Deleting old \"{doomed_file}\"")
                 try:
                     os.remove(doomed_file)
                 except IOError as io_err:
