@@ -1187,7 +1187,7 @@
       "title": "Save Upscaled",
       "properties": {},
       "widgets_values": [
-        "sdxl_upscale/generated_upscaled"
+        "sdxl_upscaled/generated_upscaled"
       ]
     }
   ],

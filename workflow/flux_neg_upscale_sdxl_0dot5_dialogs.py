@@ -468,7 +468,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         checkbutton_97_add_noise.connect(SIG_TOGGLED, toggled_handler_97_add_noise)
 
         def getter_97_add_noise():
-            return "enable" if checkbutton_97_add_noise.get_active() else "disable"
+            return checkbutton_97_add_noise.get_active()
         widget_getters[checkbutton_97_add_noise.get_name()] = getter_97_add_noise  # noqa
 
         label_97_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
@@ -637,7 +637,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         checkbutton_97_return_with_leftover_noise.connect(SIG_TOGGLED, toggled_handler_97_return_with_leftover_noise)
 
         def getter_97_return_with_leftover_noise():
-            return "enable" if checkbutton_97_return_with_leftover_noise.get_active() else "disable"
+            return checkbutton_97_return_with_leftover_noise.get_active()
         widget_getters[checkbutton_97_return_with_leftover_noise.get_name()] = getter_97_return_with_leftover_noise  # noqa
 
         grid_97: Gtk.Grid = Gtk.Grid.new()
@@ -674,7 +674,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         checkbutton_98_add_noise.connect(SIG_TOGGLED, toggled_handler_98_add_noise)
 
         def getter_98_add_noise():
-            return "enable" if checkbutton_98_add_noise.get_active() else "disable"
+            return checkbutton_98_add_noise.get_active()
         widget_getters[checkbutton_98_add_noise.get_name()] = getter_98_add_noise  # noqa
 
         label_98_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
@@ -843,7 +843,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         checkbutton_98_return_with_leftover_noise.connect(SIG_TOGGLED, toggled_handler_98_return_with_leftover_noise)
 
         def getter_98_return_with_leftover_noise():
-            return "enable" if checkbutton_98_return_with_leftover_noise.get_active() else "disable"
+            return checkbutton_98_return_with_leftover_noise.get_active()
         widget_getters[checkbutton_98_return_with_leftover_noise.get_name()] = getter_98_return_with_leftover_noise  # noqa
 
         grid_98: Gtk.Grid = Gtk.Grid.new()
@@ -1903,7 +1903,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         checkbutton_123_force_uniform_tiles.connect(SIG_TOGGLED, toggled_handler_123_force_uniform_tiles)
 
         def getter_123_force_uniform_tiles():
-            return "enable" if checkbutton_123_force_uniform_tiles.get_active() else "disable"
+            return checkbutton_123_force_uniform_tiles.get_active()
         widget_getters[checkbutton_123_force_uniform_tiles.get_name()] = getter_123_force_uniform_tiles  # noqa
 
         checkbutton_123_tiled_decode: Gtk.CheckButton = Gtk.CheckButton.new_with_label("Tiled Decode")  # noqa
@@ -1916,7 +1916,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         checkbutton_123_tiled_decode.connect(SIG_TOGGLED, toggled_handler_123_tiled_decode)
 
         def getter_123_tiled_decode():
-            return "enable" if checkbutton_123_tiled_decode.get_active() else "disable"
+            return checkbutton_123_tiled_decode.get_active()
         widget_getters[checkbutton_123_tiled_decode.get_name()] = getter_123_tiled_decode  # noqa
 
         grid_123: Gtk.Grid = Gtk.Grid.new()
@@ -1997,7 +1997,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_saveimage_128save_upscaled.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_128_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
         entry_128_filename_prefix: Gtk.Entry = Gtk.Entry.new()
-        entry_128_filename_prefix.set_text("generated")
+        entry_128_filename_prefix.set_text("sdxl_upscaled/gimp_generated")
         entry_128_filename_prefix.set_name("entry_128_filename_prefix")
         entry_128_filename_prefix.set_hexpand(True)
         widget_getters[entry_128_filename_prefix.get_name()] = entry_128_filename_prefix.get_text
@@ -2015,7 +2015,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_saveimage_129save_original_scale.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_129_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
         entry_129_filename_prefix: Gtk.Entry = Gtk.Entry.new()
-        entry_129_filename_prefix.set_text("generated")
+        entry_129_filename_prefix.set_text("gimp_generated")
         entry_129_filename_prefix.set_name("entry_129_filename_prefix")
         entry_129_filename_prefix.set_hexpand(True)
         widget_getters[entry_129_filename_prefix.get_name()] = entry_129_filename_prefix.get_text

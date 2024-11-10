@@ -345,7 +345,7 @@
   },
   "128": {
     "inputs": {
-      "filename_prefix": "sdxl_upscale/generated_upscaled",
+      "filename_prefix": "sdxl_upscaled/generated_upscaled",
       "images": [
         "123",
         0
