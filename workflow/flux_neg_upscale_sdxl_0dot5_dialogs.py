@@ -1997,7 +1997,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_saveimage_128save_upscaled.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_128_filename_prefix: Gtk.Label = Gtk.Label.new("Filename_Prefix")
         entry_128_filename_prefix: Gtk.Entry = Gtk.Entry.new()
-        entry_128_filename_prefix.set_text("sdxl_upscaled/gimp_generated")
+        entry_128_filename_prefix.set_text("upscaled/gimp_generated")
         entry_128_filename_prefix.set_name("entry_128_filename_prefix")
         entry_128_filename_prefix.set_hexpand(True)
         widget_getters[entry_128_filename_prefix.get_name()] = entry_128_filename_prefix.get_text
