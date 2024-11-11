@@ -17,12 +17,12 @@ class Img2ImgSdxl0Dot3Accessor(NodesAccessor):
         NODE_VAE_ENCODE = "39"
         NODE_UPSCALE_IMAGE = "40"
 
-    class VAEDecode008VaeDecode:
+    class VAEDecode008VaeDecode:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class SaveImage009SaveImage:
+    class SaveImage009SaveImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -35,7 +35,7 @@ class Img2ImgSdxl0Dot3Accessor(NodesAccessor):
         def filename_prefix(self, value: str):
             self._outer.nodes_dict[Img2ImgSdxl0Dot3Accessor.NodeIndexes.NODE_SAVE_IMAGE.value]["inputs"]["filename_prefix"] = value  # noqa
 
-    class CheckpointLoaderSimple014LoadCheckpointBase:
+    class CheckpointLoaderSimple014LoadCheckpointBase:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -48,7 +48,7 @@ class Img2ImgSdxl0Dot3Accessor(NodesAccessor):
         def ckpt_name(self, value: str):
             self._outer.nodes_dict[Img2ImgSdxl0Dot3Accessor.NodeIndexes.NODE_LOAD_CHECKPOINT_BASE.value]["inputs"]["ckpt_name"] = value  # noqa
 
-    class CLIPTextEncodeSDXL016Positivetextencodesdxl:
+    class CLIPTextEncodeSDXL016Positivetextencodesdxl:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -117,7 +117,7 @@ class Img2ImgSdxl0Dot3Accessor(NodesAccessor):
         def text_l(self, value: str):
             self._outer.nodes_dict[Img2ImgSdxl0Dot3Accessor.NodeIndexes.NODE_POSITIVETEXTENCODESDXL.value]["inputs"]["text_l"] = value  # noqa
 
-    class CLIPTextEncodeSDXL019Negativetextencodesdxl:
+    class CLIPTextEncodeSDXL019Negativetextencodesdxl:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -186,7 +186,7 @@ class Img2ImgSdxl0Dot3Accessor(NodesAccessor):
         def text_l(self, value: str):
             self._outer.nodes_dict[Img2ImgSdxl0Dot3Accessor.NodeIndexes.NODE_NEGATIVETEXTENCODESDXL.value]["inputs"]["text_l"] = value  # noqa
 
-    class KSampler036Ksampler:
+    class KSampler036Ksampler:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -239,7 +239,7 @@ class Img2ImgSdxl0Dot3Accessor(NodesAccessor):
         def denoise(self, value: float):
             self._outer.nodes_dict[Img2ImgSdxl0Dot3Accessor.NodeIndexes.NODE_KSAMPLER.value]["inputs"]["denoise"] = value  # noqa
 
-    class VAELoader037LoadVae:
+    class VAELoader037LoadVae:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -252,7 +252,7 @@ class Img2ImgSdxl0Dot3Accessor(NodesAccessor):
         def vae_name(self, value: str):
             self._outer.nodes_dict[Img2ImgSdxl0Dot3Accessor.NodeIndexes.NODE_LOAD_VAE.value]["inputs"]["vae_name"] = value  # noqa
 
-    class LoadImage038LoadImage:
+    class LoadImage038LoadImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -273,12 +273,12 @@ class Img2ImgSdxl0Dot3Accessor(NodesAccessor):
         def upload(self, value: str):
             self._outer.nodes_dict[Img2ImgSdxl0Dot3Accessor.NodeIndexes.NODE_LOAD_IMAGE.value]["inputs"]["upload"] = value  # noqa
 
-    class VAEEncode039VaeEncode:
+    class VAEEncode039VaeEncode:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class ImageScale040UpscaleImage:
+    class ImageScale040UpscaleImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
