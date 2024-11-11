@@ -21,7 +21,7 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         NODE_SAVE_IMAGE = "14"
         NODE_SET_LATENT_NOISE_MASK = "15"
 
-    class LoadImage001BaseImage:
+    class LoadImage001BaseImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -42,7 +42,7 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def upload(self, value: str):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_BASE_IMAGE.value]["inputs"]["upload"] = value  # noqa
 
-    class LoadImage002MaskImage:
+    class LoadImage002MaskImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -63,7 +63,7 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def upload(self, value: str):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_MASK_IMAGE.value]["inputs"]["upload"] = value  # noqa
 
-    class VAEEncodeForInpaint004VaeEncodeForInpainting:
+    class VAEEncodeForInpaint004VaeEncodeForInpainting:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -76,7 +76,7 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def grow_mask_by(self, value: int):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_VAE_ENCODE_FOR_INPAINTING.value]["inputs"]["grow_mask_by"] = value  # noqa
 
-    class CheckpointLoaderSimple005LoadCheckpoint:
+    class CheckpointLoaderSimple005LoadCheckpoint:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -89,7 +89,7 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def ckpt_name(self, value: str):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_LOAD_CHECKPOINT.value]["inputs"]["ckpt_name"] = value  # noqa
 
-    class UNETLoader006LoadDiffusionModel:
+    class UNETLoader006LoadDiffusionModel:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -110,7 +110,7 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def weight_dtype(self, value: str):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_LOAD_DIFFUSION_MODEL.value]["inputs"]["weight_dtype"] = value  # noqa
 
-    class LoraLoader007LoadLora:
+    class LoraLoader007LoadLora:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -139,12 +139,12 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def strength_clip(self, value: int):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_LOAD_LORA.value]["inputs"]["strength_clip"] = value  # noqa
 
-    class VAEEncode008VaeEncode:
+    class VAEEncode008VaeEncode:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class CLIPTextEncode009PositivePrompt:
+    class CLIPTextEncode009PositivePrompt:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -157,7 +157,7 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def text(self, value: str):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_POSITIVE_PROMPT.value]["inputs"]["text"] = value  # noqa
 
-    class CLIPTextEncode010NegativePrompt:
+    class CLIPTextEncode010NegativePrompt:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -170,7 +170,7 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def text(self, value: str):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_NEGATIVE_PROMPT.value]["inputs"]["text"] = value  # noqa
 
-    class ModelSamplingDiscrete011Modelsamplingdiscrete:
+    class ModelSamplingDiscrete011Modelsamplingdiscrete:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -191,7 +191,7 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def zsnr(self, value: bool):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_MODELSAMPLINGDISCRETE.value]["inputs"]["zsnr"] = value  # noqa
 
-    class KSampler012Ksampler:
+    class KSampler012Ksampler:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -244,12 +244,12 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def denoise(self, value: int):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_KSAMPLER.value]["inputs"]["denoise"] = value  # noqa
 
-    class VAEDecode013VaeDecode:
+    class VAEDecode013VaeDecode:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
 
-    class SaveImage014SaveImage:
+    class SaveImage014SaveImage:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
@@ -262,7 +262,7 @@ class InpaintingSdxl0Dot4Accessor(NodesAccessor):
         def filename_prefix(self, value: str):
             self._outer.nodes_dict[InpaintingSdxl0Dot4Accessor.NodeIndexes.NODE_SAVE_IMAGE.value]["inputs"]["filename_prefix"] = value  # noqa
 
-    class SetLatentNoiseMask015SetLatentNoiseMask:
+    class SetLatentNoiseMask015SetLatentNoiseMask:  # noqa PEP8
 
         def __init__(self, outer):
             self._outer = outer
