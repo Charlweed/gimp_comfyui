@@ -28,9 +28,9 @@ KEY_SUFFIX_NEWLINE: str = f"{METAKEY_FLAG}newline{METAKEY_FLAG}"  # w_text keys 
 KEY_SUFFIX_GRID_WIDTH: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"
 # w_text keys with this suffix are the count of vertical cells in a layout grid.
 KEY_SUFFIX_GRID_HEIGHT: str = f"{METAKEY_FLAG}grid_width{METAKEY_FLAG}"
-NEGATIVE_PROMPT_TITLE_REGEX_1_PATTERN = ".*negative.*prompt.*"
+NEGATIVE_PROMPT_TITLE_REGEX_1_PATTERN = r".*negative.*prompt|text.*"
 NEGATIVE_PROMPT_TITLE_REGEX_1 = re.compile(NEGATIVE_PROMPT_TITLE_REGEX_1_PATTERN)
-NEGATIVE_PROMPT_INPUT_REGEX_1_PATTERN = ".*negative.*"
+NEGATIVE_PROMPT_INPUT_REGEX_1_PATTERN = r".*negative.*"
 NEGATIVE_PROMPT_INPUT_REGEX_1 = re.compile(NEGATIVE_PROMPT_INPUT_REGEX_1_PATTERN)
 
 
@@ -1598,8 +1598,27 @@ class WidgetAuthor:
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
-            case "ImageScaleBy":
+            case "ImageScale" | "ImageScaleBy":
                 match input_name:
+                    case "crop":
+                        sel_idx: int = self._crop_methods.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=self._crop_methods,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "height" | "width":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(1, None)
+                        )
+                        continues_row(result=result, input_name=input_name)
                     case "scale_by":
                         result = new_entry_float(
                             node_title=node_title,
@@ -2118,6 +2137,34 @@ class WidgetAuthor:
                                                   items=self._crop_methods,
                                                   selected_index=sel_idx
                                                   )
+                    case "height" | "width":
+                        result = new_entry_int(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=int(json_value),
+                            bounds=(1, None)
+                        )
+                        continues_row(result=result, input_name=input_name)
+                    case "scale_by":
+                        result = new_entry_float(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            bounds=(0, None)
+                        )
+                    case "upscale_method":
+                        sel_idx: int = self._upscale_methods.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  items=self._upscale_methods,
+                                                  selected_index=sel_idx
+                                                  )
+
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node titled {node_title}"
                         LOGGER_WF2PY.warning(log_msg)
