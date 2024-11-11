@@ -163,7 +163,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
         # Create a ScrolledWindow to hold the TextView
         scrolled_window_6_text = Gtk.ScrolledWindow()
         scrolled_window_6_text.add(textview_6_text)  # noqa
-        scrolled_window_6_text.set_size_request(864, 288)
+        scrolled_window_6_text.set_size_request(288, 96)
 
         def preedit_handler_6_text(source, **args):  # noqa
             pass
