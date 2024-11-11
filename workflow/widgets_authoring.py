@@ -694,6 +694,7 @@ class WidgetAuthor:
     _BLEND_MODES = ["normal", "multiply", "screen", "overlay", "soft_light", "difference"]
     _CLIP_TYPE_NAMES = ["sdxl", "sd3", "flux", "sd3.5"]
     _CROP_METHODS = ["disabled", "center"]
+    _DISCRETE_SAMPLING_METHODS = ["eps", "lcm", "v_prediction", "x0"]
     _KSAMPLER_NAMES = ["euler", "euler_ancestral", "heun", "heunpp2", "dpm_2", "dpm_2_ancestral",
                        "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde", "dpmpp_sde_gpu",
                        "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_2m_sde_gpu", "dpmpp_3m_sde", "dpmpp_3m_sde_gpu", "ddpm",
@@ -741,6 +742,7 @@ class WidgetAuthor:
         'blend_modes': ["normal", "multiply", "screen", "overlay", "soft_light", "difference"],
         'clip_type_names': ["sdxl", "sd3", "flux", "sd3.5"],
         'crop_methods': ["disabled", "center"],
+        'discrete_sampling_methods': ["eps", "lcm", "v_prediction", "x0"],
         'ksampler_names': ["euler", "euler_ancestral", "heun", "heunpp2", "dpm_2", "dpm_2_ancestral",
                            "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde", "dpmpp_sde_gpu",
                            "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_2m_sde_gpu", "dpmpp_3m_sde", "dpmpp_3m_sde_gpu", "ddpm",
@@ -817,6 +819,7 @@ class WidgetAuthor:
             self._config = dict(WidgetAuthor._DEFAULT_CONFIG)
         self._blend_modes: List[str] = self._config['blend_modes']
         self._crop_methods: List[str] = self._config['crop_methods']
+        self._discrete_sampling_methods = self._config['discrete_sampling_methods']
         # These predicates are in cui_resources_utils.py NOT long_term_storage_utils.py!
         self._models_checkpoints: List[str] = list_from_fs(fs_path=self._config['sd_checkpoints_dir'],
                                                            predicate=seems_checkpoint)
@@ -1740,6 +1743,75 @@ class WidgetAuthor:
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
+            case "LoraLoader":
+                match input_name:
+                    case "lora_name":
+                        # We are constructing the dialog offline now, and also telling it what to expect from the
+                        # ComfyUI server later. So we add our special_entries as an argument to list_from_fs AND as the
+                        # special_entries argument to new_combo_models.
+                        # Also Confusing. The literal 'None' is (sometimes) returned as an entry by teh server, so we
+                        # include it here as an entry for offline construction of the dialog source.
+                        loras_from_fs = list_from_fs(fs_path=self._config['sd_loras_dir'],
+                                                     predicate=seems_lora,
+                                                     special_entries=['None'])
+                        sel_idx: int = index_or_not(entries=loras_from_fs, selected_entry=json_value)
+                        result = new_combo_models(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  selected_index=sel_idx,
+                                                  special_entries=['None'],
+                                                  model_type=ModelType.LORAS
+                                                  )
+                    case "strength_model":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=20,
+                            step_increment=1.0,
+                            page_increment=5.0
+                        )
+                    case "strength_clip":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            change_handler_body_txt="pass",
+                            current=float(json_value),
+                            lower=0,
+                            upper=20,
+                            step_increment=1.0,
+                            page_increment=5.0
+                        )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "ModelSamplingDiscrete":  # https://www.runcomfy.com/comfyui-nodes/ComfyUI/ModelSamplingDiscrete
+                match input_name:
+                    case "sampling":
+                        sel_idx: int = self._discrete_sampling_methods.index(json_value)
+                        result = new_combo_static(node_title=node_title,
+                                                  node_index_str=node_index_str,
+                                                  input_name=input_name,
+                                                  change_handler_body_txt="pass",
+                                                  items=self._discrete_sampling_methods,
+                                                  selected_index=sel_idx
+                                                  )
+                    case "zsnr":  # Is this value being correctly persisted?
+                        result = new_checkbutton(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            toggled_handler_body_txt="pass",
+                            current=bool_of(json_value)
+                        )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
             case "ModelSamplingFlux":
                 match input_name:
                     case "height" | "width":
@@ -1971,6 +2043,22 @@ class WidgetAuthor:
                                                   selected_index=sel_idx,
                                                   model_type=ModelType.UPSCALE_MODELS
                                                   )
+                    case _:
+                        log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
+                        LOGGER_WF2PY.warning(log_msg)
+            case "VAEEncodeForInpaint":
+                match input_name:
+                    case "grow_mask_by":
+                        result = new_scale(
+                            node_title=node_title,
+                            node_index_str=node_index_str,
+                            input_name=input_name,
+                            current=int(json_value),
+                            lower=1,
+                            upper=16,
+                            step_increment=1,
+                            page_increment=4
+                        )
                     case _:
                         log_msg: str = f"Deferring input \"{input_name}\" in node class {node_class_name}"
                         LOGGER_WF2PY.warning(log_msg)
