@@ -108,8 +108,8 @@ $ENV:PYTHONPATH = $PSScriptRoot
 foreach ($generator_name in $GENERATORS) {
     $generator = Join-Path -Path $PSScriptRoot -ChildPath "workflow" -AdditionalChildPath @($generator_name)
     Write-Information "Running generator `"$generator`"" -InformationAction Continue
-#    Generate-Classes $generator $WORKFLOWS_ALL
-    Generate-Classes $generator $WORKFLOWS_FLUX
+    Generate-Classes $generator $WORKFLOWS_ALL
+#    Generate-Classes $generator $WORKFLOWS_FLUX
 }
 
 # Test with
