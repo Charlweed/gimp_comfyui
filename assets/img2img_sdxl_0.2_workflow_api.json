@@ -17,7 +17,7 @@
   },
   "9": {
     "inputs": {
-      "filename_prefix": "img2img",
+      "filename_prefix": "gimp_generated_img2img",
       "images": [
         "8",
         0
