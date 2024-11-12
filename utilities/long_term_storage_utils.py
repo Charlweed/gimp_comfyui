@@ -78,6 +78,16 @@ def get_persistent_dir_name() -> str:
     raise Exception("Unsupported platform")
 
 
+def get_platform_friendly_name() -> str:
+    if platform.system().lower() == 'windows':
+        return "Windows"
+    if platform.system().lower() == 'linux':
+        return "Linux"
+    if platform.system().lower() == 'darwin':
+        return "macOS"
+    raise Exception("Unsupported platform")
+
+
 def get_temporary_dir_name() -> str:
     return tempfile.gettempdir()
 
