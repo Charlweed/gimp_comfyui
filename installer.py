@@ -70,7 +70,7 @@ LOGGER_INSTALLER.info(f"Installing as PLATFORM={PLATFORM}")
 
 if PLATFORM == "windows":
     DEFAULTS = {
-        "gimp_plugins_dir": "~/AppData/Roaming/GIMP/2.99/plug-ins",
+        "gimp_plugins_dir": "~/AppData/Roaming/GIMP/3.0/plug-ins",
         "gimp_plugin_data_dir": "~/AppData/Roaming/gimp_plugin_data",
         "comfyui_custom_nodes_dir": "~/ComfyUI/custom_nodes",
         "stable_diffusion_data_dir": "~/ComfyUI"
@@ -78,7 +78,7 @@ if PLATFORM == "windows":
 else:
     if PLATFORM == "darwin":
         DEFAULTS = {
-            "gimp_plugins_dir": "~/Library/Application Support/GIMP/2.99/plug-ins",
+            "gimp_plugins_dir": "~/Library/Application Support/GIMP/3.0/plug-ins",
             "gimp_plugin_data_dir": "~/.config/gimp_plugin_data",
             "comfyui_custom_nodes_dir": os.environ.get('TMPDIR', expanduser("~/")),
             # Assuming no local stable_diffusion
@@ -86,7 +86,7 @@ else:
         }
     else:
         DEFAULTS = {
-            "gimp_plugins_dir": "~/.var/app/org.gimp.GIMP/config/GIMP/2.99/plug-ins",
+            "gimp_plugins_dir": "~/.var/app/org.gimp.GIMP/config/GIMP/3.0/plug-ins",
             "gimp_plugin_data_dir": "~/.config/gimp_plugin_data",
             "comfyui_custom_nodes_dir": "~/ComfyUI/custom_nodes",
             "stable_diffusion_data_dir": "~/ComfyUI"
@@ -282,7 +282,7 @@ def _obtain_user_arguments(parameters: Dict[str, UserValueType]) -> Dict[str, st
         eprint(f"Some gui modules are not installed. You can try to install them and re-run this installer.")
         eprint("Otherwise, you will need to run this installer exclusively from the the cli and specify "
                f"{parameters}.\n")
-        eprint(f"NOTE: Apparently, TK GUI modules cannot be installed in the python bundled with GIMP 2.99.")
+        eprint(f"NOTE: Apparently, TK GUI modules cannot be installed in the python bundled with GIMP 3.0.")
         sys.stdout.flush()
         sys.stderr.flush()
         main_fault = Fault.MISSING_MODULE
@@ -342,11 +342,16 @@ def copy_gimp_plugin_sources(gimp_plugin_dir: str) -> bool:
     LOGGER_INSTALLER.info(f"Installing GIMP plug-in {gimp_plugin_dir}")
     all_good: bool
     sources: Set[str] = {
+        "LICENSE",
+        "README.md",
         "assets",
         "gimp3_concurrency",
         "gimp_comfyui.py",
         "locale",
+        "requests",
+        "requests_toolbelt",
         "utilities",
+        "websocket",
         "workflow"
     }
     all_good = _from_here_to_there(sources=sources, dest_dir=gimp_plugin_dir)
