@@ -16,9 +16,10 @@
 #
 
 import gi
-import os
+import pprint
 import random
 import re
+import site
 import sys
 import threading
 import time
@@ -29,10 +30,9 @@ gi.require_version("Gtk", "3.0")  # noqa: E402
 gi.require_version('Gdk', '3.0')  # noqa: E402
 # noinspection PyUnresolvedReferences
 from gi.repository import Gdk, Gio, Gimp, GimpUi, Gtk, GLib, GObject
-from enum import Enum, auto
 from urllib import request
-from typing import Dict, Callable
 from utilities.cui_resources_utils import ModelType, get_models_list
+from utilities.long_term_storage_utils import *
 from utilities.type_utils import *
 
 # Constants
@@ -277,6 +277,74 @@ def new_box_of_radios(options: List[str], handler: Callable[[Any], None]) -> Gtk
     return box_0
 
 
+# noinspection PyUnresolvedReferences,PyArgumentList
+def new_dialog_about(title_in: str,
+                     plugin_short_name: str,
+                     version_str: str,
+                     comfy_srv_origin: str,
+                     transceiver_url: str,
+                     plugin_uuid: str,
+                     plugin_log_file: str,
+                     workflow_names: List[str],
+                     procedure_names: List[str],
+                     ) -> GimpUi.Dialog:
+    gimp_icon_name: str = GimpUi.ICON_DIALOG_INFORMATION
+    platform_friendly_name: str = get_platform_friendly_name()
+    python_version: str = sys.version
+    site_packages: str = "\n   ".join(site.getsitepackages())
+    python_sys_path: str = "\n   ".join(sys.path)
+    workflow_scroll: str = pprint.pformat(workflow_names, indent=4)
+    procedure_names_text: str = pprint.pformat(procedure_names, indent=4)
+    body_text: str = (
+        f"{plugin_short_name}\n"
+        f"Plugin Version: {version_str}\n"
+        f"Plugin UUID: {plugin_uuid}\n"
+        f"ComfyUI server origin: {comfy_srv_origin}\n"
+        f"ComfyUI transceiver url: {transceiver_url}\n"
+        f"Plugin UUID: {plugin_uuid}\n"
+        f"Plugin data folder: \"{get_persistent_dir()}\"\n"
+        f"Plugin log file: \"{plugin_log_file}\"\n"
+        f"temporary folder: \"{get_temporary_dir_name()}\"\n"
+        f"ComfyUI Workflows:\n{workflow_scroll}\n"
+        f"Procedures: \n{procedure_names_text}\n"
+        f"Platform: {platform_friendly_name}\n"
+        f"Python Version: {python_version}\n"
+        f"Python site-packages:\n    {site_packages}\n"
+        f"Python python_sys_paths:\n    {python_sys_path}\n"
+    )
+    dialog = GimpUi.Dialog(use_header_bar=True, title=title_in, role="Information")
+    textview_0_about: Gtk.TextView = Gtk.TextView.new()
+    textview_0_about.get_buffer().set_text(body_text)
+    textview_0_about.set_name("textview_0_about")
+    textview_0_about.set_editable(False)
+    textview_0_about.set_hexpand(True)
+    textview_0_about.set_vexpand(True)
+    textview_0_about.set_valign(Gtk.Align.FILL)
+    # Create a ScrolledWindow to hold the TextView
+    scrolled_window_0_about = Gtk.ScrolledWindow()
+    scrolled_window_0_about.add(textview_0_about)  # noqa
+    scrolled_window_0_about.set_size_request(864, 612)
+    scrolled_window_0_about.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
+    content_area: Gtk.Box = dialog.get_content_area()
+    label_and_icon_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+    icon_image = Gtk.Image.new_from_icon_name(gimp_icon_name, Gtk.IconSize.DIALOG)
+    label_and_icon_box.pack_start(child=icon_image, expand=False, fill=False, padding=0)
+    label_and_icon_box.pack_start(child=scrolled_window_0_about, expand=True, fill=True, padding=0)
+    label_and_icon_box.set_margin_start(40)
+    label_and_icon_box.set_margin_end(40)
+    label_and_icon_box.show_all()
+    content_area.add(label_and_icon_box)
+
+    # GIMP does something to the layout in dialogs. I'm not sure if I should force it to look more conventional.
+    dialog.add_button(GLib.dgettext(None, "OK"), Gtk.ResponseType.OK)
+    geometry = Gdk.Geometry()  # noqa
+    geometry.min_aspect = 1.0
+    geometry.max_aspect = 1.0
+    dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
+    dialog.show_all()
+    return dialog
+
+
 def new_dialog_error_user(title_in: str,
                           blurb_in: str,
                           gimp_icon_name: str = GimpUi.ICON_DIALOG_ERROR
@@ -333,20 +401,20 @@ def new_dialog_info(title_in: str, blurb_in: str) -> GimpUi.Dialog:
 def url_string(protocol: str = "http",
                host: str = "localhost",
                port: int = 80,
-               path: str = "/") -> str:
+               path_part: str = "/") -> str:
     """
     Minimal URL builder. Concatenates arguments with {protocol}://{host}:{port}{path} unless port is 80, in which case
      it is omitted. "empty" path should be "/", not ""
     :param protocol: default http
     :param host:  default localhost
     :param port:  default 80
-    :param path: default, /
+    :param path_part: default, /
     :return: {protocol}://{host}:{port}{path}
     """
     if port == 80:
-        result = f"{protocol}://{host}{path}"
+        result = f"{protocol}://{host}{path_part}"
     else:
-        result = f"{protocol}://{host}:{port}{path}"
+        result = f"{protocol}://{host}:{port}{path_part}"
     return result
 
 
@@ -415,7 +483,7 @@ def new_dialog_url(title_in: str,
         protocol=defaults0['svr_protocol'],
         host=defaults0['svr_host'],
         port=defaults0['svr_port'],
-        path=defaults0['svr_path']
+        path_part=defaults0['svr_path']
     ))
 
     entry_svr_host.set_hexpand(True)
@@ -434,7 +502,7 @@ def new_dialog_url(title_in: str,
         hst: str = entry_svr_host.get_text()
         prt: int = int(entry_svr_port.get_text())
         pth: str = entry_svr_path.get_text()
-        url: str = url_string(protocol=protocol, host=hst, port=prt, path=pth)
+        url: str = url_string(protocol=protocol, host=hst, port=prt, path_part=pth)
         label_svr_url_val.set_text(url)
     entry_svr_protocol.connect(SIG_CHANGED, build_url)
     entry_svr_host.connect(SIG_CHANGED, build_url)
@@ -482,7 +550,7 @@ def new_dialog_url(title_in: str,
             'svr_host': hst,
             'svr_path': "",
             'svr_port': prt,
-            'svr_url': url_string(protocol=protocol, host=hst, port=prt, path=pth)
+            'svr_url': url_string(protocol=protocol, host=hst, port=prt, path_part=pth)
         }
         dict_consumer(dialog_data)
 
@@ -749,13 +817,13 @@ def path_to_id(model: Gtk.TreeModel, item_id: int, row_index: int = 1) -> Gtk.Tr
 
     # noinspection PyUnusedLocal
     def row_consumer(w_model: Gtk.TreeModel,
-                     path: Gtk.TreePath,
+                     tree_path: Gtk.TreePath,
                      w_iter: Gtk.TreeIter,
                      *data: object | None) -> bool:
         nonlocal result
         found = w_model[w_iter][row_index] == item_id
         if found:
-            result = path
+            result = tree_path
             return True
         else:
             return False
@@ -1188,7 +1256,8 @@ def example_dialog_0() -> int:
     blurb: str = "Test run from main()"
     carry_on: bool = True
 
-    def halt(source: Gtk.Widget, data=None):  # noqa
+    # noinspection PyUnusedLocal
+    def halt(source: Gtk.Widget, data=None):
         nonlocal carry_on
         close_window_of_widget(source)
         carry_on = False
