@@ -39,7 +39,6 @@ import gi
 import gettext
 import logging.config
 import os.path
-import site
 
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
@@ -55,8 +54,10 @@ from utilities.demos_and_tests import display_images_n_layers_dialog
 from utilities.heterogeneous import png_base64_str, remove_hetero_temp_files
 from utilities.persistence_utils import *
 from utilities.persister_petite import *
-from utilities.samples import *
 from utilities.sd_gui_utils import *
+from workflow.node_accessor import NodesAccessor
+from workflow.workflow_dialog_factory import WorkflowDialogFactory
+#  Workflows
 from workflow.comfyui_default_accessor import ComfyuiDefaultAccessor
 from workflow.comfyui_default_dialogs import ComfyuiDefaultDialogs
 from workflow.flux_1dot0_accessor import Flux1Dot0Accessor
@@ -69,7 +70,6 @@ from workflow.inpainting_sdxl_0dot4_accessor import InpaintingSdxl0Dot4Accessor
 from workflow.inpainting_sdxl_0dot4_dialogs import InpaintingSdxl0Dot4Dialogs
 from workflow.sytan_sdxl_1dot0_accessor import SytanSdxl1Dot0Accessor
 from workflow.sytan_sdxl_1dot0_dialogs import SytanSdxl1Dot0Dialogs
-from workflow.workflow_dialog_factory import WorkflowDialogFactory
 from workflow.flux_neg_upscale_sdxl_0dot5_accessor import FluxNegUpscaleSdxl0Dot5Accessor
 from workflow.flux_neg_upscale_sdxl_0dot5_dialogs import FluxNegUpscaleSdxl0Dot5Dialogs
 # Insert WORKFLOW_IMPORTS→
@@ -165,9 +165,10 @@ class GimpComfyUI(Gimp.PlugIn):
     HOME: str = os.path.expanduser('~')
     MESSAGE_REGISTRATION = "Registering " + __file__ + ":" + PYTHON_PLUGIN_NAME
     MESSAGE_REGISTRATION_COMPLETED = __file__ + ":" + PYTHON_PLUGIN_NAME + " returned."
-    VERSION: str = "0.7.8.1"
+    VERSION: str = "0.7.9"
 
     # Procedure names.
+    PROCEDURE_ABOUT_CONFIG = PYTHON_PLUGIN_NAME + "-About-Config"
     PROCEDURE_CONFIG_COMFY_SVR_CONNECTION = PYTHON_PLUGIN_NAME + "-comfyUi-Server-URL"
     PROCEDURE_CONFIG_TRANSCEIVER_CONNECTION = PYTHON_PLUGIN_NAME + "-transceiver-URL"
     PROCEDURE_DEMO_CUI_NET = "demo-cui-net"
@@ -183,6 +184,7 @@ class GimpComfyUI(Gimp.PlugIn):
     PROCEDURE_INVOKE_FLUX_NEG_UPSCALE_SDXL_0DOT5_WF = "flux-neg-upscale-sdxl-0dot5"
     # Insert PROCEDURE_NAME_VARS→
     PROCEDURE_NAMES = [
+        PROCEDURE_ABOUT_CONFIG,
         PROCEDURE_CONFIG_COMFY_SVR_CONNECTION,
         PROCEDURE_CONFIG_TRANSCEIVER_CONNECTION,
         PROCEDURE_WATCH_LAYER,
@@ -209,6 +211,7 @@ class GimpComfyUI(Gimp.PlugIn):
     TRANSCEIVER_PROTOCOL: str = "ws"
     LIMB_IMAGE_MENU_NAME: str = "<Image>/GimpComfyUI"
     LIMB_LAYERS_MENU_NAME: str = "<Layers>/GimpComfyUI"
+    LOG_FILE_PATH: str = os.path.join(tempfile.gettempdir(), f"GimpComfyUI_logfile.txt")
     LOGGER_FORMAT_GCUI = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
 
     # Class variables
@@ -238,7 +241,6 @@ class GimpComfyUI(Gimp.PlugIn):
 
     @classmethod
     def configure_loggers(cls):
-        log_file_path: str = os.path.join(tempfile.gettempdir(), f"GimpComfyUI_logfile.txt")
         if LOGGER_GCUI.hasHandlers():
             LOGGER_GCUI.handlers.clear()
         logging.config.dictConfig({
@@ -252,7 +254,7 @@ class GimpComfyUI(Gimp.PlugIn):
                 'debug': {
                     'level': logging.DEBUG,
                     'class': 'logging.FileHandler',
-                    'filename': log_file_path,
+                    'filename': cls.LOG_FILE_PATH,
                     'formatter': 'default',
                 },
             },
@@ -359,7 +361,7 @@ class GimpComfyUI(Gimp.PlugIn):
             cls.COMFYUI_ORIGIN = f"{cls.COMFYUI_HOST}:{cls.COMFYUI_PORT}"
             cls.COMFYUI_URL = url_string(
                 host=cls.COMFYUI_HOST,
-                path=cls.COMFYUI_PATH,
+                path_part=cls.COMFYUI_PATH,
                 port=cls.COMFYUI_PORT,
                 protocol=cls.COMFYUI_PROTOCOL
             )
@@ -372,7 +374,7 @@ class GimpComfyUI(Gimp.PlugIn):
             cls.TRANSCEIVER_ORIGIN = f"{cls.TRANSCEIVER_HOST}:{cls.TRANSCEIVER_PORT}"
             cls.TRANSCEIVER_URL = url_string(
                 host=cls.TRANSCEIVER_HOST,
-                path=cls.TRANSCEIVER_PATH,
+                path_part=cls.TRANSCEIVER_PATH,
                 port=cls.TRANSCEIVER_PORT,
                 protocol=cls.TRANSCEIVER_PROTOCOL
             )
@@ -474,6 +476,16 @@ class GimpComfyUI(Gimp.PlugIn):
         self._sytan_sdxl_accessor: SytanSdxl1Dot0Accessor = SytanSdxl1Dot0Accessor()
         self._flux_neg_upscale_sdxl_0dot5_accessor: FluxNegUpscaleSdxl0Dot5Accessor = FluxNegUpscaleSdxl0Dot5Accessor()
         # Insert WORKFLOW_ACCESSOR_DECLARATION→
+        # Developers need to manually add workflow accessors to this array after glue code is programmatically inserted.
+        self._accessors: List[NodesAccessor] = [
+            self._default_accessor,
+            self._flux_accessor,
+            self._flux_neg_accessor,
+            self._img2img_sdxl_accessor,
+            self._inpainting_sdxl_accessor,
+            self._sytan_sdxl_accessor,
+            self._flux_neg_upscale_sdxl_0dot5_accessor,
+        ]
         if os.environ.get('skip_comfyui'):
             self.skip_comfyui = True
             LOGGER_GCUI.warning("Disabling connection attempts to ComfyUI")
@@ -628,6 +640,14 @@ class GimpComfyUI(Gimp.PlugIn):
         """
         procedure: Gimp.ImageProcedure = None  # noqa
         match name:
+            case GimpComfyUI.PROCEDURE_ABOUT_CONFIG:
+                procedure = self.create_procedure(name_raw=name,
+                                                  docs="About GimpComfyUI configuration.",
+                                                  usage_hint="Show versions, URLs, paths etc.",
+                                                  run_func_in=self.show_about,
+                                                  is_image_optional=True,  # Redundant with SubjectType.ANYTHING
+                                                  proc_category=ProcedureCategory.CONFIG,
+                                                  subject_type=SubjectType.ANYTHING)
             case GimpComfyUI.PROCEDURE_INSTALL_COMFYUI:
                 procedure = self.create_procedure(name_raw=name,
                                                   docs="Install GIMP-local ComfyUI",
@@ -796,6 +816,46 @@ class GimpComfyUI(Gimp.PlugIn):
                 pass
         procedure.add_menu_path(menu_path)
         return procedure
+
+    def show_about(self, procedure, run_mode, image, n_drawables, drawables, config, run_data):  # noqa
+        LOGGER_GCUI.warning(f"Show information \"about\" {GimpComfyUI.PYTHON_PLUGIN_NAME}")
+        ret_values: Gimp.ValueArray = procedure.new_return_values(Gimp.PDBStatusType.CANCEL)
+        try:
+            GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+            all_config: MappingProxyType = GimpComfyUI.GCUI_PERSISTER.configuration
+            transceiver_protocol: str = all_config.get("TRANSCEIVER_PROTOCOL", "ws")
+            transceiver_host: str = all_config.get("TRANSCEIVER_HOST", "localhost")
+            transceiver_port: int = all_config.get("TRANSCEIVER_PORT", "8765")
+            transceiver_path: str = all_config.get("TRANSCEIVER_PATH", "")  # empty string, not "/"
+            transceiver_url: str = url_string(protocol=transceiver_protocol,
+                                              host=transceiver_host,
+                                              port=transceiver_port,
+                                              path_part=transceiver_path)
+            GimpUi.init(GimpComfyUI.PYTHON_PLUGIN_NAME)
+            dialog: GimpUi.Dialog = new_dialog_about(
+                title_in=f"About {GimpComfyUI.PYTHON_PLUGIN_NAME}",
+                plugin_short_name=GimpComfyUI.PYTHON_PLUGIN_NAME,
+                version_str=GimpComfyUI.VERSION,
+                comfy_srv_origin=GimpComfyUI.COMFYUI_ORIGIN,
+                transceiver_url=transceiver_url,
+                plugin_uuid=GimpComfyUI.PYTHON_PLUGIN_UUID_STRING,
+                plugin_log_file=GimpComfyUI.LOG_FILE_PATH,
+                workflow_names=[acc.workflow_api_json_path for acc in self._accessors],
+                procedure_names=GimpComfyUI.PROCEDURE_NAMES,
+            )
+            response_code = dialog.run()  # Blocks until dialog is closed...
+            if response_code != Gtk.ResponseType.OK:
+                # Canceled
+                dialog.destroy()
+                return ret_values
+            else:
+                dialog.destroy()
+            ret_values = procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
+        except Exception as problem:
+            LOGGER_GCUI.error(problem)
+            Gimp.message(problem)
+            ret_values = procedure.new_return_values(Gimp.PDBStatusType.CANCEL, GLib.Error())
+        return ret_values
 
     def poll_server(self):
         url_in: str = GimpComfyUI.COMFYUI_URL
