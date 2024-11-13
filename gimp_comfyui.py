@@ -153,8 +153,8 @@ class PayloadType(Enum):
 
 
 class GimpComfyUI(Gimp.PlugIn):
-    # With GIMP 2.99, site-packages is <GIMP_INSTALL_DIR>/lib/python<PYTHON_VERSION>/site-packages
-    # For example, L:/bin/GIMP 2.99/lib/python3.11/site-packages
+    # With GIMP 3.0, site-packages is <GIMP_INSTALL_DIR>/lib/python<PYTHON_VERSION>/site-packages
+    # For example, L:/bin/GIMP 3.0/lib/python3.11/site-packages
 
     # Wannabe Constants
     PYTHON_PLUGIN_NAME: str = "GimpComfyUI"
@@ -165,7 +165,7 @@ class GimpComfyUI(Gimp.PlugIn):
     HOME: str = os.path.expanduser('~')
     MESSAGE_REGISTRATION = "Registering " + __file__ + ":" + PYTHON_PLUGIN_NAME
     MESSAGE_REGISTRATION_COMPLETED = __file__ + ":" + PYTHON_PLUGIN_NAME + " returned."
-    VERSION: str = "0.7.9"
+    VERSION: str = "0.7.10"
 
     # Procedure names.
     PROCEDURE_ABOUT_CONFIG = PYTHON_PLUGIN_NAME + "-About-Config"
