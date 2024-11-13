@@ -493,7 +493,7 @@ class GimpComfyUI(Gimp.PlugIn):
         self.auto_queue_prompt: bool = False
 
 
-    def configure_comfy_connection(self, procedure, run_mode, image, n_drawables, drawables, config, run_data):  # noqa
+    def configure_comfy_connection(self, procedure, run_mode, image, n_drawables, drawables, config):  # noqa
         LOGGER_GCUI.debug(f"Configuring ComfyUI Connection")
         ret_values: Gimp.ValueArray = procedure.new_return_values(Gimp.PDBStatusType.CANCEL)
         all_config: MappingProxyType = GimpComfyUI.GCUI_PERSISTER.configuration
@@ -553,7 +553,7 @@ class GimpComfyUI(Gimp.PlugIn):
         ret_values = procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
         return ret_values
 
-    def configure_transceiver_connection(self, procedure, run_mode, image, n_drawables, drawables, config, run_data):  # noqa
+    def configure_transceiver_connection(self, procedure, run_mode, image, n_drawables, drawables, config):  # noqa
         LOGGER_GCUI.debug(f"Configuring Transceiver Connection")
         ret_values: Gimp.ValueArray = procedure.new_return_values(Gimp.PDBStatusType.CANCEL)
         all_config: MappingProxyType = GimpComfyUI.GCUI_PERSISTER.configuration
@@ -817,7 +817,7 @@ class GimpComfyUI(Gimp.PlugIn):
         procedure.add_menu_path(menu_path)
         return procedure
 
-    def show_about(self, procedure, run_mode, image, n_drawables, drawables, config, run_data):  # noqa
+    def show_about(self, procedure, run_mode, image, n_drawables, drawables, config):  # noqa
         LOGGER_GCUI.warning(f"Show information \"about\" {GimpComfyUI.PYTHON_PLUGIN_NAME}")
         ret_values: Gimp.ValueArray = procedure.new_return_values(Gimp.PDBStatusType.CANCEL)
         try:
@@ -874,7 +874,7 @@ class GimpComfyUI(Gimp.PlugIn):
         return self.is_server_running
 
 
-    def run(self, procedure, run_mode, image, n_drawables, drawables, args, run_data):  # noqa
+    def run(self, procedure, run_mode, image, n_drawables, drawables, args):  # noqa
         LOGGER_GCUI.warning(f"Unimplemented procedure {procedure.get_name()}")
         return procedure.new_return_values(Gimp.PDBStatusType.CANCEL, GLib.Error())
 
@@ -943,7 +943,6 @@ class GimpComfyUI(Gimp.PlugIn):
                        n_drawables,  # noqa
                        drawables,  # noqa
                        args,  # noqa
-                       run_data  # noqa
                        ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
         factory: ComfyuiDefaultDialogs = ComfyuiDefaultDialogs(accessor=self._default_accessor)
@@ -961,7 +960,6 @@ class GimpComfyUI(Gimp.PlugIn):
                        n_drawables,  # noqa
                        drawables,  # noqa
                        args,  # noqa
-                       run_data  # noqa
                        ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
         factory: SytanSdxl1Dot0Dialogs = SytanSdxl1Dot0Dialogs(accessor=self._sytan_sdxl_accessor)
@@ -979,7 +977,6 @@ class GimpComfyUI(Gimp.PlugIn):
                          n_drawables,  # noqa
                          drawables,  # noqa
                          args,  # noqa
-                         run_data  # noqa
                          ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
         factory: InpaintingSdxl0Dot4Dialogs = InpaintingSdxl0Dot4Dialogs(accessor=self.inpaint_accessor)
@@ -997,7 +994,6 @@ class GimpComfyUI(Gimp.PlugIn):
                          n_drawables,  # noqa
                          drawables,  # noqa
                          args,  # noqa
-                         run_data  # noqa
                          ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
         factory: Img2ImgSdxl0Dot3Dialogs = Img2ImgSdxl0Dot3Dialogs(accessor=self.img2img_accessor)
@@ -1015,7 +1011,6 @@ class GimpComfyUI(Gimp.PlugIn):
                          n_drawables,  # noqa
                          drawables,  # noqa
                          args,  # noqa
-                         run_data  # noqa
                          ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()
         factory: Flux1Dot0Dialogs = Flux1Dot0Dialogs(accessor=self.flux_acc)
@@ -1033,7 +1028,6 @@ class GimpComfyUI(Gimp.PlugIn):
                       n_drawables,  # noqa
                       drawables,  # noqa
                       args,  # noqa
-                      run_data  # noqa
                       ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()
         factory: FluxNeg1Dot1Dialogs = FluxNeg1Dot1Dialogs(accessor=self.flux_neg_acc)
@@ -1051,7 +1045,6 @@ class GimpComfyUI(Gimp.PlugIn):
                        n_drawables,  # noqa
                        drawables,  # noqa
                        args,  # noqa
-                       run_data  # noqa
                        ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()
         factory: FluxNegUpscaleSdxl0Dot5Dialogs = FluxNegUpscaleSdxl0Dot5Dialogs(accessor=self._flux_neg_upscale_sdxl_0dot5_accessor)  # noqa
@@ -1072,7 +1065,6 @@ class GimpComfyUI(Gimp.PlugIn):
                      n_drawables,  # noqa
                      drawables,  # noqa
                      args,  # noqa
-                     run_data  # noqa
                      ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
         ret_code = demonstrate_00()
@@ -1089,7 +1081,6 @@ class GimpComfyUI(Gimp.PlugIn):
                      n_drawables,  # noqa
                      drawables,  # noqa
                      args,  # noqa
-                     run_data  # noqa
                      ) -> Gimp.ValueArray:
         GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
         # LOGGER_GCUI.debug(f"demo_images_n_layers(): ")
@@ -1143,7 +1134,6 @@ class GimpComfyUI(Gimp.PlugIn):
                          n_drawables,  # noqa
                          drawables,  # noqa
                          args,  # noqa
-                         run_data  # noqa
                          ) -> Gimp.ValueArray:
 
         drawables_names_joined: str = "𝑢𝑛𝑘𝑛𝑜𝑤𝑛🤷"  # noqa This assigned value should never be used.

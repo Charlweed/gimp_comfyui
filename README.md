@@ -3,19 +3,19 @@
 **GimpComfyUI** is a GIMP plugin to connect near-realtime image editing to AI image generation via ComfyUI's web api.
 It enables GIMP to connect directly to ComfyUI, and optionally send a layer
 as an image as you edit it. This plugin is targeted for GIMP 3.0, which is not yet released, but 
-is scheduled for release in 2024. The current development and testing platform is GIMP 2.99+
+is scheduled for release in 2024. The current development and testing platform is GIMP 3.0-RC1
 
 NOTE: This project is an unstable alpha version, and GIMP 3 is also pre-release. Your Mileage May Vary.
 
 # Prerequisites and Dependencies
-- GIMP 2.99.18+ development release, or GIMP 3.0.x when it becomes available.
+- GIMP 3.0-RC+ development release, or GIMP 3.0.x when it becomes available.
 - Python 3.10+ to run the "installer". This could be the same python used to run ComfyUI, or the python built into GIMP,
  but a standalone full python is preferred. Anyway, it should be on your terminal's PATH when you run the installer, or
  you should know the full path to the python executable.
 - Access to ComfyUI via a stable URL. The preferred scenario is that the latest stable version of ComfyUI is installed
  on your local host.
 - To install ImageTransceiver-ComfyUI, you will need write access to ComfyUI's "custom_nodes" folder. Support for
-comfy-org's Node Registry is under development.
+comfy-org's Node Registry is available.
 - You can optionally clone the ImageTransceiver-ComfyUI project. See "Cloning" below.
 - Have ComfyUI running and reachable when you use this plugin! The plugin checks connectivity whenever you invoke a 
 procedure. **If GimpComfyUI cannot connect to ComfyUI, it will fail, and the only indication will be in the logs**.
@@ -67,17 +67,17 @@ use these options, the installer will try to open a TK directory chooser. Failin
 type in both values. **If you don't launch the installer from the command line, and your python cannot access TK, the 
 installer will seem to silently fail**.
 
-For GIMP 2.99, the plug-ins is folders are platform-dependent, for example:
-`~/AppData/Roaming/Gimp/2.99/plug-ins/Gimp-comfyui` or `~/.config/Gimp/2.99/plug-ins/Gimp-comfyui`. For ComfyUI, the
+For GIMP 3.0, the plug-ins is folders are platform-dependent, for example:
+`~/AppData/Roaming/Gimp/3.0/plug-ins/Gimp-comfyui` or `~/.config/Gimp/3.0/plug-ins/Gimp-comfyui`. For ComfyUI, the
 custom node files and folders belong in `<some-parent-path>/ComfyUI/custom_nodes`. The custom node for ComfyUI
 is only required for real-time image manipulation. But if you don't install it, you will miss out on a really cool
 feature.😄
 
 ## Installation steps
-Assuming GIMP 2.99 and ComfyUI are installed and working:
+Assuming GIMP 3.0 and ComfyUI are installed and working:
 1) Locate or choose your GIMP plugins-folder. The folder in your home folder is the simplest choice:
-`~/AppData/Roaming/Gimp/2.99/plug-ins` for Windows, or `$HOME/.var/app/org.gimp.GIMP/config/GIMP/2.99/plug-ins` on
-linux, `"~/Library/Application Support/GIMP/2.99/plug-ins"` on MacOS. Replace the ~ with your home directory.
+`~/AppData/Roaming/Gimp/3.0/plug-ins` for Windows, or `$HOME/.var/app/org.gimp.GIMP/config/GIMP/3.0/plug-ins` on
+linux, `"~/Library/Application Support/GIMP/3.0/plug-ins"` on MacOS. Replace the ~ with your home directory.
 2) Locate your ComfyUI folder, and find the `custom_nodes` folder in it.
 3) Locate, create, or choose your StableDiffusion data folder, which is the parent dir to `models`. Typically, this will
 be `ComfyUI`, the same directory where `custom_nodes` is located, but does not need to be. **It must have a `models`
@@ -89,7 +89,7 @@ interface. Linux GIMP's embedded python cannot be used externally.
 options, put each directory name in quotes, to avoid problems with spaces.
 
 If a dialog opens:
-6) Choose your account's GIMP plug-in folder, i.e. ``~/AppData/Roaming/Gimp/2.99/plug-ins`` and click "Ok"
+6) Choose your account's GIMP plug-in folder, i.e. ``~/AppData/Roaming/Gimp/3.0/plug-ins`` and click "Ok"
 7) Choose the ComfyUI custom_nodes folder, i.e. ``~/projects/3rd_party/ComfyUI/custom_nodes`` and click "Ok"
 Even if you do not have a local ComfyUI installed, pick an existing directory, perhaps the temp directory. Otherwise, 
 the installer will stop before installing the GIMP plug-in. The Pre-Installation scripts create example temporary 
@@ -98,7 +98,7 @@ directories, and prints their location.
 and click "Ok". Again, even if you do not have StableDiffusion nor ComfyUI installed, pick an existing directory.
 
 If a dialog does not open:
-6) At the prompt `Please provide an existing directory path for gimp_plugins_dir`, enter your account's GIMP plug-in folder, i.e. ``~/AppData/Roaming/Gimp/2.99/plug-ins`` and press "return"
+6) At the prompt `Please provide an existing directory path for gimp_plugins_dir`, enter your account's GIMP plug-in folder, i.e. ``~/AppData/Roaming/Gimp/3.0/plug-ins`` and press "return"
 7) At the prompt `Please provide an existing directory path for comfyui_custom_nodes_dir`, enter the ComfyUI custom_nodes folder, i.e. ``~/projects/3rd_party/ComfyUI/custom_nodes`` and press "return"
 8) At the prompt `Please provide an existing directory path for stable_diffusion_data_dir`, enter your StableDiffusion data folder, i.e. `L:/data/stable_diffusion`, or `~/projects/3rd_party/ComfyUI` and press "return"
 
@@ -140,7 +140,7 @@ There might be additional logging that looks like:
  See the README for the [ImageTransceiver-ComfyUI project](https://github.com/Charlweed/image_transceiver) for
  details on setting-up ComfyUI for live img2img from GIMP.
 ## GIMP
-Start GIMP 2.99.18+ development release, or GIMP 3.0.x.
+Start GIMP 3.0-RC+ development release, or GIMP 3.0.x.
 ### Workflow Coupling
 Workflow coupling allows you to use a ComfyUI directly from GIMP via settings in GIMP dialogs. It is for situations
 where you have a set workflow, and all you want to change are the values for the inputs of that workflow. For example,
@@ -180,10 +180,10 @@ image.
 The python web-socket library on Windows is inexplicably slow, especially for localhost. The dialogs might take seconds
 to open on even on the fastest PCs with 64gb RAM, and dozens of processors. You can run ComfyUI on your PC, connect to it 
 via your LAN with a Mac (or Linux), and everything will be 4-8 times faster than localhost on the PC. There is no 
-available fix as of 2024/08/24. 
+available fix as of 2024/11/12. 
 
 # Troubleshooting
-- Verify that whatever plugin folder you are using (~/.config/Gimp/2.99/plug-ins) is listed in the GIMP's plug-ins 
+- Verify that whatever plugin folder you are using (~/.config/Gimp/3.0/plug-ins) is listed in the GIMP's plug-ins 
 - folders. (`Edit➳Preferences➳Folders➳Plug-Ins`)
 
 # Contributing

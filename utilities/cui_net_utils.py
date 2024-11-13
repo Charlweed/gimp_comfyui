@@ -430,8 +430,6 @@ def demonstrate_00() -> int:
     comfyui_port = 8188  # Port
     comfyui_origin: str = f"{comfyui_host}:{comfyui_port}"
     demo_uuid = "ff6dd801-3eb0-4817-a4f3-46698c672959"
-    # L:\projects\hymerfania\gimp_scripts\two_nintynine\plug-ins_available\gimp_comfyui\assets\comfyui_default_workflow_api.json
-    # L:\projects\hymerfania\gimp_scripts\two_nintynine\plug-ins_available\gimp_comfyui\assets\sytan_sdxl_1.0_workflow_api.json
     workflow_file_path: str = os.path.join(asset_dir_path, "sytan_sdxl_1.0_workflow_api.json")
     workflow_data: Dict[str, Any]
     try:

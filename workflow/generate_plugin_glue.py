@@ -155,7 +155,7 @@ def main() -> int:
     return 0
 
 
-# L:\projects\hymerfania\gimp_scripts\two_nintynine\plug-ins_available\gimp_comfyui\assets\flux_neg_upscale_sdxl_0.4_workflow_api.json
+# ./assets/flux_neg_upscale_sdxl_0.4_workflow_api.json
 
 if __name__ == '__main__':
     sys.exit(main())

@@ -12,21 +12,21 @@ unless bugs or security vulnerabilities are published for GimpComfyUI's embedded
 However, on Windows and Mac, you still might get some benefit from updating some of the OTHER modules included in GIMP's
 python. This document outlines how that can be done.
 ## Windows
-You will need to find the folder where GIMP-2.99 or GIMP-3.0 is installed. For most users, as of 2024, Sept 5, that is
-"C:\Program Files\Gimp-2.99.18" but you might have it installed somewhere else, and the version may change. In
+You will need to find the folder where GIMP-2.99 or GIMP-3.0 is installed. For most users, as of 2024, Nov 12, that is
+"C:\Program Files\Gimp-3.0" but you might have it installed somewhere else, and the version may change. In
 particular, if GIMP is installed as a "Per-User Application", you will find it under
 "C:\Users\<your username>\AppData\Local\Programs".
 Open the folders all the way down to &lt;bla&gt;\\&lt;bla&gt;\Gimp-?.??.??\bin, and find the python executable files. On Windows,
 as of 2024, Sept 5, the file you are looking for is "python3.11", and the ".exe" on the end is probably hidden. "python3.11"
 *might* be updated to something else, that's what you are trying to verify. Once you are certain of the complete directory
 path to the exact filename, you are set to continue. If you don't know, it will probably look something like
-"C:\Program Files\Gimp-2.99.18\bin\python3.11.exe" or
-"C:\Users\<your username>\AppData\Local\Programs\Gimp-2.99.18\bin\python3.11.exe"
+"C:\Program Files\Gimp-3.0\bin\python3.11.exe" or
+"C:\Users\<your username>\AppData\Local\Programs\Gimp-3.0-RC1\bin\python3.11.exe"
 
 
 Now, you will need to edit the pre-install_windows.ps1 file, and change the lines near the top to the path you figured out above:
-* $GIMP_PYTHON_3_11 = "C:\Program Files\Gimp-2.99.18\bin\python3.11.exe"
-* $GIMP_PYTHON_3_11_BIN = "C:\Program Files\Gimp-2.99.18\bin"
+* $GIMP_PYTHON_3_11 = "C:\Program Files\Gimp-3.0-RC1\bin\python3.11.exe"
+* $GIMP_PYTHON_3_11_BIN = "C:\Program Files\Gimp-3.0-RC1\bin"
 
 Don't omit the quotes!
 
@@ -36,7 +36,7 @@ The pre-installer might print some optional instructions. You can now run the in
 On Linux, users cannot update GIMP's python modules. 
 ## Mac
 You will need to find the folder where GIMP-2.99 or GIMP-3.0 is installed.
-Right-Click on the Gimp-2.99 icon, and select "Open in finder". Then right-click "Show Package Contents". Open the
+Right-Click on the Gimp-3.0 icon, and select "Open in finder". Then right-click "Show Package Contents". Open the
 folders down to Contents\MacOS, and find the python executable files. On Mac, as of 2024, Sept 6, the file you are
 looking for is "python3.10". "python3.10" might be (hopefully has!) be updated to something else, that's what you are
 trying to verify. Once you are certain of complete directory path to the exact filename, you are set to continue. If you

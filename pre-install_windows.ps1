@@ -13,19 +13,19 @@ $PSNativeCommandUseErrorActionPreference = $true # might be true by default
 # Required. You must set these values correctly for this script to work.
 # On Windows, it's most common to install GIMP in "C:\Program Files" instead of "L:\bin\gimp" like I do.
 # But "C:\Program Files" requires administrator priviledges, and has many, MANY other tiersome issues.
-$GIMP_PYTHON_3_11 = "L:\bin\gimp\GIMP-2.99.18\bin\python3.11.exe"
-$GIMP_PYTHON_3_11_BIN = "L:\bin\gimp\GIMP-2.99.18\bin"
-$GIMP_PYTHON_3_11_HOME = "L:\bin\gimp\GIMP-2.99.18\bin"
+$GIMP_PYTHON_3_11 = "L:\bin\gimp\GIMP-3.0-RC1\bin\python3.11.exe"
+$GIMP_PYTHON_3_11_BIN = "L:\bin\gimp\GIMP-3.0-RC1\bin"
+$GIMP_PYTHON_3_11_HOME = "L:\bin\gimp\GIMP-3.0-RC1\bin"
 
 # Background constants. Mostly for reference and future functionality, but you should update to match your system
 $GIMP_PYTHON_3_11_PATH = (
-    "L:\bin\gimp\GIMP-2.99.18\lib\python311.zip",
-    "L:\bin\gimp\GIMP-2.99.18\lib\python3.11",
-    "L:\bin\gimp\GIMP-2.99.18\lib\python3.11\lib-dynload",
+    "L:\bin\gimp\GIMP-3.0-RC1\lib\python311.zip",
+    "L:\bin\gimp\GIMP-3.0-RC1\lib\python3.11",
+    "L:\bin\gimp\GIMP-3.0-RC1\lib\python3.11\lib-dynload",
     "C:\Users\chymes\.local\lib\python3.11-mingw_x86_64\site-packages",
-    "L:\bin\gimp\GIMP-2.99.18\lib\python3.11\site-packages"
+    "L:\bin\gimp\GIMP-3.0-RC1\lib\python3.11\site-packages"
 )
-$GIMP_PYTHON_3_11_SITE_PACKAGES = "L:\bin\gimp\GIMP-2.99.18\lib\python3.11\site-packages"
+$GIMP_PYTHON_3_11_SITE_PACKAGES = "L:\bin\gimp\GIMP-3.0-RC1\lib\python3.11\site-packages"
 
 # Assign the path, so that pip will update Gimp's python and not the default python
 $ENV:PATH = "$GIMP_PYTHON_3_11_HOME;$ENV:PATH"
@@ -78,8 +78,8 @@ $InformationPreference="Continue"
 
 Write-Information "You should now be able to run the installer. To test the cli, try pasting the text we just loaded into the clipboard."
 Write-Information "When ready to actually install, you will need to choose and specify the correct --gimp_plugins_dir."
-Write-Information "On Windows, GIMP 2.99, a working value for --gimp_plugins_dir is"
-Write-Information "`"~/AppData/Roaming/Gimp/2.99/plug-ins`""
+Write-Information "On Windows, GIMP 3.0, a working value for --gimp_plugins_dir is"
+Write-Information "`"~/AppData/Roaming/Gimp/3.0/plug-ins`""
 Write-Information "This WILL change, at least when GIMP is updated."
 Write-Information "On systems without local ComfyUI, the temporary directories for stable_diffusion_data_dir and comfyui_custom_nodes_dir will allow the installer to run.`n`n"
 Write-Information "$INSTALLER_CMD"

@@ -45,7 +45,7 @@ class WorkflowDialogFactory(ABC):
         # Update when GIMP 3.0 is released!
         if local_platform == "windows":
             defaults = {
-                "gimp_plugins_dir": expanduser("~/AppData/Roaming/GIMP/2.99/scripts"),
+                "gimp_plugins_dir": expanduser("~/AppData/Roaming/GIMP/3.0/plug-ins"),
                 "gimp_plugin_data_dir": expanduser("~/AppData/Roaming/gimp_plugin_data"),
                 "comfyui_custom_nodes_dir": expanduser("~/ComfyUI/custom_nodes"),
                 "stable_diffusion_data_dir": expanduser("~/ComfyUI")
@@ -53,7 +53,7 @@ class WorkflowDialogFactory(ABC):
         else:
             if local_platform == "darwin":
                 defaults = {
-                    "gimp_plugins_dir": expanduser("~/Library/Application Support/GIMP/2.99/plug-ins"),
+                    "gimp_plugins_dir": expanduser("~/Library/Application Support/GIMP/3.0/plug-ins"),
                     "gimp_plugin_data_dir": expanduser("~/.config/gimp_plugin_data"),
                     # Assuming no local ComfyUI
                     "comfyui_custom_nodes_dir": os.environ.get('TMPDIR', expanduser("~/")),
@@ -62,7 +62,7 @@ class WorkflowDialogFactory(ABC):
                 }
             else:
                 defaults = {
-                    "gimp_plugins_dir": expanduser("~/.var/app/org.gimp.GIMP/config/GIMP/2.99/scripts"),
+                    "gimp_plugins_dir": expanduser("~/.var/app/org.gimp.GIMP/config/GIMP/3.0/plug-ins"),
                     "gimp_plugin_data_dir": expanduser("~/.config/gimp_plugin_data"),
                     "comfyui_custom_nodes_dir": expanduser("~/ComfyUI/custom_nodes"),
                     "stable_diffusion_data_dir": expanduser("~/ComfyUI")

@@ -146,8 +146,8 @@ def main() -> int:
     return 0
 
 
-# L:\projects\hymerfania\gimp_scripts\two_nintynine\plug-ins_available\gimp_comfyui\assets\comfyui_default_workflow_api.json
-# L:\projects\hymerfania\gimp_scripts\two_nintynine\plug-ins_available\gimp_comfyui\assets\img2img_sdxl_0.3_workflow_api.json
-# L:\projects\hymerfania\gimp_scripts\two_nintynine\plug-ins_available\gimp_comfyui\assets\sytan_sdxl_1.0_workflow_api.json
+# ./assets/comfyui_default_workflow_api.json
+# ./assets/img2img_sdxl_0.3_workflow_api.json
+# ./assets/sytan_sdxl_1.0_workflow_api.json
 if __name__ == '__main__':
     sys.exit(main())

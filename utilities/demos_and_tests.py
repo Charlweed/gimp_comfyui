@@ -109,8 +109,8 @@ def via_manual_array() -> int:
     return 0
 
 
-# L:\projects\hymerfania\gimp_scripts\two_nintynine\plug-ins_available\gimp_comfyui\assets\gray_RGB_SPACE_U16_2024_06_28-03_26_769190.raw
-# L:\projects\hymerfania\gimp_scripts\two_nintynine\plug-ins_available\gimp_comfyui\assets\gray_RGBA_SPACE_U16_2024_06_28-03_39_253524.raw
+# ./assets/gray_RGB_SPACE_U16_2024_06_28-03_26_769190.raw
+# ./assets/gray_RGBA_SPACE_U16_2024_06_28-03_39_253524.raw
 def via_binary_file(in_file_name: str) -> int:
     channels_per_pixel: int = 4
     width: int = 512

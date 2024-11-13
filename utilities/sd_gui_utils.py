@@ -640,7 +640,7 @@ def new_list_store_images() -> Gtk.ListStore:
     images_list_store: Gtk.ListStore = Gtk.ListStore.new(types=[int, int, str])  # image_id, index, image_name
     image: Gimp.Image
     i: int = 0
-    image_list = Gimp.list_images()
+    image_list = Gimp.get_images()
     if not image_list:
         LOGGER_SDGUIU.warning("Could not find any images.")
         return images_list_store
@@ -690,7 +690,7 @@ def new_set_images() -> set[tuple[int, int, str]]:
     images_set: set[tuple[int, int, str]] = set()  # image_id, index, image_name
     image: Gimp.Image
     i: int = 0
-    image_list = Gimp.list_images()
+    image_list = Gimp.get_images()
     if not image_list:
         LOGGER_SDGUIU.warning("Could not find any images.")
         return images_set
@@ -722,7 +722,7 @@ def new_tree_store_images() -> Gtk.TreeStore:
     images_tree_store: Gtk.TreeStore = Gtk.TreeStore.new(types=[int, int, str])  # image_id, index, image_name
     image: Gimp.Image
     i: int = 0
-    image_list = Gimp.list_images()
+    image_list = Gimp.get_images()
     if not image_list:
         LOGGER_SDGUIU.warning("Could not find any images.")
         return images_tree_store
@@ -744,7 +744,7 @@ def new_list_store_layers(image_in: Gimp.Image) -> Gtk.ListStore:
     layers_list_store: Gtk.ListStore = Gtk.ListStore.new(types=[int, int, str])  # image_id, index, image_name
     layer: Gimp.Layer
     i: int = 0
-    for layer in image_in.list_layers():
+    for layer in image_in.get_layers():
         row = [layer.get_id(), i, layer.get_name()]
         # message = "layer_id=%d, index=%d, layer_name=%s" % (row[0], row[1], row[2])
         layers_list_store.append(row)
@@ -775,7 +775,7 @@ def new_set_all_layers() -> set[tuple[int, int, str]]:  # layer_id, index, layer
     :return: a set of tuples tuple[int, int, str]  # layer_id, index, layer_name for all root layers in all open images
     """
     all_layers_set: set[tuple[int, int, str]] = set()
-    image_list = Gimp.list_images()
+    image_list = Gimp.get_images()
     if not image_list:
         LOGGER_SDGUIU.warning("Could not find any images.")
         return all_layers_set
@@ -909,7 +909,7 @@ def new_list_store_selected_drawables(image_in: Gimp.Image) -> Gtk.ListStore:
     selected_drawables_list_store: Gtk.ListStore = Gtk.ListStore.new(types=[int, int, str])  # noqa
     drawable: Gimp.Item
     i: int = 0
-    for drawable in image_in.list_selected_drawables():
+    for drawable in image_in.get_selected_drawables():
         row = [drawable.get_id(), i, drawable.get_name()]
         # message = "drawable_id=%d, index=%d, drawable_name=%s" % (row[0], row[1], row[2])
         selected_drawables_list_store.append(row)
