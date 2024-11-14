@@ -870,7 +870,7 @@ class GimpComfyUI(Gimp.PlugIn):
             raise ValueError(f"COMFYUI_URL setting \"{url_in}\" is not a valid http URL.")
         if "UNINITIALIZED" in url_in:
             raise ValueError(f"URL \"{url_in}\" has not been properly initialized.")
-        self.is_server_running = server_online(url_in)
+        self.is_server_running = server_online(url_in=url_in, show_dialog=True)
         return self.is_server_running
 
 

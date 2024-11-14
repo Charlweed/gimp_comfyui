@@ -352,11 +352,11 @@ def new_dialog_error_user(title_in: str,
     dialog = GimpUi.Dialog(use_header_bar=True, title=title_in, role="User_Error")
     dialog_box: Gtk.Box = dialog.get_content_area()
     if blurb_in:
-        label_and_icon_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        label_and_icon_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         icon_image = Gtk.Image.new_from_icon_name(gimp_icon_name, Gtk.IconSize.DIALOG)  # noqa
         blurb_label: Gtk.Label = Gtk.Label(label=blurb_in)
         label_and_icon_box.pack_start(child=icon_image, expand=False, fill=False, padding=0)  # noqa
-        label_and_icon_box.pack_start(child=blurb_label, expand=False, fill=False, padding=0)  # noqa
+        label_and_icon_box.pack_start(child=blurb_label, expand=True, fill=True, padding=0)  # noqa
         label_and_icon_box.show_all()  # noqa
         dialog_box.add(label_and_icon_box)
 
@@ -1196,7 +1196,18 @@ def validate_float(entry_widget: Gtk.Entry,
     entry_widget.connect(SIG_CHANGED, handle_is_float)
 
 
-def server_online(url_in: str):
+def show_dialog_user_error(message: str):
+    LOGGER_SDGUIU.error(f"{message}")
+    dialog: GimpUi.Dialog = new_dialog_error_user(
+        title_in=f"Error",
+        blurb_in=message
+    )
+    response_code = dialog.run()  # Blocks until dialog is closed...
+    LOGGER_SDGUIU.debug(f"Dialog response code={response_code}")
+    dialog.destroy()
+
+
+def server_online(url_in: str, show_dialog: bool = True):
     if url_in is None:
         raise ValueError("url_in argument is missing.")
     if url_in.strip() == "":
@@ -1209,9 +1220,14 @@ def server_online(url_in: str):
         request.urlopen(url=url_in, timeout=3)
         return True
     except Exception as con_err:  # noqa
-        logging.getLogger("URLError").error("Could not connect to %s" % url_in)
+        logging.getLogger("URLError").error(f"Could not connect to {url_in}")
         logging.getLogger("URLError").exception(con_err)
         Gimp.message(str(con_err))
+        if show_dialog:
+            try:
+                show_dialog_user_error(f"Could not connect to {url_in}\n{str(con_err)}")
+            except Exception as problem:
+                LOGGER_SDGUIU.error(problem)
         return False
 
 
