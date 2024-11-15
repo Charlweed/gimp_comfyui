@@ -1328,24 +1328,39 @@ class ProgressBarWindow(Gtk.Window):
         self._total: float | None = total
         self._current: float = 0.0
         self._progressbar = Gtk.ProgressBar()
-        self._timeout_id = GLib.timeout_add(50, self.on_timeout, None)
         self.set_border_width(10)
         vbox_0: Gtk.Box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        if blurb_in:
+            label_and_icon_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            blurb_label: Gtk.Label = Gtk.Label(label=blurb_in)
+            label_and_icon_box.pack_start(child=blurb_label, expand=False, fill=False, padding=0)  # noqa
+            label_and_icon_box.set_margin_start(40)
+            label_and_icon_box.set_margin_end(40)
+            label_and_icon_box.show_all()  # noqa
+            vbox_0.add(label_and_icon_box)  # noqa
         self.add(vbox_0)
-        show_text_button: Gtk.CheckButton = Gtk.CheckButton(label="Show text")
+        # show_text_button: Gtk.CheckButton = Gtk.CheckButton(label="Show text")
         activity_button: Gtk.CheckButton = Gtk.CheckButton(label="Activity mode")
         r2l_button: Gtk.CheckButton = Gtk.CheckButton(label="Right to Left")
 
-        show_text_button.connect("toggled", self.on_show_text_toggled)
+        # show_text_button.connect("toggled", self.on_show_text_toggled)
         activity_button.connect("toggled", self.on_activity_mode_toggled)
         r2l_button.connect("toggled", self.on_right_to_left_toggled)
 
         vbox_0.pack_start(self._progressbar, True, True, 0)
-        vbox_0.pack_start(show_text_button, True, True, 0)
+        # vbox_0.pack_start(show_text_button, True, True, 0)
         vbox_0.pack_start(activity_button, True, True, 0)
         vbox_0.pack_start(r2l_button, True, True, 0)
 
         self._progressbar.set_fraction(fraction=0)
+
+    @property
+    def activity_mode(self) -> bool:
+        return self._activity_mode
+
+    @activity_mode.setter
+    def activity_mode(self, activity: bool):
+        self._activity_mode = activity
 
     @property
     def total(self) -> float:
@@ -1361,27 +1376,27 @@ class ProgressBarWindow(Gtk.Window):
 
     @progress_value.setter
     def progress_value(self, value: float):
-        fraction: float = 0
-        if value > 0:
+        fraction: float = 0.0
+        if value > 0.0:
             fraction = value/self.total
         LOGGER_PRSTU.debug(f"argument value={value}; setting fraction={fraction}")
         self._progressbar.set_fraction(fraction=fraction)
 
-    def on_show_text_toggled(self, button):
-        show_text = button.get_active()
-        if show_text:
-            text = "some text"
-        else:
-            text = None
-        self._progressbar.set_text(text)
-        self._progressbar.set_show_text(show_text)
+    # def on_show_text_toggled(self, button):
+    #     show_text = button.get_active()
+    #     if show_text:
+    #         text = "some text"
+    #     else:
+    #         text = None
+    #     self._progressbar.set_text(text)
+    #     self._progressbar.set_show_text(show_text)
 
     def on_activity_mode_toggled(self, button):
         self._activity_mode = button.get_active()
         if self._activity_mode:
             self._progressbar.pulse()
         else:
-            self._progressbar.set_fraction(0.0)
+            self.progress_value = 0.0
 
     def on_right_to_left_toggled(self, button):
         value = button.get_active()
@@ -1390,25 +1405,29 @@ class ProgressBarWindow(Gtk.Window):
     def pulse_progress(self):
         self._progressbar.pulse()
 
-    def on_timeout(self, user_data):
+
+# noinspection PyUnresolvedReferences
+def example_progress_0():
+    win: ProgressBarWindow = ProgressBarWindow(title_in="Progress Demo", blurb_in="Look at it go!", total=10.0)
+
+    def on_timeout(self, user_data=None):
+        nonlocal win
         """
         Update value on the progress bar
         """
-        if self._activity_mode:
-            self.pulse_progress()
+        if win.activity_mode:
+            win.pulse_progress()
         else:
-            new_value = self.progress_value + .1
-            if new_value > self.total:
+            new_value = win.progress_value + .1
+            if new_value > win.total:
                 new_value = 0
-            self.progress_value = new_value
+            win.progress_value = new_value
         # As this is a timeout function, return True so that it
         # continues to get called
         return True
 
+    timeout_id = GLib.timeout_add(50, on_timeout, None)
 
-# noinspection PyUnresolvedReferences
-def example_progress_0():
-    win = ProgressBarWindow(title_in="Progress Demo", blurb_in="Look at it go!", total=10.0)
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
     Gtk.main()
