@@ -1320,13 +1320,19 @@ class ProgressBarWindow(Gtk.Window):
     def __init__(self,
                  title_in: str,
                  blurb_in: str,
-                 total: float | None,
+                 total: float | None = None,
                  activity_mode: bool = False
                  ):
         super().__init__(title=title_in)
+        self._total: float
         self._activity_mode = activity_mode
-        self._total: float | None = total
-        self._current: float = 0.0
+
+        if total is not None:
+            if total <= 0:
+                raise ValueError("\"total\" argument must be > 0 if given")
+            self._total = total
+        else:
+            self._total = 9999999999999.0  # A large number!
         self._progressbar = Gtk.ProgressBar()
         self._progressbar.set_fraction(fraction=0.0)
         self.set_border_width(10)
@@ -1359,6 +1365,13 @@ class ProgressBarWindow(Gtk.Window):
     def total(self) -> float:
         return self._total
 
+    @total.setter
+    def total(self, value: float):
+        new_total: float = 9999999999999.0  # A large number!
+        if value >= 0:
+            new_total = value
+        self._total = new_total
+
     @property
     def fraction(self) -> float:
         return self._progressbar.get_fraction()
@@ -1372,38 +1385,43 @@ class ProgressBarWindow(Gtk.Window):
         fraction: float = 0.0
         if value > 0.0:
             fraction = value/self.total
-        LOGGER_PRSTU.debug(f"argument value={value}; setting fraction={fraction}")
+        LOGGER_PRSTU.warning(f"argument value={value}; setting fraction={fraction}")
         self._progressbar.set_fraction(fraction=fraction)
 
     def pulse_progress(self):
         self._progressbar.pulse()
 
+    def draw_progress(self, value: float, total: float):
+        LOGGER_PRSTU.warning(f"argument value={value}; total={total}")
+        self.total = total
+        self.progress_value = value
+
 
 # noinspection PyUnresolvedReferences
 def example_progress_0():
-    win: ProgressBarWindow = ProgressBarWindow(title_in="Progress Demo", blurb_in="Look at it go!", total=10.0)
+    progress_window: ProgressBarWindow = ProgressBarWindow(title_in="Progress Demo", blurb_in="Look at it go!", total=10.0)
 
     # noinspection PyUnusedLocal
     def on_timeout(user_data=None):
-        nonlocal win
+        nonlocal progress_window
         """
         Update value on the progress bar
         """
-        if win.activity_mode:
-            win.pulse_progress()
+        if progress_window.activity_mode:
+            progress_window.pulse_progress()
         else:
-            new_value = win.progress_value + .1
-            if new_value > win.total:
+            new_value = progress_window.progress_value + .1
+            if new_value > progress_window.total:
                 new_value = 0
-            win.progress_value = new_value
+            progress_window.progress_value = new_value
         # As this is a timeout function, return True so that it
         # continues to get called
         return True
 
     timeout_id = GLib.timeout_add(50, on_timeout, None)  # noqa
 
-    win.connect("destroy", Gtk.main_quit)
-    win.show_all()
+    progress_window.connect("destroy", Gtk.main_quit)
+    progress_window.show_all()
     Gtk.main()
 
 

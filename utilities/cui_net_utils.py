@@ -22,7 +22,6 @@ import os
 import sys
 import urllib
 
-
 gi.require_version("Gtk", "3.0")  # noqa E402
 gi.require_version('GdkPixbuf', '2.0')  # noqa E402
 # It is unfortunate that the requests, requests_toolbelt, and websocket-client modules are omitted from
@@ -38,6 +37,7 @@ from urllib import error
 from urllib import request
 from urllib.parse import urlencode
 from utilities.heterogeneous import strip_hetero_brand_from_root
+from utilities.sd_gui_utils import ProgressBarWindow
 
 LGR_CNU = logging.getLogger("cui_net_utils")
 LGR_FMT_CNU = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
@@ -278,7 +278,6 @@ def send_workflow_data(cu_origin: str,
                        node_progress: Callable[[int, int, str | None], None],
                        step_progress: Callable[[int, int, str | None], None],
                        ) -> List[GdkPixbuf.Pixbuf]:
-    # TODO: send_workflow_data needs() to manage all the "progress" stuff within this function, start to finish.
     """
     Uses Websocket module to send workflow data to ComfyUI server
     :param cu_origin: The origin part of the final constructed URL
@@ -330,42 +329,60 @@ def _track_progress(workflow_data: Dict[str, Any],
                     ):
     node_ids: List[str] = list(workflow_data.keys())
     finished_nodes = []
+    # TODO: get_images() needs to manage all the "progress" stuff within this function, start to finish.
+    steps_progress_win = ProgressBarWindow(title_in="Steps Progress", blurb_in="Processing steps")
+    nodes_progress_win = ProgressBarWindow(title_in="Nodes Progress", blurb_in="Workflow nodes")
 
-    while True:
-        # ConnectionClosed – When the connection is closed.
-        # RuntimeError – If two threads call recv() or recv_streaming() concurrently.
-        # TimeoutError - If timeout is set and no message is received within timeout seconds
-        received: str | bytes = ws.recv()
-        if isinstance(received, str):
-            server_reply: Dict[str, Any] = json.loads(received)
-            reply_type: str = server_reply['type']
-            match reply_type:
-                case 'progress':
-                    data: Dict[str, Any] = server_reply['data']
-                    current_step = data['value']
-                    total = data['max']
-                    # sampler_progress_msg = f"Step {current_step} of {total}"
-                    step_progress(current_step, total, None)
-                case 'execution_cached':
-                    data: Dict[str, Any] = server_reply['data']
-                    for itm in data['nodes']:
-                        if itm not in finished_nodes:
-                            finished_nodes.append(itm)
-                            # node_ex_progress_msg: str = f"Progress: {len(finished_nodes)}/{len(node_ids)} tasks done"
-                            node_progress(len(finished_nodes) - 1, len(node_ids), None)
-                case 'executing':
-                    data: Dict[str, Any] = server_reply['data']
-                    if data['node'] not in finished_nodes:
-                        finished_nodes.append(data['node'])
-                        # node_progress_msg: str = f"Progress: {len(finished_nodes)}/{len(node_ids)} tasks done"
-                        node_progress(len(finished_nodes) - 1, len(node_ids), None)
-
-                    if data['node'] is None and data['prompt_id'] == prompt_id:
-                        break  # Execution is done
-                case _:
-                    pass
-        else:  # Not str, assume bytes
-            continue  # previews are binary data
+    try:
+        # TODO: Open progress Windows
+        steps_progress_win.show()
+        nodes_progress_win.show()
+        while True:
+            # ConnectionClosed – When the connection is closed.
+            # RuntimeError – If two threads call recv() or recv_streaming() concurrently.
+            # TimeoutError - If timeout is set and no message is received within timeout seconds
+            received: str | bytes = ws.recv()
+            if isinstance(received, str):
+                server_reply: Dict[str, Any] = json.loads(received)
+                reply_type: str = server_reply['type']
+                match reply_type:
+                    case 'progress':
+                        data: Dict[str, Any] = server_reply['data']
+                        current_step = data['value']
+                        total = data['max']
+                        step_progress(current_step, total, None)
+                        steps_progress_win.draw_progress(current_step, total)
+                    case 'execution_cached':
+                        data: Dict[str, Any] = server_reply['data']
+                        for itm in data['nodes']:
+                            if itm not in finished_nodes:
+                                finished_nodes.append(itm)
+                                current = len(finished_nodes) - 1
+                                total = len(node_ids)
+                                node_progress(current, total, None)
+                                nodes_progress_win.draw_progress(current, total)
+                    case 'executing':
+                        data: Dict[str, Any] = server_reply['data']
+                        if data['node'] not in finished_nodes:
+                            finished_nodes.append(data['node'])
+                            current = len(finished_nodes) - 1
+                            total = len(node_ids)
+                            node_progress(current, total, None)
+                            nodes_progress_win.draw_progress(current, total)
+                        if data['node'] is None and data['prompt_id'] == prompt_id:
+                            break  # Execution is done
+                    case _:
+                        pass
+            else:  # Not str, assume bytes
+                continue  # previews are binary data
+    except Exception as an_exception:
+        LGR_CNU.exception(an_exception)
+    finally:  # Close progress Windows
+        try:
+            steps_progress_win.close()
+            nodes_progress_win.close()
+        except Exception as an_exception:
+            LGR_CNU.exception(an_exception)
     return
 
 
