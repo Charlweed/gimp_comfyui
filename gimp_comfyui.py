@@ -165,7 +165,7 @@ class GimpComfyUI(Gimp.PlugIn):
     HOME: str = os.path.expanduser('~')
     MESSAGE_REGISTRATION = "Registering " + __file__ + ":" + PYTHON_PLUGIN_NAME
     MESSAGE_REGISTRATION_COMPLETED = __file__ + ":" + PYTHON_PLUGIN_NAME + " returned."
-    VERSION: str = "0.7.10"
+    VERSION: str = "0.7.11"
 
     # Procedure names.
     PROCEDURE_ABOUT_CONFIG = PYTHON_PLUGIN_NAME + "-About-Config"
@@ -1180,11 +1180,6 @@ class GimpComfyUI(Gimp.PlugIn):
                     args_cnt_str = " singleton"
                     args_literals = ""
                 log_message += f"args is a {args_type_name}; {args_cnt_str}\n{args_literals}\n"
-            if run_data is not None and run_data:
-                rd_type = type(run_data)
-                rd_type_name = rd_type.__name__
-                log_message += f"run_data type={rd_type_name}"
-            # LOGGER_GCUI.debug(log_message)
             for drawable in drawables:
                 image_notifier.track_drawables(drawables={drawable}, listener=drawable_change_listener)
 
