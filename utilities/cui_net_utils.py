@@ -278,6 +278,7 @@ def send_workflow_data(cu_origin: str,
                        node_progress: Callable[[int, int, str | None], None],
                        step_progress: Callable[[int, int, str | None], None],
                        ) -> List[GdkPixbuf.Pixbuf]:
+    # TODO: send_workflow_data needs() to manage all the "progress" stuff within this function, start to finish.
     """
     Uses Websocket module to send workflow data to ComfyUI server
     :param cu_origin: The origin part of the final constructed URL

@@ -79,7 +79,7 @@ def asset_path(asset_name: str):
 
 
 def close_window_of_widget(source: Gtk.Widget):
-    da_top = Gtk.Widget.get_toplevel(source)
+    da_top = Gtk.Widget.get_toplevel(source)  # noqa
     Gtk.Window.close(da_top)
     da_top.destroy()
 
@@ -200,7 +200,7 @@ def get_selected_row(widget: Gtk.Widget) -> List[Any]:
         if selection is not None:
             model, treeiter = selection.get_selected()
             if treeiter is not None:
-                row = list(model[treeiter])
+                row = list(model[treeiter])  # noqa
                 if len(row) <= 0:
                     raise ValueError("row in TreeView is empty.")
             else:
@@ -214,7 +214,7 @@ def get_selected_row(widget: Gtk.Widget) -> List[Any]:
                 if model is None:
                     LOGGER_SDGUIU.warning("model in ComboBox is None")
                 else:
-                    row = list(model[treeiter])
+                    row = list(model[treeiter])  # noqa
                     if len(row) <= 0:
                         raise ValueError("row in combobox is empty.")
             else:
@@ -252,7 +252,7 @@ def install_css_styles(style_bytes: bytes):
         # https://lazka.github.io/pgi-docs/Gtk-3.0/classes/StyleContext.html#Gtk.StyleContext.add_provider_for_screen
         # and
         # https://lazka.github.io/pgi-docs/Gdk-3.0/classes/Screen.html#Gdk.Screen
-        Gtk.StyleContext.add_provider_for_screen(
+        Gtk.StyleContext.add_provider_for_screen( # noqa
             Gdk.Screen.get_default(),  # noqa
             style_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
@@ -262,6 +262,7 @@ def install_css_styles(style_bytes: bytes):
         logging.exception(problem)
 
 
+# noinspection PyUnresolvedReferences
 def new_box_of_radios(options: List[str], handler: Callable[[Any], None]) -> Gtk.Box:
     box_0: Gtk.Box = Gtk.Box.new(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
     i: int = 1
@@ -345,6 +346,7 @@ def new_dialog_about(title_in: str,
     return dialog
 
 
+# noinspection PyUnresolvedReferences
 def new_dialog_error_user(title_in: str,
                           blurb_in: str,
                           gimp_icon_name: str = GimpUi.ICON_DIALOG_ERROR
@@ -370,6 +372,7 @@ def new_dialog_error_user(title_in: str,
     return dialog
 
 
+# noinspection PyUnresolvedReferences
 def new_dialog_info(title_in: str, blurb_in: str) -> GimpUi.Dialog:
     gimp_icon_name: str = GimpUi.ICON_DIALOG_INFORMATION
     dialog = GimpUi.Dialog(use_header_bar=True, title=title_in, role="Information")
@@ -418,6 +421,7 @@ def url_string(protocol: str = "http",
     return result
 
 
+# noinspection PyUnresolvedReferences
 def new_dialog_url(title_in: str,
                    blurb_in: str,
                    dict_consumer: Callable[[dict[str, str | int]], None],
@@ -601,7 +605,7 @@ def open_dialog_daemon(title_in: str,
                 label_and_icon_box.set_margin_start(40)
                 label_and_icon_box.set_margin_end(40)
                 label_and_icon_box.show_all()  # noqa
-                dialog_box.add(label_and_icon_box)
+                dialog_box.add(label_and_icon_box)  # noqa
             else:
                 raise ValueError("open_dialog_daemon is missing blurb text.")
             dialog.add_button(GLib.dgettext(None, main_button_label), Gtk.ResponseType.OK)
@@ -616,7 +620,7 @@ def open_dialog_daemon(title_in: str,
             geometry.min_aspect = 1.0
             geometry.max_aspect = 1.0
             dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
-            dialog.show_all()
+            dialog.show_all()  # noqa
         except Exception as e_error_1:
             LOGGER_SDGUIU.exception(e_error_1)
 
@@ -821,7 +825,7 @@ def path_to_id(model: Gtk.TreeModel, item_id: int, row_index: int = 1) -> Gtk.Tr
                      w_iter: Gtk.TreeIter,
                      *data: object | None) -> bool:
         nonlocal result
-        found = w_model[w_iter][row_index] == item_id
+        found = w_model[w_iter][row_index] == item_id  # noqa
         if found:
             result = tree_path
             return True
@@ -835,7 +839,7 @@ def path_to_id(model: Gtk.TreeModel, item_id: int, row_index: int = 1) -> Gtk.Tr
 
 
 def print_row(store: Gtk.TreeStore, treepath: Gtk.TreePath, treeiter: Gtk.TreeIter):
-    print("\t" * (treepath.get_depth() - 1), store[treeiter][:], sep="")
+    print("\t" * (treepath.get_depth() - 1), store[treeiter][:], sep="")  # noqa
 
 
 def new_images_combobox(selection_changed_handler: Callable[[Any], None]) -> Gtk.ComboBox:
@@ -1042,7 +1046,7 @@ def validate_in_bounds(entry_widget: Gtk.Entry,
         nonlocal int_only
         nonlocal track_invalid_widgets
         entry_style_context = entry_0.get_style_context()
-        css_class_list = entry_style_context.list_classes()
+        css_class_list = entry_style_context.list_classes()  # noqa
         for class_name in css_class_list:
             if class_name in ["INVALID", "VALID", "OK"]:
                 entry_style_context.remove_class(class_name=class_name)
@@ -1104,7 +1108,7 @@ def validate_int(entry_widget: Gtk.Entry,
         nonlocal widget_name
         nonlocal track_invalid_widgets
         entry_style_context = entry_0.get_style_context()
-        css_class_list = entry_style_context.list_classes()
+        css_class_list = entry_style_context.list_classes()  # noqa
         for class_name in css_class_list:
             if class_name in ["INVALID", "VALID", "OK"]:
                 entry_style_context.remove_class(class_name=class_name)
@@ -1161,7 +1165,7 @@ def validate_float(entry_widget: Gtk.Entry,
         nonlocal widget_name
         nonlocal track_invalid_widgets
         entry_style_context = entry_0.get_style_context()
-        css_class_list = entry_style_context.list_classes()
+        css_class_list = entry_style_context.list_classes()  # noqa
         for class_name in css_class_list:
             if class_name in ["INVALID", "VALID", "OK"]:
                 entry_style_context.remove_class(class_name=class_name)
@@ -1295,10 +1299,10 @@ def example_dialog_0() -> int:
             options=["Standby with changes", "Queue changes"],
             handler=transceiver_queue_handler)
         empty_box: Gtk.Box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        drawable_name_frame.add(widget=radio_box)
+        drawable_name_frame.add(widget=radio_box)  # noqa
         dialog_box: Gtk.Box = dialog.get_content_area()
-        dialog_box.pack_start(child=drawable_name_frame, expand=True, fill=False, padding=0)
-        dialog_box.pack_start(child=empty_box, expand=True, fill=True, padding=4)
+        dialog_box.pack_start(child=drawable_name_frame, expand=True, fill=False, padding=0)  # noqa
+        dialog_box.pack_start(child=empty_box, expand=True, fill=True, padding=4)  # noqa
 
     open_dialog_daemon(title_in="Example Dialog",
                        blurb_in=blurb,
@@ -1311,8 +1315,80 @@ def example_dialog_0() -> int:
     return 0
 
 
+# noinspection PyUnresolvedReferences
+class ProgressBarWindow(Gtk.Window):
+    def __init__(self,
+                 title_in: str,
+                 blurb_in: str,
+                 total: float | None
+                 ):
+        super().__init__(title=title_in)
+        self.set_border_width(10)
+        vbox_0: Gtk.Box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        self.add(vbox_0)
+        self.progressbar = Gtk.ProgressBar()
+        show_text_button: Gtk.CheckButton = Gtk.CheckButton(label="Show text")
+        activity_button: Gtk.CheckButton = Gtk.CheckButton(label="Activity mode")
+        r2l_button: Gtk.CheckButton = Gtk.CheckButton(label="Right to Left")
+
+        show_text_button.connect("toggled", self.on_show_text_toggled)
+        activity_button.connect("toggled", self.on_activity_mode_toggled)
+        r2l_button.connect("toggled", self.on_right_to_left_toggled)
+
+        vbox_0.pack_start(self.progressbar, True, True, 0)
+        vbox_0.pack_start(show_text_button, True, True, 0)
+        vbox_0.pack_start(activity_button, True, True, 0)
+        vbox_0.pack_start(r2l_button, True, True, 0)
+        self.timeout_id = GLib.timeout_add(50, self.on_timeout, None)
+        self.activity_mode = False
+
+    def on_show_text_toggled(self, button):
+        show_text = button.get_active()
+        if show_text:
+            text = "some text"
+        else:
+            text = None
+        self.progressbar.set_text(text)
+        self.progressbar.set_show_text(show_text)
+
+    def on_activity_mode_toggled(self, button):
+        self.activity_mode = button.get_active()
+        if self.activity_mode:
+            self.progressbar.pulse()
+        else:
+            self.progressbar.set_fraction(0.0)
+
+    def on_right_to_left_toggled(self, button):
+        value = button.get_active()
+        self.progressbar.set_inverted(value)
+
+    def on_timeout(self, user_data):
+        """
+        Update value on the progress bar
+        """
+        if self.activity_mode:
+            self.progressbar.pulse()
+        else:
+            new_value = self.progressbar.get_fraction() + 0.01
+            if new_value > 1:
+                new_value = 0
+            self.progressbar.set_fraction(new_value)
+        # As this is a timeout function, return True so that it
+        # continues to get called
+        return True
+
+
+# noinspection PyUnresolvedReferences
+def example_progress_0():
+    win = ProgressBarWindow(title_in="Progress Demo", blurb_in="Look at it go!", total=10.0)
+    win.connect("destroy", Gtk.main_quit)
+    win.show_all()
+    Gtk.main()
+
+
 def main() -> int:
-    return example_dialog_0()
+    example_progress_0()
+    return 0
 
 
 if __name__ == '__main__':
