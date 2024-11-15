@@ -1317,6 +1317,12 @@ def example_dialog_0() -> int:
 
 # noinspection PyUnresolvedReferences
 class ProgressBarWindow(Gtk.Window):
+    """
+    GIMP does not currently provide a thread-safe way to open a "window", that responds to events and does not block
+    the procedure's thread. This is a problem when we want to show anything asynchronous, such as tracking the progress
+    of work on a separate server. This class's exhibit_window() method is a work-around for opening a window
+    that is interactive. So far, it seems OK for the use-case of showing progress.
+    """
     def __init__(self,
                  title_in: str,
                  blurb_in: str,
@@ -1346,7 +1352,6 @@ class ProgressBarWindow(Gtk.Window):
             label_and_icon_box.show_all()  # noqa
             vbox_0.add(label_and_icon_box)  # noqa
         self.add(vbox_0)
-
         vbox_0.pack_start(self._progressbar, True, True, 0)
 
     @property
@@ -1385,21 +1390,83 @@ class ProgressBarWindow(Gtk.Window):
         fraction: float = 0.0
         if value > 0.0:
             fraction = value/self.total
-        LOGGER_PRSTU.warning(f"argument value={value}; setting fraction={fraction}")
+        LOGGER_PRSTU.debug(f"argument value={value}; setting fraction={fraction}")
         self._progressbar.set_fraction(fraction=fraction)
 
     def pulse_progress(self):
         self._progressbar.pulse()
 
     def draw_progress(self, value: float, total: float):
-        LOGGER_PRSTU.warning(f"argument value={value}; total={total}")
+        """
+        Call this method to visually display work progress. When value == total, work is 100% done.
+        @param value: The index/count/number of the last step completed.
+        @param total: The total count of steps in this job.
+        @return:
+        """
+        LOGGER_PRSTU.debug(f"argument value={value}; total={total}")
         self.total = total
         self.progress_value = value
+
+    def conceal_and_dispose(self):
+        """
+        Call this when the task/process/job is done. Then never call anything on this instance again.
+        @return:
+        """
+        # Gtk.Window.close(self)
+        self.close()
+        self.destroy()
+
+    @staticmethod
+    def exhibit_window(title_in: str,
+                       blurb_in: str,
+                       total: float | None = None,
+                       activity_mode: bool = False) -> Gtk.Window:  # Actually, a ProgressBarWindow, but that's a
+        # circular reference
+        """
+         Constructs and opens a ProgressBarWindow on the correct Gtk threads, then returns it. "Doing anything" with the
+         returned ProgressBarWindow is RISKY, because none of its methods are thread safe! Just call draw_progress()
+         until you are done, then call conceal_and_dispose().
+        @param title_in: The title of the progress window.
+        @param blurb_in: An explanation of what work is being tracked.
+        @param total: The total count of steps this job is performing. may be null.
+        @param activity_mode: If true, staps are not tracked, the bar just shows that work is unfinished.
+        @return: A ProgressBarWindow. Call draw_progress() on it to track work.
+        """
+        # Construction off the event thread is a Bad Idea, but we have no choice.
+        pb_window: ProgressBarWindow = ProgressBarWindow(title_in=title_in,
+                                                         blurb_in=blurb_in,
+                                                         total=total,
+                                                         activity_mode=activity_mode)
+
+        def _run_on_idle():
+            nonlocal title_in
+            nonlocal blurb_in
+            nonlocal total
+            nonlocal activity_mode
+            nonlocal pb_window
+            try:
+                pb_window.show_all()
+            except Exception as e_error_1:
+                LOGGER_SDGUIU.exception(e_error_1)
+
+        def _meta_fork():
+            GLib.idle_add(_run_on_idle)
+            # Invoking GLib.MainLoop().run() is ... unconventional. Beware locks and races, even in stuff like logging.
+            # The window created here should be closed by the user, or programmatically, with a function like
+            # close_window_of_widget()
+            GLib.MainLoop().run()  # Does not return, so needs new thread.
+
+        my_thread: threading.Thread = threading.Thread(target=_meta_fork)
+        my_thread.daemon = True  # Required so thread stops with GIMP
+        my_thread.start()
+        return pb_window
 
 
 # noinspection PyUnresolvedReferences
 def example_progress_0():
-    progress_window: ProgressBarWindow = ProgressBarWindow(title_in="Progress Demo", blurb_in="Look at it go!", total=10.0)
+    progress_window: ProgressBarWindow = ProgressBarWindow(title_in="Progress Demo",
+                                                           blurb_in="Look at it go!",
+                                                           total=10.0)
 
     # noinspection PyUnusedLocal
     def on_timeout(user_data=None):
@@ -1425,8 +1492,64 @@ def example_progress_0():
     Gtk.main()
 
 
+def example_progress_1():
+    # The progress_window will appear before this call returns.
+    # noinspection PyTypeChecker
+    progress_window: ProgressBarWindow = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
+                                                                          blurb_in="Look at it go!",
+                                                                          total=10.0)
+    step: float = 0.0
+    total: float = 10
+    loops: int = 0
+    finish_at: int = 5
+
+    # noinspection PyUnusedLocal
+    def safe_quit(dummy=None):
+        try:
+            # This call triggers a Gtk-CRITICAL error. It's bogus, and there is no fix.
+            Gtk.main_quit()  # noqa
+            LOGGER_SDGUIU.warning("Clean Exit")
+        except Exception as an_exception_2:
+            LOGGER_SDGUIU.exception(an_exception_2)
+
+    # noinspection PyUnusedLocal
+    def on_timeout(user_data=None):
+        nonlocal progress_window
+        nonlocal step
+        nonlocal total
+        nonlocal loops
+        nonlocal finish_at
+
+        step += 0.1
+        if step > total:
+            step = 0.0
+            loops += 1
+        progress_window.draw_progress(value=step, total=total)
+        if loops >= finish_at:
+            try:
+                progress_window.conceal_and_dispose()
+            except Exception as an_exception_0:
+                LOGGER_SDGUIU.exception(an_exception_0)
+            finally:
+                return False
+
+        # As this is a timeout function, return True so that it
+        # continues to get called
+        return True
+    timeout_id = GLib.timeout_add(50, on_timeout, None)  # noqa
+    progress_window.connect("destroy", safe_quit)
+    try:
+        time.sleep(32)
+    except Exception as an_exception_1:
+        LOGGER_SDGUIU.exception(an_exception_1)
+
+
 def main() -> int:
-    example_progress_0()
+    try:
+        example_progress_1()
+    except Exception as an_exception:
+        LOGGER_SDGUIU.exception(an_exception)
+        return -1
     return 0
 
 

@@ -26,8 +26,10 @@ gi.require_version("Gtk", "3.0")  # noqa E402
 gi.require_version('GdkPixbuf', '2.0')  # noqa E402
 # It is unfortunate that the requests, requests_toolbelt, and websocket-client modules are omitted from
 # Linux GIMP's python. The source of those modules are therefore included in this plugin.
+# noinspection PyUnresolvedReferences
 import requests_toolbelt  # This refers to the local package in this plug-in's directory
 from requests_toolbelt import MultipartEncoder  # This refers to the local package in this plug-in's directory
+# noinspection PyUnresolvedReferences
 import websocket  # This refers to the local package in this plug-in's directory
 from websocket import WebSocket   # This refers to the local package in this plug-in's directory
 from gi.repository import GdkPixbuf
@@ -329,14 +331,17 @@ def _track_progress(workflow_data: Dict[str, Any],
                     ):
     node_ids: List[str] = list(workflow_data.keys())
     finished_nodes = []
-    # TODO: get_images() needs to manage all the "progress" stuff within this function, start to finish.
-    steps_progress_win = ProgressBarWindow(title_in="Steps Progress", blurb_in="Processing steps")
-    nodes_progress_win = ProgressBarWindow(title_in="Nodes Progress", blurb_in="Workflow nodes")
+    # noinspection PyTypeChecker
+    steps_progress_win: ProgressBarWindow = ProgressBarWindow.exhibit_window(
+        title_in="Steps Progress",
+        blurb_in="Processing steps")
+    # noinspection PyTypeChecker
+    nodes_progress_win: ProgressBarWindow = ProgressBarWindow.exhibit_window(
+        title_in="Nodes Progress",
+        blurb_in="Workflow nodes"
+    )
 
     try:
-        # TODO: Open progress Windows
-        steps_progress_win.show()
-        nodes_progress_win.show()
         while True:
             # ConnectionClosed – When the connection is closed.
             # RuntimeError – If two threads call recv() or recv_streaming() concurrently.
