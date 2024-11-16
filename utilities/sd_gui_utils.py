@@ -1352,6 +1352,7 @@ class ProgressBarWindow(Gtk.Window):
             label_and_icon_box.show_all()  # noqa
             vbox_0.add(label_and_icon_box)  # noqa
         self.add(vbox_0)
+        self.set_default_size(512, 96)
         vbox_0.pack_start(self._progressbar, True, True, 0)
 
     @property
