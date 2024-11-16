@@ -165,7 +165,7 @@ class GimpComfyUI(Gimp.PlugIn):
     HOME: str = os.path.expanduser('~')
     MESSAGE_REGISTRATION = "Registering " + __file__ + ":" + PYTHON_PLUGIN_NAME
     MESSAGE_REGISTRATION_COMPLETED = __file__ + ":" + PYTHON_PLUGIN_NAME + " returned."
-    VERSION: str = "0.7.11"
+    VERSION: str = "0.7.12"
 
     # Procedure names.
     PROCEDURE_ABOUT_CONFIG = PYTHON_PLUGIN_NAME + "-About-Config"
@@ -888,14 +888,22 @@ class GimpComfyUI(Gimp.PlugIn):
                         ) -> Gimp.ValueArray:
         ret_values: Gimp.ValueArray = procedure.new_return_values(Gimp.PDBStatusType.CANCEL)
         try:
+            GimpUi.init(GimpComfyUI.PYTHON_PLUGIN_NAME)
+            build_message: str = f"Building dialog for {title_in}"
+            # Possible GIMP bug. Message is always logged to console, not popup box
+            Gimp.message_set_handler(Gimp.MessageHandlerType.MESSAGE_BOX)
+            Gimp.message(build_message)
+            Gimp.progress_init(build_message)
+            Gimp.progress_pulse()  # Possible GIMP bug. Progress bar does not seem to pulse.
             if self.poll_server():
-                GimpUi.init(GimpComfyUI.PYTHON_PLUGIN_NAME)
+                Gimp.progress_pulse()  # Possible GIMP bug. Progress bar does not seem to pulse.
                 procedure_name_short = re.sub(GimpComfyUI.PYTHON_PLUGIN_NAME + "-", "", procedure.get_name())
                 if GimpComfyUI.is_debugging():
                     LOGGER_GCUI.debug("Building dialog for procedure %s" % procedure_name_short)
                 dialog: GimpUi.Dialog = factory.new_workflow_dialog(title_in=title_in,
                                                                     role_in=role_in,
                                                                     blurb_in=blurb_in)
+                Gimp.progress_end()
                 while True:
                     response = dialog.run()
                     if response == Gtk.ResponseType.OK:
@@ -931,10 +939,14 @@ class GimpComfyUI(Gimp.PlugIn):
                         dialog.destroy()
                         ret_values = procedure.new_return_values(Gimp.PDBStatusType.CANCEL)
                         break
-
+            else:
+                LOGGER_GCUI.error("Could not connect to ComfyUI server.")
+                Gimp.progress_end()
         except Exception as thrown:
             LOGGER_GCUI.exception(thrown)
             ret_values = procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
+        finally:
+            Gimp.progress_end()
         return ret_values
 
     def default_workflow(self, procedure: Gimp.ImageProcedure,
