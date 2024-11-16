@@ -13,7 +13,14 @@ export SD_DATA_DIR=$TMPDIR
 export GIMP_PLUGINS_DIR="/Users/chymes/Library/Application Support/GIMP/3.0/plug-ins"
 export COMFY_CUSTOM_NODES_DIR="$SD_DATA_DIR""custom_nodes"
 
-mkdir -pv "$SD_DATA_DIR"
+function gcui_log(){
+    less "$TMPDIR/GimpComfyUI_logfile.txt" 
+}
+function gcui_tail(){
+    tail -f "$TMPDIR/GimpComfyUI_logfile.txt" 
+}
+
+mkdir -pv "$SD_DATA_DIR/models"
 mkdir -pv "$COMFY_CUSTOM_NODES_DIR"
 
 echo "Try ..."
