@@ -165,7 +165,7 @@ class GimpComfyUI(Gimp.PlugIn):
     HOME: str = os.path.expanduser('~')
     MESSAGE_REGISTRATION = "Registering " + __file__ + ":" + PYTHON_PLUGIN_NAME
     MESSAGE_REGISTRATION_COMPLETED = __file__ + ":" + PYTHON_PLUGIN_NAME + " returned."
-    VERSION: str = "0.7.12"
+    VERSION: str = "0.7.13"
 
     # Procedure names.
     PROCEDURE_ABOUT_CONFIG = PYTHON_PLUGIN_NAME + "-About-Config"
@@ -940,7 +940,9 @@ class GimpComfyUI(Gimp.PlugIn):
                         ret_values = procedure.new_return_values(Gimp.PDBStatusType.CANCEL)
                         break
             else:
-                LOGGER_GCUI.error("Could not connect to ComfyUI server.")
+                connection_message: str = "Could not connect to ComfyUI server."
+                LOGGER_GCUI.error(connection_message)
+                Gimp.message(connection_message)
                 Gimp.progress_end()
         except Exception as thrown:
             LOGGER_GCUI.exception(thrown)

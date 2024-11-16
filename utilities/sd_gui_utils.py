@@ -351,7 +351,7 @@ def new_dialog_error_user(title_in: str,
                           blurb_in: str,
                           gimp_icon_name: str = GimpUi.ICON_DIALOG_ERROR
                           ) -> GimpUi.Dialog:
-    dialog = GimpUi.Dialog(use_header_bar=True, title=title_in, role="User_Error")
+    dialog = GimpUi.Dialog(use_header_bar=True, title=title_in, role="Error")
     dialog_box: Gtk.Box = dialog.get_content_area()
     if blurb_in:
         label_and_icon_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -364,10 +364,11 @@ def new_dialog_error_user(title_in: str,
 
     # GIMP does something to the layout in dialogs. I'm not sure if I should force it to look more conventional.
     dialog.add_button(GLib.dgettext(None, "_OK"), Gtk.ResponseType.OK)
-    geometry = Gdk.Geometry()  # noqa
-    geometry.min_aspect = 0.5
-    geometry.max_aspect = 1.0
-    dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
+    # geometry = Gdk.Geometry()  # noqa
+    # geometry.min_aspect = 0.5
+    # geometry.max_aspect = 1.0
+    # dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
+    dialog.set_size_request(width=512, height=56)
     dialog.show_all()
     return dialog
 
@@ -1226,7 +1227,7 @@ def server_online(url_in: str, show_dialog: bool = True):
     except Exception as con_err:  # noqa
         logging.getLogger("URLError").error(f"Could not connect to {url_in}")
         logging.getLogger("URLError").exception(con_err)
-        Gimp.message(str(con_err))
+        Gimp.message(f"Could not connect to \"{url_in}\"\n{str(con_err)}")
         if show_dialog:
             try:
                 show_dialog_user_error(f"Could not connect to {url_in}\n{str(con_err)}")
