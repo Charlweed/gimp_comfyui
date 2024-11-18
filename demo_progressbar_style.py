@@ -80,23 +80,22 @@ class ProgressBarWindow(Gtk.Window):
         self.set_border_width(10)  # noqa
 
         vbox: Box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.add(vbox)  # noqa
-
         self.progressbar: ProgressBar = Gtk.ProgressBar()
+        show_text_check_button: CheckButton = Gtk.CheckButton(label="Show text")
+        activity_check_button: CheckButton = Gtk.CheckButton(label="Activity mode")
+        rtl_check_button: CheckButton = Gtk.CheckButton(label="Right to Left")
+
         self.progressbar.set_name(PB_NAME_CORRECT)
+
+        show_text_check_button.connect("toggled", self.on_show_text_toggled)
+        activity_check_button.connect("toggled", self.on_activity_mode_toggled)
+        rtl_check_button.connect("toggled", self.on_right_to_left_toggled)
+
+        self.add(vbox)  # noqa
         vbox.pack_start(self.progressbar, True, True, 0)
-
-        button: CheckButton = Gtk.CheckButton(label="Show text")
-        button.connect("toggled", self.on_show_text_toggled)
-        vbox.pack_start(button, True, True, 0)
-
-        button: CheckButton = Gtk.CheckButton(label="Activity mode")
-        button.connect("toggled", self.on_activity_mode_toggled)
-        vbox.pack_start(button, True, True, 0)
-
-        button: CheckButton = Gtk.CheckButton(label="Right to Left")
-        button.connect("toggled", self.on_right_to_left_toggled)
-        vbox.pack_start(button, True, True, 0)
+        vbox.pack_start(show_text_check_button, True, True, 0)
+        vbox.pack_start(activity_check_button, True, True, 0)
+        vbox.pack_start(rtl_check_button, True, True, 0)
 
         self.timeout_id = GLib.timeout_add(50, self.on_timeout, None)
         self.activity_mode = False
