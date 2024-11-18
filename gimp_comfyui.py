@@ -332,24 +332,24 @@ class GimpComfyUI(Gimp.PlugIn):
         GimpComfyUI.put_str(key="DEBUGGING", value=str(do_debugging))
 
     @classmethod
-    def __init_plugin(cls):
+    def __configure_plugin_class(cls):
         """
         A GIMP plugin is NOT AN APPLICATION.
         This class method is called by do_query_procedures(), and then all state is lost.
         To use the persisted state, it needs to be called whenever a procedure's function is invoked.
         :return:
         """
-        LOGGER_GCUI.debug(f"__init_plugin")
+        LOGGER_GCUI.warning(f"__configure_plugin_class")
         if cls.is_initialized():
             raise SystemError("Class has already been initialized.")
         cls.set_initialized()
         cls.__init_debugging(debug=True)
-        LOGGER_GCUI.info(sys.version)
-        LOGGER_GCUI.info("GimpComfyUI version %s" % GimpComfyUI.VERSION)
-        LOGGER_GCUI.info("GIMP Python3 site-packages paths are:")
-        LOGGER_GCUI.info("\n".join(site.getsitepackages()))
-        LOGGER_GCUI.info("GIMP Python3 sys.path is:")
-        LOGGER_GCUI.info("\n".join(sys.path))
+        LOGGER_GCUI.debug(sys.version)
+        LOGGER_GCUI.debug("GimpComfyUI version %s" % GimpComfyUI.VERSION)
+        LOGGER_GCUI.debug("GIMP Python3 site-packages paths are:")
+        LOGGER_GCUI.debug("\n".join(site.getsitepackages()))
+        LOGGER_GCUI.debug("GIMP Python3 sys.path is:")
+        LOGGER_GCUI.debug("\n".join(sys.path))
 
         config: Dict[str, bool | int | str] = dict(cls.GCUI_PERSISTER.configuration)
         try:
@@ -385,6 +385,7 @@ class GimpComfyUI(Gimp.PlugIn):
             p = cls.GCUI_PERSISTER.storage_path
             LOGGER_GCUI.error(f"Corrupt config file {p}")
             LOGGER_GCUI.exception(k_err)
+        LOGGER_GCUI.warning("__configure_plugin_class() returning.")
 
     @classmethod
     def __init_debugging(cls, debug: bool):
@@ -613,11 +614,12 @@ class GimpComfyUI(Gimp.PlugIn):
 
     # noinspection PyMethodMayBeStatic
     def do_query_procedures(self) -> List[str]:
-        # Documentation states "query happens only once in the life of a plug-in (right after installation or update)."
+        # Documentation states query happens only once in a GIMP session (right after installation or update).
+        # No plug-in instance is initialized
         LOGGER_GCUI.info(f"{self.__class__.__name__}")
         # First action is to remove temporary data from previous sessions.
         remove_temporary_dictionary(plugin_name_long=GimpComfyUI.PYTHON_PLUGIN_NAME_LONG)
-        GimpComfyUI.__init_plugin()  # This invocation will NOT provide state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will NOT provide state
         # This is the list of procedure names.
         return GimpComfyUI.PROCEDURE_NAMES
 
@@ -745,7 +747,7 @@ class GimpComfyUI(Gimp.PlugIn):
                                                   is_image_optional=True,  # Redundant with SubjectType.ANYTHING
                                                   proc_category=ProcedureCategory.TEST_ANY,
                                                   subject_type=SubjectType.ANYTHING)
-            
+
             case GimpComfyUI.PROCEDURE_INVOKE_FLUX_NEG_UPSCALE_SDXL_0DOT5_WF:
                 procedure = self.create_procedure(name_raw=name,
                                                   docs="IFluxNegUpscaleSdxl05Json",
@@ -821,7 +823,8 @@ class GimpComfyUI(Gimp.PlugIn):
         LOGGER_GCUI.warning(f"Show information \"about\" {GimpComfyUI.PYTHON_PLUGIN_NAME}")
         ret_values: Gimp.ValueArray = procedure.new_return_values(Gimp.PDBStatusType.CANCEL)
         try:
-            GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+            if not GimpComfyUI.is_initialized():
+                GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
             all_config: MappingProxyType = GimpComfyUI.GCUI_PERSISTER.configuration
             transceiver_protocol: str = all_config.get("TRANSCEIVER_PROTOCOL", "ws")
             transceiver_host: str = all_config.get("TRANSCEIVER_HOST", "localhost")
@@ -958,7 +961,7 @@ class GimpComfyUI(Gimp.PlugIn):
                        drawables,  # noqa
                        args,  # noqa
                        ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         factory: ComfyuiDefaultDialogs = ComfyuiDefaultDialogs(accessor=self._default_accessor)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -975,7 +978,7 @@ class GimpComfyUI(Gimp.PlugIn):
                        drawables,  # noqa
                        args,  # noqa
                        ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         factory: SytanSdxl1Dot0Dialogs = SytanSdxl1Dot0Dialogs(accessor=self._sytan_sdxl_accessor)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -992,7 +995,7 @@ class GimpComfyUI(Gimp.PlugIn):
                          drawables,  # noqa
                          args,  # noqa
                          ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         factory: InpaintingSdxl0Dot4Dialogs = InpaintingSdxl0Dot4Dialogs(accessor=self.inpaint_accessor)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -1009,7 +1012,7 @@ class GimpComfyUI(Gimp.PlugIn):
                          drawables,  # noqa
                          args,  # noqa
                          ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         factory: Img2ImgSdxl0Dot3Dialogs = Img2ImgSdxl0Dot3Dialogs(accessor=self.img2img_accessor)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -1026,7 +1029,7 @@ class GimpComfyUI(Gimp.PlugIn):
                          drawables,  # noqa
                          args,  # noqa
                          ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()
+        GimpComfyUI.__configure_plugin_class()
         factory: Flux1Dot0Dialogs = Flux1Dot0Dialogs(accessor=self.flux_acc)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -1043,7 +1046,7 @@ class GimpComfyUI(Gimp.PlugIn):
                       drawables,  # noqa
                       args,  # noqa
                       ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()
+        GimpComfyUI.__configure_plugin_class()
         factory: FluxNeg1Dot1Dialogs = FluxNeg1Dot1Dialogs(accessor=self.flux_neg_acc)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -1060,7 +1063,7 @@ class GimpComfyUI(Gimp.PlugIn):
                        drawables,  # noqa
                        args,  # noqa
                        ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()
+        GimpComfyUI.__configure_plugin_class()
         factory: FluxNegUpscaleSdxl0Dot5Dialogs = FluxNegUpscaleSdxl0Dot5Dialogs(accessor=self._flux_neg_upscale_sdxl_0dot5_accessor)  # noqa
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -1080,7 +1083,7 @@ class GimpComfyUI(Gimp.PlugIn):
                      drawables,  # noqa
                      args,  # noqa
                      ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         ret_code = demonstrate_00()
         if ret_code == 0:
             return procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
@@ -1096,7 +1099,7 @@ class GimpComfyUI(Gimp.PlugIn):
                      drawables,  # noqa
                      args,  # noqa
                      ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         # LOGGER_GCUI.debug(f"demo_images_n_layers(): ")
 
         def access_image(image_id):

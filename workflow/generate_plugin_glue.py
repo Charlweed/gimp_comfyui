@@ -96,7 +96,7 @@ class PluginGlueGenerator(Workflow2PythonGenerator):
                        args,  # noqa
                        run_data  # noqa
                        ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()
+        GimpComfyUI.__configure_plugin_class()
         factory: {self.dialog_class_name} = {self.dialog_class_name}(accessor=self._{self.base_class_name}_accessor)  # noqa
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
