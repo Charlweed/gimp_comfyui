@@ -78,46 +78,48 @@ class ProgressBarWindow(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title="ProgressBar Demo")
         self.set_border_width(10)  # noqa
-
-        vbox: Box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.progressbar: ProgressBar = Gtk.ProgressBar()
-        show_text_check_button: CheckButton = Gtk.CheckButton(label="Show text")
-        activity_check_button: CheckButton = Gtk.CheckButton(label="Activity mode")
-        rtl_check_button: CheckButton = Gtk.CheckButton(label="Right to Left")
-
-        self.progressbar.set_name(PB_NAME_CORRECT)
-
-        show_text_check_button.connect("toggled", self.on_show_text_toggled)
-        activity_check_button.connect("toggled", self.on_activity_mode_toggled)
-        rtl_check_button.connect("toggled", self.on_right_to_left_toggled)
-
-        self.add(vbox)  # noqa
-        vbox.pack_start(self.progressbar, True, True, 0)
-        vbox.pack_start(show_text_check_button, True, True, 0)
-        vbox.pack_start(activity_check_button, True, True, 0)
-        vbox.pack_start(rtl_check_button, True, True, 0)
-
         self.timeout_id = GLib.timeout_add(50, self.on_timeout, None)
         self.activity_mode = False
 
+        vbox: Box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        self.progressbar: ProgressBar = Gtk.ProgressBar()
+        self.show_text_check_button: CheckButton = Gtk.CheckButton(label="Show text")
+        self.activity_check_button: CheckButton = Gtk.CheckButton(label="Activity mode")
+        self. rtl_check_button: CheckButton = Gtk.CheckButton(label="Right to Left")
+
+        self.progressbar.set_name(PB_NAME_CORRECT)
+        self.progressbar.set_show_text(True)
         progressbar_style_bytes: bytes = new_progressbar_css_bytes(widget=self.progressbar)
         install_css_styles(style_bytes=progressbar_style_bytes)
 
+        self.show_text_check_button.set_active(True)
+        self.show_text_check_button.connect("toggled", self.on_show_text_toggled)
+        self.activity_check_button.connect("toggled", self.on_activity_mode_toggled)
+        self.rtl_check_button.connect("toggled", self.on_right_to_left_toggled)
+
+        self.add(vbox)  # noqa
+        vbox.pack_start(self.progressbar, True, True, 0)
+        vbox.pack_start(self.show_text_check_button, True, True, 0)
+        vbox.pack_start(self.activity_check_button, True, True, 0)
+        vbox.pack_start(self.rtl_check_button, True, True, 0)
+
     def on_show_text_toggled(self, button):
         show_text = button.get_active()
-        if show_text:
-            text = "some text"
-        else:
-            text = None
-        self.progressbar.set_text(text)
+        # if show_text:
+        #     text = "some text"
+        # else:
+        #     text = None
+        # self.progressbar.set_text(text)
         self.progressbar.set_show_text(show_text)
 
     def on_activity_mode_toggled(self, button):
         self.activity_mode = button.get_active()
         if self.activity_mode:
             self.progressbar.pulse()
+            self.progressbar.set_show_text(False)
         else:
             self.progressbar.set_fraction(0.0)
+            self.progressbar.set_show_text(self.show_text_check_button.get_active())
 
     def on_right_to_left_toggled(self, button):
         value = button.get_active()
