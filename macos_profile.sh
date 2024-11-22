@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
 set -u
 
 # Required. You must set these values correctly for this script to work. The current values worked on macOS Monterey for GIMP 2.99 and 3.0-RC1
