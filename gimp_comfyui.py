@@ -173,6 +173,7 @@ class GimpComfyUI(Gimp.PlugIn):
     PROCEDURE_CONFIG_TRANSCEIVER_CONNECTION = PYTHON_PLUGIN_NAME + "-transceiver-URL"
     PROCEDURE_DEMO_CUI_NET = "demo-cui-net"
     PROCEDURE_DEMO_IMG_N_LAYERS_TREEVIEWS = "demo-img-n-layers-treeview"
+    PROCEDURE_DEMO_PROGRESSBAR_WINDOW = "demo-progressbar-window"
     PROCEDURE_INSTALL_COMFYUI = PYTHON_PLUGIN_NAME + "-install-comfyUI"
     PROCEDURE_INVOKE_DEFAULT_WF = "default"
     PROCEDURE_INVOKE_FLUX_NEG_WF = "flux-dev-neg"
@@ -187,6 +188,7 @@ class GimpComfyUI(Gimp.PlugIn):
         PROCEDURE_ABOUT_CONFIG,
         PROCEDURE_CONFIG_COMFY_SVR_CONNECTION,
         PROCEDURE_CONFIG_TRANSCEIVER_CONNECTION,
+        PROCEDURE_DEMO_PROGRESSBAR_WINDOW,
         PROCEDURE_WATCH_LAYER,
         PROCEDURE_INVOKE_DEFAULT_WF,
         PROCEDURE_INVOKE_FLUX_NEG_WF,
@@ -747,6 +749,14 @@ class GimpComfyUI(Gimp.PlugIn):
                                                   is_image_optional=True,  # Redundant with SubjectType.ANYTHING
                                                   proc_category=ProcedureCategory.TEST_ANY,
                                                   subject_type=SubjectType.ANYTHING)
+            case GimpComfyUI.PROCEDURE_DEMO_PROGRESSBAR_WINDOW:
+                procedure = self.create_procedure(name_raw=name,
+                                                  docs="Demonstrate and test ProgressBarWindow",
+                                                  usage_hint="Watch for errors in console.",
+                                                  run_func_in=self.demo_progressbar_window,
+                                                  is_image_optional=True,  # Redundant with SubjectType.ANYTHING
+                                                  proc_category=ProcedureCategory.TEST_ANY,
+                                                  subject_type=SubjectType.ANYTHING)
 
             case GimpComfyUI.PROCEDURE_INVOKE_FLUX_NEG_UPSCALE_SDXL_0DOT5_WF:
                 procedure = self.create_procedure(name_raw=name,
@@ -1127,8 +1137,70 @@ class GimpComfyUI(Gimp.PlugIn):
             return procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
         else:
             return procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
-    # noinspection PyMethodMayBeStatic
 
+    # noinspection PyMethodMayBeStatic
+    def demo_progressbar_window(self, procedure: Gimp.ImageProcedure,
+                                run_mode,  # noqa
+                                image,  # noqa
+                                n_drawables,  # noqa
+                                drawables,  # noqa
+                                args,  # noqa
+                                ) -> Gimp.ValueArray:
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
+        LOGGER_GCUI.warning(f"demo_progressbar_window(): ")
+        Gimp.message(f"demo_progressbar_window(): ")
+
+        return_values: Gimp.ValueArray = procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
+        step: float = 0.0
+        total: float = 10
+        loops: int = 0
+        finish_at: int = 5
+        progressbar_window: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
+                                                                                        blurb_in="Look at it go!",
+                                                                                        total=10.0)
+
+        # noinspection PyUnusedLocal
+        def on_timeout(user_data=None):
+            nonlocal progressbar_window
+            nonlocal step
+            nonlocal total
+            nonlocal loops
+            nonlocal finish_at
+
+            step += 0.1
+            if step > total:
+                step = 0.0
+                loops += 1
+
+            # LOGGER_GCUI.warning(f"step={step}, total={total}")
+            progressbar_window.draw_progress(value=step, total=total)
+            if loops >= finish_at:
+                try:
+                    progressbar_window.conceal_and_dispose()
+                except Exception as an_exception_0:
+                    LOGGER_SDGUIU.exception(an_exception_0)
+                finally:
+                    return False
+            # As this is a timeout function, return True so that on_timeout() continues to get called
+            return True
+        try:
+            if progressbar_window:
+                try:
+                    timeout_id = GLib.timeout_add(50, on_timeout, None)  # noqa
+                    time.sleep(32)
+                except Exception as an_exception_1:
+                    LOGGER_SDGUIU.exception(an_exception_1)
+                    return_values = procedure.new_return_values(Gimp.PDBStatusType.CANCEL, GLib.Error())
+
+                return_values = procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
+            else:
+                return_values = procedure.new_return_values(Gimp.PDBStatusType.CANCEL, GLib.Error())
+        except Exception as some_problem:  # noqa
+            return_values = procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
+        finally:
+            return return_values
+
+    # noinspection PyMethodMayBeStatic
     def transceiver_queue_handler(self, source, data=None):
         source_type: type = type(source)
         source_type_name: str = source_type.__name__

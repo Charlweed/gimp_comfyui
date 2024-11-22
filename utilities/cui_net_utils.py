@@ -329,14 +329,15 @@ def _track_progress(workflow_data: Dict[str, Any],
                     node_progress: Callable[[int, int, str | None], None],
                     step_progress: Callable[[int, int, str | None], None],
                     ):
+    LGR_CNU.warning("_track_progress invoked.")
     node_ids: List[str] = list(workflow_data.keys())
     finished_nodes = []
     # noinspection PyTypeChecker
-    steps_progress_win: ProgressBarWindow = ProgressBarWindow.exhibit_window(
+    steps_progress_win: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(
         title_in="Steps Progress",
         blurb_in="Processing steps")
     # noinspection PyTypeChecker
-    nodes_progress_win: ProgressBarWindow = ProgressBarWindow.exhibit_window(
+    nodes_progress_win: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(
         title_in="Nodes Progress",
         blurb_in="Workflow nodes"
     )
@@ -356,7 +357,8 @@ def _track_progress(workflow_data: Dict[str, Any],
                         current_step = data['value']
                         total = data['max']
                         step_progress(current_step, total, None)
-                        steps_progress_win.draw_progress(current_step, total)
+                        if steps_progress_win:
+                            steps_progress_win.draw_progress(current_step, total)
                     case 'execution_cached':
                         data: Dict[str, Any] = server_reply['data']
                         for itm in data['nodes']:
@@ -365,7 +367,8 @@ def _track_progress(workflow_data: Dict[str, Any],
                                 current = len(finished_nodes) - 1
                                 total = len(node_ids)
                                 node_progress(current, total, None)
-                                nodes_progress_win.draw_progress(current, total)
+                                if nodes_progress_win:
+                                    nodes_progress_win.draw_progress(current, total)
                     case 'executing':
                         data: Dict[str, Any] = server_reply['data']
                         if data['node'] not in finished_nodes:
@@ -373,7 +376,8 @@ def _track_progress(workflow_data: Dict[str, Any],
                             current = len(finished_nodes) - 1
                             total = len(node_ids)
                             node_progress(current, total, None)
-                            nodes_progress_win.draw_progress(current, total)
+                            if nodes_progress_win:
+                                nodes_progress_win.draw_progress(current, total)
                         if data['node'] is None and data['prompt_id'] == prompt_id:
                             break  # Execution is done
                     case _:

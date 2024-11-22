@@ -941,6 +941,36 @@ def new_validation_css_bytes(widget: Gtk.Widget) -> bytes:
     return css_string.encode('utf-8')
 
 
+def new_progressbar_css_bytes(widget: Gtk.Widget) -> bytes:
+    widget_name: str = widget.get_name()
+    if widget_name is None:
+        raise ValueError("Widget does not have a name")
+    if not widget_name.strip():
+        raise ValueError("Widget name cannot be empty nor whitespace.")
+    if re.search(r"\s", widget_name):
+        raise ValueError("Widget name cannot contain whitespace")
+    if widget_name in WIDGET_NAME_DEFAULTS:
+        raise ValueError("Widget name cannot be default name \"%s\"" % widget_name)
+    # css code from
+    # https://stackoverflow.com/questions/48097764/gtkprogressbar-with-css-for-progress-colour-not-functioning
+    css_string = (f"""
+    progressbar#{widget_name} text {{
+        color: DarkOrange;
+        font-weight: bold;
+    }}
+    progressbar#{widget_name} > trough > progress {{
+      background-image: none;
+      background-color: fuchsia;
+    }}
+    progressbar#{widget_name} progress{{
+        background-image: linear-gradient(90deg, yellow, red);
+        background-color: blue;
+    }}
+    """)
+    # LOGGER_SDGUIU.debug("Generated CSS:\n%s" % css_string)
+    return css_string.encode('utf-8')
+
+
 def pretty_name(ugly_name: str) -> str:
     fresh_name = ugly_name.replace("StabDiffAuto1111-", "")
     fresh_name = fresh_name.replace("-image-context", "")
@@ -1324,6 +1354,12 @@ class ProgressBarWindow(Gtk.Window):
     of work on a separate server. This class's exhibit_window() method is a work-around for opening a window
     that is interactive. So far, it seems OK for the use-case of showing progress.
     """
+
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
+    def on_window_map(self, event):
+        LOGGER_SDGUIU.debug("ProgressBarWindow \"on-window-map\".\n"
+                            "     Window should be visible...")
+
     def __init__(self,
                  title_in: str,
                  blurb_in: str,
@@ -1331,6 +1367,7 @@ class ProgressBarWindow(Gtk.Window):
                  activity_mode: bool = False
                  ):
         super().__init__(title=title_in)
+        self._local_event_loop: GLib.MainLoop | None = None
         self._total: float
         self._activity_mode = activity_mode
 
@@ -1355,6 +1392,7 @@ class ProgressBarWindow(Gtk.Window):
         self.add(vbox_0)
         self.set_default_size(512, 96)
         vbox_0.pack_start(self._progressbar, True, True, 0)
+        self.connect("map-event", self.on_window_map)  # Strange name for "widget shown" event.
 
     @property
     def activity_mode(self) -> bool:
@@ -1392,7 +1430,7 @@ class ProgressBarWindow(Gtk.Window):
         fraction: float = 0.0
         if value > 0.0:
             fraction = value/self.total
-        LOGGER_PRSTU.debug(f"argument value={value}; setting fraction={fraction}")
+        LOGGER_SDGUIU.debug(f"argument value={value}; setting fraction={fraction}")
         self._progressbar.set_fraction(fraction=fraction)
 
     def pulse_progress(self):
@@ -1405,7 +1443,7 @@ class ProgressBarWindow(Gtk.Window):
         @param total: The total count of steps in this job.
         @return:
         """
-        LOGGER_PRSTU.debug(f"argument value={value}; total={total}")
+        LOGGER_SDGUIU.debug(f"argument value={value}; total={total}")
         self.total = total
         self.progress_value = value
 
@@ -1414,15 +1452,51 @@ class ProgressBarWindow(Gtk.Window):
         Call this when the task/process/job is done. Then never call anything on this instance again.
         @return:
         """
+        sys.stdout.flush()
+        sys.stderr.flush()
+        LOGGER_SDGUIU.warning(f"conceal_and_dispose() invoked.")
         # Gtk.Window.close(self)
         self.close()
         self.destroy()
+        if self._local_event_loop is not None:
+            self._local_event_loop.quit()
+        else:
+            LOGGER_SDGUIU.error("Local Event Loop is Unassigned.")
+
+    def fly(self):
+        LOGGER_SDGUIU.warning(f"fly() invoked.")
+        if self._local_event_loop is not None:
+            raise ValueError("Local Event loop is already assigned.")
+
+        LOGGER_SDGUIU.warning(f"Defining _meta_fork function.")
+
+        def _meta_fork():
+            nonlocal self
+            sys.stdout.flush()
+            sys.stderr.flush()
+            LOGGER_SDGUIU.warning(f"Invoking _local_event_loop.run()")
+            # Likely GIMP or Mac or Python 3.10 bug. MainLoop.run() Does not process events, it seems
+            # to merely hang. FIXME: More testing, especially on Linux
+            self._local_event_loop.run()  # Does not return until ._local_event_loop.quit() is called.
+            LOGGER_SDGUIU.warning(f"_local_event_loop.run() returned")
+            LOGGER_SDGUIU.warning(f"exiting meta_fork")
+
+        LOGGER_SDGUIU.warning(f"Constructing and assigning _local_event_loop")
+        self._local_event_loop = GLib.MainLoop()
+        LOGGER_SDGUIU.warning(f"Constructing my_thread")
+        my_thread: threading.Thread = threading.Thread(target=_meta_fork)
+        LOGGER_SDGUIU.warning(f"Configuring my_thread")
+        my_thread.daemon = True  # Required so thread stops with GIMP
+        LOGGER_SDGUIU.warning(f"Starting my_thread...")
+        my_thread.start()
+        LOGGER_SDGUIU.warning(f"... my_thread started")
+        LOGGER_SDGUIU.warning(f"exiting fly()")
 
     @staticmethod
     def exhibit_window(title_in: str,
                        blurb_in: str,
                        total: float | None = None,
-                       activity_mode: bool = False) -> Gtk.Window:  # Actually, a ProgressBarWindow, but that's a
+                       activity_mode: bool = False) -> Gtk.Window | None:  # Actually, a ProgressBarWindow, but that's a
         # circular reference
         """
          Constructs and opens a ProgressBarWindow on the correct Gtk threads, then returns it. "Doing anything" with the
@@ -1434,33 +1508,20 @@ class ProgressBarWindow(Gtk.Window):
         @param activity_mode: If true, staps are not tracked, the bar just shows that work is unfinished.
         @return: A ProgressBarWindow. Call draw_progress() on it to track work.
         """
-        # Construction off the event thread is a Bad Idea, but we have no choice.
+        sys.stdout.flush()
+        sys.stderr.flush()
+        LOGGER_SDGUIU.warning(f"Constructing ProgressBarWindow.")
         pb_window: ProgressBarWindow = ProgressBarWindow(title_in=title_in,
                                                          blurb_in=blurb_in,
                                                          total=total,
                                                          activity_mode=activity_mode)
-
-        def _run_on_idle():
-            nonlocal title_in
-            nonlocal blurb_in
-            nonlocal total
-            nonlocal activity_mode
-            nonlocal pb_window
-            try:
-                pb_window.show_all()
-            except Exception as e_error_1:
-                LOGGER_SDGUIU.exception(e_error_1)
-
-        def _meta_fork():
-            GLib.idle_add(_run_on_idle)
-            # Invoking GLib.MainLoop().run() is ... unconventional. Beware locks and races, even in stuff like logging.
-            # The window created here should be closed by the user, or programmatically, with a function like
-            # close_window_of_widget()
-            GLib.MainLoop().run()  # Does not return, so needs new thread.
-
-        my_thread: threading.Thread = threading.Thread(target=_meta_fork)
-        my_thread.daemon = True  # Required so thread stops with GIMP
-        my_thread.start()
+        LOGGER_SDGUIU.warning(f"Invoking pb_window.show_all()")
+        pb_window.show_all()
+        LOGGER_SDGUIU.warning(f"pb_window.show_all() returned")
+        LOGGER_SDGUIU.warning(f"Invoking pb_window.fly()")
+        pb_window.fly()
+        LOGGER_SDGUIU.warning(f"pb_window.fly() returned.")
+        LOGGER_SDGUIU.warning(f"exiting exhibit_window()")
         return pb_window
 
 
@@ -1497,9 +1558,11 @@ def example_progress_0():
 def example_progress_1():
     # The progress_window will appear before this call returns.
     # noinspection PyTypeChecker
-    progress_window: ProgressBarWindow = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
-                                                                          blurb_in="Look at it go!",
-                                                                          total=10.0)
+    progress_window: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
+                                                                                 blurb_in="Look at it go!",
+                                                                                 total=10.0)
+    if progress_window is None:
+        raise EnvironmentError("Failed to create ProgressBarWindow.")
     step: float = 0.0
     total: float = 10
     loops: int = 0
@@ -1546,9 +1609,53 @@ def example_progress_1():
         LOGGER_SDGUIU.exception(an_exception_1)
 
 
+def example_progress_2():
+    # The progress_window will appear before this call returns.
+    # noinspection PyTypeChecker
+    progress_window: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
+                                                                                 blurb_in="Look at it go!",
+                                                                                 total=10.0)
+    if progress_window is None:
+        raise ValueError("Failed to create Window")
+    step: float = 0.0
+    total: float = 10
+    loops: int = 0
+    finish_at: int = 5
+
+    # noinspection PyUnusedLocal
+    def on_timeout(user_data=None):
+        nonlocal progress_window
+        nonlocal step
+        nonlocal total
+        nonlocal loops
+        nonlocal finish_at
+
+        step += 0.1
+        if step > total:
+            step = 0.0
+            loops += 1
+        progress_window.draw_progress(value=step, total=total)
+        if loops >= finish_at:
+            try:
+                progress_window.conceal_and_dispose()
+            except Exception as an_exception_0:
+                LOGGER_SDGUIU.exception(an_exception_0)
+            finally:
+                return False
+
+        # As this is a timeout function, return True so that it
+        # continues to get called
+        return True
+    timeout_id = GLib.timeout_add(50, on_timeout, None)  # noqa
+    try:
+        time.sleep(32)
+    except Exception as an_exception_1:
+        LOGGER_SDGUIU.exception(an_exception_1)
+
+
 def main() -> int:
     try:
-        example_progress_1()
+        example_progress_2()
     except Exception as an_exception:
         LOGGER_SDGUIU.exception(an_exception)
         return -1
