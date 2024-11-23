@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # The two lines above, the shebang and the encoding hint, are required!
-# Otherwise, GIMP for MacOS will fail to load this plugin. Inexplicable, hard to believe, but issue verified
-# on GIMP 2.99.18 for MacOS, Python 3.10.13 for MacOS, MacOS Monterey 12.7.6
+# Otherwise, GIMP for unix-like systems will fail to load this plug-in.
+# Also, verify that all plug-in python files have execute permissions.
+# 755 or 775 if you're social.
 #  Copyright (c) 2024. Charles Hymes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -40,13 +41,16 @@ import gettext
 import logging.config
 import os.path
 
+# gi.require_version("GObject", "2.0")
+gi.require_version('Gdk', '3.0')
+gi.require_version("Gtk", "3.0")
+gi.require_version("Gegl", "0.4")  # noqa: E402
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
-gi.require_version("GObject", "2.0")  # noqa: E402
-gi.require_version("Gegl", "0.4")  # noqa: E402
-from gi.repository import GLib, GObject, Gdk, GdkPixbuf, Gegl, Gimp, GimpUi, Gio, Gtk  # noqa
+
+# noinspection PyUnresolvedReferences
+from gi.repository import Gegl, Gimp, GimpUi
+from gi.repository import GLib, GObject, Gdk, GdkPixbuf, Gio, Gtk
 from gimp3_concurrency.drawable_change_notifier import *
 from utilities.babl_gegl_utils import *
 from utilities.cui_net_utils import *
@@ -124,6 +128,14 @@ def images_from_pixbufs(pixbufs: List[GdkPixbuf.Pixbuf]) -> List[Gimp.Image]:
             LOGGER_GCUI.error("Failure inserting %s into new image." % layer_name)
         fresh_images.append(fresh_image)
     return fresh_images
+
+
+def log_environment(lumberjack: logging.Logger):
+    site_pkg_pth: str = "    \n    ".join(site.getsitepackages())
+    sys_pth: str = "    \n    ".join(sys.path)
+    lumberjack.info(f"Python version={sys.version}")
+    lumberjack.info(f"GIMP Python3 site-packages path is:\n    {site_pkg_pth}")
+    lumberjack.info(f"GIMP Python3 sys.path is:\n    {sys_pth}")
 
 
 class ProcedureCategory(Enum):
@@ -296,6 +308,7 @@ class GimpComfyUI(Gimp.PlugIn):
                 "level": logging.INFO
             }
         })
+        log_environment(lumberjack=LOGGER_GCUI)
 
     @classmethod
     def get_str(cls, key: str) -> str:
@@ -341,17 +354,11 @@ class GimpComfyUI(Gimp.PlugIn):
         To use the persisted state, it needs to be called whenever a procedure's function is invoked.
         :return:
         """
-        LOGGER_GCUI.warning(f"__configure_plugin_class")
+        # LOGGER_GCUI.debug(f"__configure_plugin_class")
         if cls.is_initialized():
             raise SystemError("Class has already been initialized.")
         cls.set_initialized()
-        cls.__init_debugging(debug=True)
-        LOGGER_GCUI.debug(sys.version)
-        LOGGER_GCUI.debug("GimpComfyUI version %s" % GimpComfyUI.VERSION)
-        LOGGER_GCUI.debug("GIMP Python3 site-packages paths are:")
-        LOGGER_GCUI.debug("\n".join(site.getsitepackages()))
-        LOGGER_GCUI.debug("GIMP Python3 sys.path is:")
-        LOGGER_GCUI.debug("\n".join(sys.path))
+        cls.__init_debugging(debug=False)
 
         config: Dict[str, bool | int | str] = dict(cls.GCUI_PERSISTER.configuration)
         try:
@@ -387,7 +394,7 @@ class GimpComfyUI(Gimp.PlugIn):
             p = cls.GCUI_PERSISTER.storage_path
             LOGGER_GCUI.error(f"Corrupt config file {p}")
             LOGGER_GCUI.exception(k_err)
-        LOGGER_GCUI.warning("__configure_plugin_class() returning.")
+        # LOGGER_GCUI.debug("__configure_plugin_class() returning.")
 
     @classmethod
     def __init_debugging(cls, debug: bool):
@@ -816,7 +823,8 @@ class GimpComfyUI(Gimp.PlugIn):
         procedure.set_icon_name(GimpUi.ICON_GEGL)
         procedure.set_attribution("Hymerfania", "Hymerfania", "2024")
 
-        LOGGER_GCUI.debug(f"proc_category={proc_category}")
+        if self.is_debugging():
+            LOGGER_GCUI.debug(f"proc_category={proc_category}")
         match proc_category:
             case ProcedureCategory.CONFIG:
                 menu_path = GimpComfyUI.LIMB_IMAGE_MENU_NAME + "/Config"
@@ -1146,9 +1154,9 @@ class GimpComfyUI(Gimp.PlugIn):
                                 drawables,  # noqa
                                 args,  # noqa
                                 ) -> Gimp.ValueArray:
-        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         LOGGER_GCUI.warning(f"demo_progressbar_window(): ")
         Gimp.message(f"demo_progressbar_window(): ")
+        GimpUi.init(procedure.get_name())
 
         return_values: Gimp.ValueArray = procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
         step: float = 0.0
@@ -1172,7 +1180,7 @@ class GimpComfyUI(Gimp.PlugIn):
                 step = 0.0
                 loops += 1
 
-            # LOGGER_GCUI.warning(f"step={step}, total={total}")
+            # LOGGER_GCUI.debug(f"step={step}, total={total}")
             progressbar_window.draw_progress(value=step, total=total)
             if loops >= finish_at:
                 try:
@@ -1183,19 +1191,27 @@ class GimpComfyUI(Gimp.PlugIn):
                     return False
             # As this is a timeout function, return True so that on_timeout() continues to get called
             return True
+
         try:
             if progressbar_window:
                 try:
+                    # Repeatedly calls on_timeout without blocking, until it returns False
                     timeout_id = GLib.timeout_add(50, on_timeout, None)  # noqa
-                    time.sleep(32)
+                    time.sleep(32)  # Sleeps for the specified number of seconds.
                 except Exception as an_exception_1:
+                    Gimp.message(str(an_exception_1))
                     LOGGER_SDGUIU.exception(an_exception_1)
                     return_values = procedure.new_return_values(Gimp.PDBStatusType.CANCEL, GLib.Error())
 
                 return_values = procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
             else:
-                return_values = procedure.new_return_values(Gimp.PDBStatusType.CANCEL, GLib.Error())
-        except Exception as some_problem:  # noqa
+                no_window_message: str = f"Failed to build ProgressBarWindow"
+                Gimp.message(no_window_message)
+                LOGGER_SDGUIU.error(no_window_message)
+                return_values = procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
+        except Exception as some_problem:
+            Gimp.message(str(some_problem))
+            LOGGER_SDGUIU.exception(some_problem)
             return_values = procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
         finally:
             return return_values
@@ -1354,8 +1370,11 @@ class HandleLayerChange(DrawableChangeListener):
             LOGGER_GCUI.exception(png_err)
 
 
-# GIMP 2.99.18 is using Python 3.11.8 (main, Feb 13 2024, 07:18:52)  [GCC 13.2.0 64 bit (AMD64)]
+# GIMP 3.0-RC1 is using Python 3.11.10 (main, Sep 10 2024, 13:02:21)  [GCC Clang 18.1.8 64 bit (AMD64)]
 GimpComfyUI.configure_loggers()
+meta_log_message: str = f"   Log file path for {GimpComfyUI.PYTHON_PLUGIN_NAME} = \"{GimpComfyUI.LOG_FILE_PATH}\""
+logging.warning(meta_log_message)
+LOGGER_GCUI.warning(meta_log_message)
 # For Gimp.main invocation see source gimp_world\gimp\libgimp\gimp.c and
 # https://developer.gimp.org/api/3.0/libgimp/func.main.html
 Gimp.main(GimpComfyUI.__gtype__, sys.argv)

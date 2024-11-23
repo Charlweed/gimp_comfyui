@@ -24,12 +24,13 @@ import sys
 import threading
 import time
 
+gi.require_version('Gdk', '3.0')
+gi.require_version("Gtk", "3.0")
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
 # noinspection PyUnresolvedReferences
-from gi.repository import Gdk, Gio, Gimp, GimpUi, Gtk, GLib, GObject
+from gi.repository import Gimp, GimpUi
+from gi.repository import Gdk, Gtk, GLib
 from urllib import request
 from utilities.cui_resources_utils import ModelType, get_models_list
 from utilities.long_term_storage_utils import *
@@ -394,7 +395,7 @@ def new_dialog_info(title_in: str, blurb_in: str) -> GimpUi.Dialog:
     # GIMP does something to the layout in dialogs. I'm not sure if I should force it to look more conventional.
     dialog.add_button(GLib.dgettext(None, "OK"), Gtk.ResponseType.OK)
     geometry = Gdk.Geometry()  # noqa
-    # TODO: Far too much empty whitespace, but resizing toes not seem to work.
+    # TODO: Far too much empty whitespace, but resizing does not seem to work.
     geometry.min_aspect = 1.0
     geometry.max_aspect = 1.0
     dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
@@ -923,6 +924,12 @@ def new_list_store_selected_drawables(image_in: Gimp.Image) -> Gtk.ListStore:
 
 
 def new_validation_css_bytes(widget: Gtk.Widget) -> bytes:
+    """
+    Provides css as bytes to decorate a widget differently as it is VALID(Green), INVALID(Red) or OK(Blue). Other code
+     needs to update the style class within the widget to reflect the state.
+    @param widget: The ProgressBar to decorate.
+    @return: the css bytes to insert into the style.
+    """
     widget_name: str = widget.get_name()
     if widget_name is None:
         raise ValueError("Widget does not have a name")
@@ -942,6 +949,12 @@ def new_validation_css_bytes(widget: Gtk.Widget) -> bytes:
 
 
 def new_progressbar_css_bytes(widget: Gtk.Widget) -> bytes:
+    """
+    Changes the ProgressBar text to DarkOrange, the trough to fuchsia, and the "progress" to a gradient.
+    Currently useless, bcause the ProgressBar in the GIMP window is inaccessible.
+    @param widget: The ProgressBar to decorate.
+    @return: the css bytes to insert into the style.
+    """
     widget_name: str = widget.get_name()
     if widget_name is None:
         raise ValueError("Widget does not have a name")
@@ -1356,7 +1369,7 @@ class ProgressBarWindow(Gtk.Window):
     """
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def on_window_map(self, event):
+    def on_window_map(self, event, user_data=None):
         LOGGER_SDGUIU.debug("ProgressBarWindow \"on-window-map\".\n"
                             "     Window should be visible...")
 
@@ -1430,7 +1443,7 @@ class ProgressBarWindow(Gtk.Window):
         fraction: float = 0.0
         if value > 0.0:
             fraction = value/self.total
-        LOGGER_SDGUIU.debug(f"argument value={value}; setting fraction={fraction}")
+        # LOGGER_SDGUIU.debug(f"argument value={value}; setting fraction={fraction}")
         self._progressbar.set_fraction(fraction=fraction)
 
     def pulse_progress(self):
@@ -1443,7 +1456,7 @@ class ProgressBarWindow(Gtk.Window):
         @param total: The total count of steps in this job.
         @return:
         """
-        LOGGER_SDGUIU.debug(f"argument value={value}; total={total}")
+        # LOGGER_SDGUIU.debug(f"argument value={value}; total={total}")
         self.total = total
         self.progress_value = value
 
@@ -1452,9 +1465,9 @@ class ProgressBarWindow(Gtk.Window):
         Call this when the task/process/job is done. Then never call anything on this instance again.
         @return:
         """
-        sys.stdout.flush()
-        sys.stderr.flush()
-        LOGGER_SDGUIU.warning(f"conceal_and_dispose() invoked.")
+        # sys.stdout.flush()
+        # sys.stderr.flush()
+        # LOGGER_SDGUIU.debug(f"conceal_and_dispose() invoked.")
         # Gtk.Window.close(self)
         self.close()
         self.destroy()
@@ -1464,33 +1477,33 @@ class ProgressBarWindow(Gtk.Window):
             LOGGER_SDGUIU.error("Local Event Loop is Unassigned.")
 
     def fly(self):
-        LOGGER_SDGUIU.warning(f"fly() invoked.")
+        # LOGGER_SDGUIU.debug(f"fly() invoked.")
         if self._local_event_loop is not None:
             raise ValueError("Local Event loop is already assigned.")
 
-        LOGGER_SDGUIU.warning(f"Defining _meta_fork function.")
+        # LOGGER_SDGUIU.debug(f"Defining _meta_fork function.")
 
         def _meta_fork():
             nonlocal self
-            sys.stdout.flush()
-            sys.stderr.flush()
-            LOGGER_SDGUIU.warning(f"Invoking _local_event_loop.run()")
-            # Likely GIMP or Mac or Python 3.10 bug. MainLoop.run() Does not process events, it seems
-            # to merely hang. FIXME: More testing, especially on Linux
+            # sys.stdout.flush()
+            # sys.stderr.flush()
+            # LOGGER_SDGUIU.debug(f"Invoking _local_event_loop.run()")
+            # Likely GIMP or Mac or Python 3.10 bug. On Mac, MainLoop.run() does not process events, it seems
+            # to merely hang. Works as expected on Python 3.11 Windows and Linux
             self._local_event_loop.run()  # Does not return until ._local_event_loop.quit() is called.
-            LOGGER_SDGUIU.warning(f"_local_event_loop.run() returned")
-            LOGGER_SDGUIU.warning(f"exiting meta_fork")
+            # LOGGER_SDGUIU.debug(f"_local_event_loop.run() returned")
+            # LOGGER_SDGUIU.debug(f"exiting meta_fork")
 
-        LOGGER_SDGUIU.warning(f"Constructing and assigning _local_event_loop")
+        # LOGGER_SDGUIU.debug(f"Constructing and assigning _local_event_loop")
         self._local_event_loop = GLib.MainLoop()
-        LOGGER_SDGUIU.warning(f"Constructing my_thread")
+        # LOGGER_SDGUIU.debug(f"Constructing my_thread")
         my_thread: threading.Thread = threading.Thread(target=_meta_fork)
-        LOGGER_SDGUIU.warning(f"Configuring my_thread")
+        # LOGGER_SDGUIU.debug(f"Configuring my_thread")
         my_thread.daemon = True  # Required so thread stops with GIMP
-        LOGGER_SDGUIU.warning(f"Starting my_thread...")
+        # LOGGER_SDGUIU.debug(f"Starting my_thread...")
         my_thread.start()
-        LOGGER_SDGUIU.warning(f"... my_thread started")
-        LOGGER_SDGUIU.warning(f"exiting fly()")
+        # LOGGER_SDGUIU.debug(f"... my_thread started")
+        # LOGGER_SDGUIU.debug(f"exiting fly()")
 
     @staticmethod
     def exhibit_window(title_in: str,
@@ -1508,20 +1521,20 @@ class ProgressBarWindow(Gtk.Window):
         @param activity_mode: If true, staps are not tracked, the bar just shows that work is unfinished.
         @return: A ProgressBarWindow. Call draw_progress() on it to track work.
         """
-        sys.stdout.flush()
-        sys.stderr.flush()
-        LOGGER_SDGUIU.warning(f"Constructing ProgressBarWindow.")
+        # sys.stdout.flush()
+        # sys.stderr.flush()
+        # LOGGER_SDGUIU.debug(f"Constructing ProgressBarWindow.")
         pb_window: ProgressBarWindow = ProgressBarWindow(title_in=title_in,
                                                          blurb_in=blurb_in,
                                                          total=total,
                                                          activity_mode=activity_mode)
-        LOGGER_SDGUIU.warning(f"Invoking pb_window.show_all()")
+        # LOGGER_SDGUIU.debug(f"Invoking pb_window.show_all()")
         pb_window.show_all()
-        LOGGER_SDGUIU.warning(f"pb_window.show_all() returned")
-        LOGGER_SDGUIU.warning(f"Invoking pb_window.fly()")
+        # LOGGER_SDGUIU.debug(f"pb_window.show_all() returned")
+        # LOGGER_SDGUIU.debug(f"Invoking pb_window.fly()")
         pb_window.fly()
-        LOGGER_SDGUIU.warning(f"pb_window.fly() returned.")
-        LOGGER_SDGUIU.warning(f"exiting exhibit_window()")
+        # LOGGER_SDGUIU.debug(f"pb_window.fly() returned.")
+        # LOGGER_SDGUIU.debug(f"exiting exhibit_window()")
         return pb_window
 
 
