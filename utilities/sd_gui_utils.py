@@ -20,6 +20,7 @@ import pprint
 import random
 import re
 import site
+import string
 import sys
 import threading
 import time
@@ -948,22 +949,28 @@ def new_validation_css_bytes(widget: Gtk.Widget) -> bytes:
     return css_string.encode('utf-8')
 
 
-def new_progressbar_css_bytes(widget: Gtk.Widget) -> bytes:
+def new_progressbar_css_bytes(widget: Gtk.ProgressBar | None = None) -> bytes:
+    if widget is not None:
+        return new_progressbar_css_bytes_4_named(widget)
+    else:
+        return new_progressbar_css_bytes_global()
+
+
+def new_progressbar_css_bytes_4_named(widget: Gtk.ProgressBar) -> bytes:
     """
-    Changes the ProgressBar text to DarkOrange, the trough to fuchsia, and the "progress" to a gradient.
-    Currently useless, bcause the ProgressBar in the GIMP window is inaccessible.
+    Changes the ProgressBar text to DarkOrange, the "trough" to fuchsia, and the "progress" to a gradient.
     @param widget: The ProgressBar to decorate.
     @return: the css bytes to insert into the style.
     """
     widget_name: str = widget.get_name()
     if widget_name is None:
-        raise ValueError("Widget does not have a name")
+        raise ValueError("ProgressBar does not have a name")
     if not widget_name.strip():
-        raise ValueError("Widget name cannot be empty nor whitespace.")
+        raise ValueError("ProgressBar name cannot be empty nor whitespace.")
     if re.search(r"\s", widget_name):
-        raise ValueError("Widget name cannot contain whitespace")
+        raise ValueError("ProgressBar name cannot contain whitespace")
     if widget_name in WIDGET_NAME_DEFAULTS:
-        raise ValueError("Widget name cannot be default name \"%s\"" % widget_name)
+        raise ValueError("ProgressBar name cannot be default name \"%s\"" % widget_name)
     # css code from
     # https://stackoverflow.com/questions/48097764/gtkprogressbar-with-css-for-progress-colour-not-functioning
     css_string = (f"""
@@ -981,6 +988,30 @@ def new_progressbar_css_bytes(widget: Gtk.Widget) -> bytes:
     }}
     """)
     # LOGGER_SDGUIU.debug("Generated CSS:\n%s" % css_string)
+    return css_string.encode('utf-8')
+
+
+def new_progressbar_css_bytes_global() -> bytes:
+    """
+    Changes the ProgressBar text to DarkOrange, the trough to fuchsia, and the "progress" to a gradient.
+    @return: the css bytes to insert into the style.
+    """
+    # css code from
+    # https://stackoverflow.com/questions/48097764/gtkprogressbar-with-css-for-progress-colour-not-functioning
+    css_string = (f"""
+    progressbar text {{
+        color: DarkOrange;
+        font-weight: bold;
+    }}
+    progressbar > trough > progress {{
+      background-image: none;
+      background-color: fuchsia;
+    }}
+    progressbar progress{{
+        background-image: linear-gradient(90deg, yellow, red);
+        background-color: fuchsia;
+    }}
+    """)
     return css_string.encode('utf-8')
 
 
@@ -1359,13 +1390,102 @@ def example_dialog_0() -> int:
     return 0
 
 
-# noinspection PyUnresolvedReferences
+class ProgressBarHelperGimp:
+    """
+    Eases using GIMP's hard-to-see plug-in ProgressBar
+    """
+
+    def __init__(self, text_in: str | None = None, total: float = 9999999999999.0):
+        self._total: float = total
+        self._fraction: float = 0
+        self._text: str | None = text_in
+
+    @property
+    def total(self) -> float:
+        return self._total
+
+    @total.setter
+    def total(self, value: float):
+        new_total: float = 9999999999999.0  # A large number!
+        if value >= 0:
+            new_total = value
+        self._total = new_total
+
+    @property
+    def fraction(self) -> float:
+        return self._fraction
+
+    @property
+    def progress_value(self) -> float:
+        return self.fraction * self.total
+
+    @progress_value.setter
+    def progress_value(self, value: float):
+        fraction: float = 0.0
+        if self.total == 0:
+            fraction = 1
+            LOGGER_SDGUIU.error(f"Total == 0. Fudged away division by 0")
+        else:
+            if value > 0.0:
+                fraction = value/self.total
+        LOGGER_SDGUIU.warning(f"argument value={value}; setting fraction={fraction}")
+        Gimp.progress_update(percentage=fraction)
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, text: str):
+        self._text = text
+        success = Gimp.progress_set_text(self._text)
+        if not success:
+            raise ValueError("Problem setting text for the Gimp ProgressBar")
+
+    def draw_progress(self, value: float, total: float):
+        """
+        Call this method to visually display work progress. When value == total, work is 100% done.
+        @param value: The index/count/number of the last step completed.
+        @param total: The total count of steps in this job.
+        @return:
+        """
+        # LOGGER_SDGUIU.debug(f"argument value={value}; total={total}")
+        self.total = total
+        self.progress_value = value
+
+    def init(self, text: str | None = None, total: float = 9999999999999.0):
+        self._total = total
+        self._fraction = 0
+        success = Gimp.progress_init(text)
+        if not success:
+            raise ValueError("Problem initializing the Gimp ProgressBar")
+        if self._text is not None:
+            success = Gimp.progress_set_text(self._text)
+            if not success:
+                raise ValueError("Problem setting text for the Gimp ProgressBar")
+        install_css_styles(new_progressbar_css_bytes_global())
+
+    def end(self):
+        self._fraction = 1
+        success = Gimp.progress_end()
+        if not success:
+            raise ValueError("Problem ending the Gimp ProgressBar")
+
+    @staticmethod
+    def pulse():
+        success = Gimp.progress_pulse()
+        if not success:
+            raise ValueError("Problem pulsing Gimp ProgressBar")
+
+
 class ProgressBarWindow(Gtk.Window):
     """
-    GIMP does not currently provide a thread-safe way to open a "window", that responds to events and does not block
-    the procedure's thread. This is a problem when we want to show anything asynchronous, such as tracking the progress
-    of work on a separate server. This class's exhibit_window() method is a work-around for opening a window
-    that is interactive. So far, it seems OK for the use-case of showing progress.
+    GIMP does not currently provide an API to open a "window" that does not block the procedure's thread.
+    This is an issue when we want to show anything that happens AFTER a procedure dialog closes, such as
+    tracking the progress of work on a separate server. This class's exhibit_window() method opens a window
+    with a Gtk ProgressBar that can be updated like a plain ProgressBar. On Windows and Linux, it works as expected,
+    and as per the Gtk docs, but MainLoop.run() seems to hang on GIMP for Mac.
+    The unexpected behavior is in ProgressBarWindow::fly()::_meta_fork() "self._local_event_loop.run()"
     """
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
@@ -1380,6 +1500,8 @@ class ProgressBarWindow(Gtk.Window):
                  activity_mode: bool = False
                  ):
         super().__init__(title=title_in)
+        random_string: str = ''.join(random.choice(string.ascii_letters) for i in range(4))
+        self.set_name(f"progressbar_window_{random_string}")
         self._local_event_loop: GLib.MainLoop | None = None
         self._total: float
         self._activity_mode = activity_mode
@@ -1391,8 +1513,11 @@ class ProgressBarWindow(Gtk.Window):
         else:
             self._total = 9999999999999.0  # A large number!
         self._progressbar = Gtk.ProgressBar()
+        random_string = ''.join(random.choice(string.ascii_letters) for i in range(4))
+        self._progressbar.set_name(f"embedded_progressbar_{random_string}")
         self._progressbar.set_fraction(fraction=0.0)
-        self.set_border_width(10)
+        progress_bar_css: bytes = new_progressbar_css_bytes(self._progressbar)
+        install_css_styles(progress_bar_css)
         vbox_0: Gtk.Box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         if blurb_in:
             label_and_icon_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -1402,7 +1527,8 @@ class ProgressBarWindow(Gtk.Window):
             label_and_icon_box.set_margin_end(40)
             label_and_icon_box.show_all()  # noqa
             vbox_0.add(label_and_icon_box)  # noqa
-        self.add(vbox_0)
+        self.add(vbox_0)  # noqa
+        self.set_border_width(10)  # noqa
         self.set_default_size(512, 96)
         vbox_0.pack_start(self._progressbar, True, True, 0)
         self.connect("map-event", self.on_window_map)  # Strange name for "widget shown" event.
@@ -1441,8 +1567,12 @@ class ProgressBarWindow(Gtk.Window):
     @progress_value.setter
     def progress_value(self, value: float):
         fraction: float = 0.0
-        if value > 0.0:
-            fraction = value/self.total
+        if self.total == 0:
+            fraction = 1
+            LOGGER_SDGUIU.error(f"Total == 0. Fudged away division by 0")
+        else:
+            if value > 0.0:
+                fraction = value/self.total
         # LOGGER_SDGUIU.debug(f"argument value={value}; setting fraction={fraction}")
         self._progressbar.set_fraction(fraction=fraction)
 

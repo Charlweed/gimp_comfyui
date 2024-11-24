@@ -1167,9 +1167,13 @@ class GimpComfyUI(Gimp.PlugIn):
                                                                                         blurb_in="Look at it go!",
                                                                                         total=10.0)
 
+        progressbar_helper: ProgressBarHelperGimp = ProgressBarHelperGimp(total=10)
+        progressbar_helper.init("Procedure Progress")
+
         # noinspection PyUnusedLocal
         def on_timeout(user_data=None):
             nonlocal progressbar_window
+            nonlocal progressbar_helper
             nonlocal step
             nonlocal total
             nonlocal loops
@@ -1182,9 +1186,11 @@ class GimpComfyUI(Gimp.PlugIn):
 
             # LOGGER_GCUI.debug(f"step={step}, total={total}")
             progressbar_window.draw_progress(value=step, total=total)
+            progressbar_helper.draw_progress(value=step, total=total)
             if loops >= finish_at:
                 try:
                     progressbar_window.conceal_and_dispose()
+                    progressbar_helper.end()
                 except Exception as an_exception_0:
                     LOGGER_SDGUIU.exception(an_exception_0)
                 finally:
