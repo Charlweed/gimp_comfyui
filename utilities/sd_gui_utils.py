@@ -1500,7 +1500,7 @@ class ProgressBarWindow(Gtk.Window):
                  activity_mode: bool = False
                  ):
         super().__init__(title=title_in)
-        random_string: str = ''.join(random.choice(string.ascii_letters) for i in range(4))
+        random_string: str = ''.join(random.choice(string.ascii_letters) for i in range(4))  # noqa
         self.set_name(f"progressbar_window_{random_string}")
         self._local_event_loop: GLib.MainLoop | None = None
         self._total: float
@@ -1513,7 +1513,7 @@ class ProgressBarWindow(Gtk.Window):
         else:
             self._total = 9999999999999.0  # A large number!
         self._progressbar = Gtk.ProgressBar()
-        random_string = ''.join(random.choice(string.ascii_letters) for i in range(4))
+        random_string = ''.join(random.choice(string.ascii_letters) for i in range(4))  # noqa
         self._progressbar.set_name(f"embedded_progressbar_{random_string}")
         self._progressbar.set_fraction(fraction=0.0)
         progress_bar_css: bytes = new_progressbar_css_bytes(self._progressbar)
@@ -1541,7 +1541,7 @@ class ProgressBarWindow(Gtk.Window):
     def activity_mode(self, activity: bool):
         self._activity_mode = activity
         if self._activity_mode:
-            self._progressbar.pulse()
+            GLib.idle_add(self._progressbar.pulse)
         else:
             self.progress_value = 0.0
 
@@ -1558,6 +1558,7 @@ class ProgressBarWindow(Gtk.Window):
 
     @property
     def fraction(self) -> float:
+        # No good way to use idle_add here.
         return self._progressbar.get_fraction()
 
     @property
@@ -1574,11 +1575,18 @@ class ProgressBarWindow(Gtk.Window):
             if value > 0.0:
                 fraction = value/self.total
         # LOGGER_SDGUIU.debug(f"argument value={value}; setting fraction={fraction}")
-        self._progressbar.set_fraction(fraction=fraction)
+
+        def enclosure():
+            nonlocal self
+            nonlocal fraction
+            self._progressbar.set_fraction(fraction=fraction)
+
+        GLib.idle_add(enclosure)
 
     def pulse_progress(self):
-        self._progressbar.pulse()
+        GLib.idle_add(self._progressbar.pulse)
 
+    # noinspection PyUnusedLocal
     def draw_progress(self, value: float, total: float):
         """
         Call this method to visually display work progress. When value == total, work is 100% done.
@@ -1586,9 +1594,18 @@ class ProgressBarWindow(Gtk.Window):
         @param total: The total count of steps in this job.
         @return:
         """
-        # LOGGER_SDGUIU.debug(f"argument value={value}; total={total}")
-        self.total = total
-        self.progress_value = value
+
+        # Should not be necessary, because progress_value encloses its access to self._progressbar.
+        # But if that changes, this will not have to.
+        def enclosure():
+            nonlocal self
+            nonlocal value
+            nonlocal total
+            # LOGGER_SDGUIU.debug(f"argument value={value}; total={total}")
+            self.total = total
+            self.progress_value = value
+
+        GLib.idle_add(enclosure)
 
     def conceal_and_dispose(self):
         """
@@ -1599,8 +1616,12 @@ class ProgressBarWindow(Gtk.Window):
         # sys.stderr.flush()
         # LOGGER_SDGUIU.debug(f"conceal_and_dispose() invoked.")
         # Gtk.Window.close(self)
-        self.close()
-        self.destroy()
+        def enclosure():
+            nonlocal self
+            self.close()
+            self.destroy()
+        GLib.idle_add(enclosure)
+
         if self._local_event_loop is not None:
             self._local_event_loop.quit()
         else:
@@ -1658,9 +1679,9 @@ class ProgressBarWindow(Gtk.Window):
                                                          blurb_in=blurb_in,
                                                          total=total,
                                                          activity_mode=activity_mode)
-        # LOGGER_SDGUIU.debug(f"Invoking pb_window.show_all()")
-        pb_window.show_all()
-        # LOGGER_SDGUIU.debug(f"pb_window.show_all() returned")
+        # LOGGER_SDGUIU.debug(f"Queueing pb_window.show_all()")
+        # noinspection PyUnresolvedReferences
+        GLib.idle_add(pb_window.show_all)
         # LOGGER_SDGUIU.debug(f"Invoking pb_window.fly()")
         pb_window.fly()
         # LOGGER_SDGUIU.debug(f"pb_window.fly() returned.")

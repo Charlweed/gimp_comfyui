@@ -949,7 +949,7 @@ class GimpComfyUI(Gimp.PlugIn):
                                                                                  node_progress=self.node_progress_update,  # noqa
                                                                                  step_progress=log_step_progress
                                                                                  )
-                        self._node_progress_end()
+                        self.node_progress_end()
                         if pix_buffers is None:
                             raise ValueError("None value instead of List[GdkPixbuf.Pixbuf]")
                         if not pix_buffers:
