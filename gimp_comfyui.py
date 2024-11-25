@@ -50,7 +50,7 @@ gi.require_version('GimpUi', '3.0')  # noqa: E402
 
 # noinspection PyUnresolvedReferences
 from gi.repository import Gegl, Gimp, GimpUi
-from gi.repository import GLib, GObject, Gdk, GdkPixbuf, Gio, Gtk
+# from gi.repository import GLib, GObject, Gdk, GdkPixbuf, Gio, Gtk
 from gimp3_concurrency.drawable_change_notifier import *
 from utilities.babl_gegl_utils import *
 from utilities.cui_net_utils import *
@@ -478,6 +478,7 @@ class GimpComfyUI(Gimp.PlugIn):
         # New instance is created every time an operation is selected ...
         # LOGGER_GCUI.debug("__init__()")
         self._name = GimpComfyUI.PYTHON_PLUGIN_NAME_LONG
+        self._node_progress_helper: ProgressBarHelperGimp | None = None
         self._default_accessor: ComfyuiDefaultAccessor = ComfyuiDefaultAccessor()
         self._flux_accessor: Flux1Dot0Accessor = Flux1Dot0Accessor()
         self._flux_neg_accessor: FluxNeg1Dot1Accessor = FluxNeg1Dot1Accessor()
@@ -620,6 +621,16 @@ class GimpComfyUI(Gimp.PlugIn):
                                    })
         ret_values = procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
         return ret_values
+
+    def node_progress_update(self, node_number: int, node_count: int, workflow_name: str | None = None):
+        if self._node_progress_helper is None:
+            self._node_progress_helper = ProgressBarHelperGimp(text_in=workflow_name, total=node_count)
+        self._node_progress_helper.progress_value = node_number
+        message: str = f"Finished node {node_number} of {self._node_progress_helper.total} ..."
+        LOGGER_GCUI.info(message)
+
+    def node_progress_end(self):
+        self._node_progress_helper.end()
 
     # noinspection PyMethodMayBeStatic
     def do_query_procedures(self) -> List[str]:
@@ -930,12 +941,15 @@ class GimpComfyUI(Gimp.PlugIn):
                     if response == Gtk.ResponseType.OK:
                         dialog.destroy()
                         Gimp.displays_flush()
+                        # This is the "long-running" part. This can take minutes, or more to return.
                         pix_buffers: List[GdkPixbuf.Pixbuf] = send_workflow_data(cu_origin=GimpComfyUI.COMFYUI_ORIGIN,
                                                                                  client_id=PLUGIN_UUID_COMFYUI_STR,
+                                                                                 workflow_title=title_in,
                                                                                  nodes_dict=factory.workflow_data,
-                                                                                 node_progress=log_node_progress,
+                                                                                 node_progress=self.node_progress_update,  # noqa
                                                                                  step_progress=log_step_progress
                                                                                  )
+                        self._node_progress_end()
                         if pix_buffers is None:
                             raise ValueError("None value instead of List[GdkPixbuf.Pixbuf]")
                         if not pix_buffers:
@@ -1107,7 +1121,6 @@ class GimpComfyUI(Gimp.PlugIn):
             return procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
         else:
             return procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
-    # noinspection PyMethodMayBeStatic
 
     # noinspection PyMethodMayBeStatic
     def demo_images_n_layers(self, procedure: Gimp.ImageProcedure,
