@@ -177,7 +177,7 @@ class GimpComfyUI(Gimp.PlugIn):
     HOME: str = os.path.expanduser('~')
     MESSAGE_REGISTRATION = "Registering " + __file__ + ":" + PYTHON_PLUGIN_NAME
     MESSAGE_REGISTRATION_COMPLETED = __file__ + ":" + PYTHON_PLUGIN_NAME + " returned."
-    VERSION: str = "0.7.13"
+    VERSION: str = "0.7.14"
 
     # Procedure names.
     PROCEDURE_ABOUT_CONFIG = PYTHON_PLUGIN_NAME + "-About-Config"
