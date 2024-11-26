@@ -35,6 +35,7 @@ from gi.repository import Gdk, Gtk, GLib
 from urllib import request
 from utilities.cui_resources_utils import ModelType, get_models_list
 from utilities.long_term_storage_utils import *
+from utilities.asynch_utils import gtk_idle_add, gtk_producer
 from utilities.type_utils import *
 
 # Constants
@@ -63,7 +64,7 @@ class SubjectType(Enum):
 
 
 # Global functions
-
+@gtk_producer
 def append_all_texts(combo_box: Gtk.ComboBoxText, items: List[str]) -> Gtk.ComboBoxText:
     for item in items:
         combo_box.append_text(item)
@@ -80,6 +81,7 @@ def asset_path(asset_name: str):
     return os.path.join(assets_dir_path(), asset_name)
 
 
+@gtk_idle_add
 def close_window_of_widget(source: Gtk.Widget):
     da_top = Gtk.Widget.get_toplevel(source)  # noqa
     Gtk.Window.close(da_top)
@@ -90,6 +92,7 @@ def config_combobox_dict_int_str(combo_box: Gtk.ComboBox, dictionary: Dict[str, 
     config_combobox_dict_str_int(combo_box, reciprocal_dict(dictionary), default_value)
 
 
+@gtk_idle_add
 def config_combobox_dict_str_int(combo_box: Gtk.ComboBox, dictionary: Dict[str, int], default_value: str):
     list_store: Gtk.ListStore = Gtk.ListStore.new(types=[int, str])  # noqa n_columns unfilled
     for key, value in dictionary.items():
@@ -107,6 +110,7 @@ def config_combobox_dict_str_int(combo_box: Gtk.ComboBox, dictionary: Dict[str, 
     config_combobox_liststore(combo_box, list_store, index)
 
 
+@gtk_idle_add
 def config_combobox_liststore(combo_box: Gtk.ComboBox, list_store: Gtk.ListStore, index: int):
     combo_box.set_model(list_store)
     combo_box.set_active(index)
@@ -167,6 +171,7 @@ def filt_widg(widget_type: type, widgets: List[Gtk.Widget]) -> List[Gtk.Widget]:
     return list(filter(widg_pred, widgets))
 
 
+@gtk_producer
 def find_all_widgets(widget: Gtk.Widget) -> List[Gtk.Widget]:
     contained: List[Gtk.Widget] = []
     if hasattr(widget, 'get_child') and callable(getattr(widget, 'get_child')):  # rare, but happens
@@ -189,6 +194,7 @@ def get_gtk_versions():
     return "Gtk used in GIMP is %s.%s.%s" % (major, minor, micro)
 
 
+@gtk_producer
 def get_selected_row(widget: Gtk.Widget) -> List[Any]:
     """
     Returns the selected row as a list. The list will be empty if there is no selection, but never None
@@ -265,6 +271,7 @@ def install_css_styles(style_bytes: bytes):
 
 
 # noinspection PyUnresolvedReferences
+@gtk_producer
 def new_box_of_radios(options: List[str], handler: Callable[[Any], None]) -> Gtk.Box:
     box_0: Gtk.Box = Gtk.Box.new(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
     i: int = 1
@@ -639,6 +646,7 @@ def open_dialog_daemon(title_in: str,
     my_thread.start()
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_list_store_images() -> Gtk.ListStore:
     """
     Returns a Gtk.ListStore of tuples image_id, index, image_name for the images open in GIMP
@@ -662,6 +670,7 @@ def new_list_store_images() -> Gtk.ListStore:
     return images_list_store
 
 
+# Don't decorate, it calls a slow process
 def new_list_store_models(model_type: ModelType, cu_origin: str) -> Gtk.ListStore:
     """
     Returns a Gtk.ListStore of tuples model_basename, index, model_path for models of the specified type currently
@@ -689,6 +698,7 @@ def new_list_store_models(model_type: ModelType, cu_origin: str) -> Gtk.ListStor
     return models_list_store
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_set_images() -> set[tuple[int, int, str]]:
     """
     Returns a set of tuples image_id, index, image_name for the images open in GIMP
@@ -725,6 +735,7 @@ def new_set_image_ids() -> set[int]:
     return image_ids
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_tree_store_images() -> Gtk.TreeStore:
     images_tree_store: Gtk.TreeStore = Gtk.TreeStore.new(types=[int, int, str])  # image_id, index, image_name
     image: Gimp.Image
@@ -744,6 +755,7 @@ def new_tree_store_images() -> Gtk.TreeStore:
     return images_tree_store
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_list_store_layers(image_in: Gimp.Image) -> Gtk.ListStore:
     if not image_in:
         raise ValueError("image_in argument cannot be None.")
@@ -759,6 +771,7 @@ def new_list_store_layers(image_in: Gimp.Image) -> Gtk.ListStore:
     return layers_list_store
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_list_store_all_layers() -> Gtk.TreeStore:
     all_layers_tree_store: Gtk.TreeStore = (
         Gtk.TreeStore.new(types=[str, int, int, str]))  # type_name, image_id, index, image_name
@@ -776,6 +789,7 @@ def new_list_store_all_layers() -> Gtk.TreeStore:
     return all_layers_tree_store
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_set_all_layers() -> set[tuple[int, int, str]]:  # layer_id, index, layer_name
     """
     Returns a set of tuples tuple[int, int, str]  # layer_id, index, layer_name for all root layers in all open images.
@@ -845,6 +859,7 @@ def print_row(store: Gtk.TreeStore, treepath: Gtk.TreePath, treeiter: Gtk.TreeIt
     print("\t" * (treepath.get_depth() - 1), store[treeiter][:], sep="")  # noqa
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_images_combobox(selection_changed_handler: Callable[[Any], None]) -> Gtk.ComboBox:
     image_store: Gtk.ListStore = Gtk.ListStore.new(types=[int, int, str])  # image_id, index, image_name
     try:
@@ -862,6 +877,7 @@ def new_images_combobox(selection_changed_handler: Callable[[Any], None]) -> Gtk
     return image_combo
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_all_layers_treeview(selection_changed_handler: Callable[[Any], None]) -> Gtk.TreeView:
     index_type_name = 0
     index_item_name = 3
@@ -909,6 +925,7 @@ def new_all_layers_treeview(selection_changed_handler: Callable[[Any], None]) ->
     return fresh_treeview
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_list_store_selected_drawables(image_in: Gimp.Image) -> Gtk.ListStore:
     if not image_in:
         raise ValueError("image_in argument cannot be None.")
@@ -924,6 +941,7 @@ def new_list_store_selected_drawables(image_in: Gimp.Image) -> Gtk.ListStore:
     return selected_drawables_list_store
 
 
+@gtk_producer
 def new_validation_css_bytes(widget: Gtk.Widget) -> bytes:
     """
     Provides css as bytes to decorate a widget differently as it is VALID(Green), INVALID(Red) or OK(Blue). Other code
@@ -956,6 +974,7 @@ def new_progressbar_css_bytes(widget: Gtk.ProgressBar | None = None) -> bytes:
         return new_progressbar_css_bytes_global()
 
 
+@gtk_producer
 def new_progressbar_css_bytes_4_named(widget: Gtk.ProgressBar) -> bytes:
     """
     Changes the ProgressBar text to DarkOrange, the "trough" to fuchsia, and the "progress" to a gradient.
@@ -1077,6 +1096,7 @@ def restrict_to_numbers(entry_widget: Gtk.Entry):
         entry_widget.connect(SIG_CHANGED, filter_numbers)
 
 
+# Expected to only be called by code on the MainLoop thread, so don't bother decorating.
 def validate_in_bounds(entry_widget: Gtk.Entry,
                        minimum: float = float('-inf'),
                        maximum: float = float('inf'),
@@ -1161,6 +1181,7 @@ def validate_in_bounds(entry_widget: Gtk.Entry,
     entry_widget.connect(SIG_CHANGED, handle_bounds_check)
 
 
+# Expected to only be called by code on the MainLoop thread, so don't bother decorating.
 def validate_int(entry_widget: Gtk.Entry,
                  track_invalid_widgets: Callable[[Gtk.Widget, bool], None] = None):
     if not isinstance(entry_widget, Gtk.Entry):
@@ -1218,6 +1239,7 @@ def validate_int(entry_widget: Gtk.Entry,
     entry_widget.connect(SIG_CHANGED, handle_is_int)
 
 
+# Expected to only be called by code on the MainLoop thread, so don't bother decorating.
 def validate_float(entry_widget: Gtk.Entry,
                    track_invalid_widgets: Callable[[Gtk.Widget, bool], None] = None):
     if not isinstance(entry_widget, Gtk.Entry):
@@ -1310,22 +1332,27 @@ def server_online(url_in: str, show_dialog: bool = True):
         return False
 
 
+@gtk_producer
 def val_combo_index(cbox: Gtk.ComboBox) -> int:
     return cbox.get_active()
 
 
+@gtk_producer
 def val_combo(cbox: Gtk.ComboBox):
     return cbox.get_model()[cbox.get_active_iter()][0]  # noqa
 
 
+@gtk_producer
 def val_entry(an_entry: Gtk.Entry):
     return an_entry.get_text()
 
 
+@gtk_producer
 def val_scale(a_scale: Gtk.Scale):
     return a_scale.get_value()
 
 
+@gtk_producer
 def val_text_view(a_text_view: Gtk.TextView):
     buffer: Gtk.TextBuffer = a_text_view.get_buffer()
     start: Gtk.TextIter = buffer.get_start_iter()
@@ -1333,6 +1360,7 @@ def val_text_view(a_text_view: Gtk.TextView):
     return buffer.get_text(start, end, False)
 
 
+@gtk_producer
 def val_widget(a_widget: Gtk.Widget):
     if isinstance(a_widget, GimpUi.LayerComboBox):
         result = val_combo(a_widget)  # noqa
@@ -1347,7 +1375,7 @@ def val_widget(a_widget: Gtk.Widget):
     if isinstance(a_widget, Gtk.ToggleButton): return a_widget.get_active()  # noqa
 
 
-def example_dialog_0() -> int:
+def _example_dialog_0() -> int:
     blurb: str = "Test run from main()"
     carry_on: bool = True
 
@@ -1690,7 +1718,7 @@ class ProgressBarWindow(Gtk.Window):
 
 
 # noinspection PyUnresolvedReferences
-def example_progress_0():
+def _example_progress_0():
     progress_window: ProgressBarWindow = ProgressBarWindow(title_in="Progress Demo",
                                                            blurb_in="Look at it go!",
                                                            total=10.0)
@@ -1719,7 +1747,7 @@ def example_progress_0():
     Gtk.main()
 
 
-def example_progress_1():
+def _example_progress_1():
     # The progress_window will appear before this call returns.
     # noinspection PyTypeChecker
     progress_window: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
@@ -1773,7 +1801,7 @@ def example_progress_1():
         LOGGER_SDGUIU.exception(an_exception_1)
 
 
-def example_progress_2():
+def _example_progress_2():
     # The progress_window will appear before this call returns.
     # noinspection PyTypeChecker
     progress_window: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
@@ -1819,7 +1847,7 @@ def example_progress_2():
 
 def main() -> int:
     try:
-        example_progress_2()
+        _example_progress_2()
     except Exception as an_exception:
         LOGGER_SDGUIU.exception(an_exception)
         return -1

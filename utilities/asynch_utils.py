@@ -49,8 +49,10 @@ class Status(Enum):
 def gtk_idle_add(func: Callable):
     """
     Decorator to run a function in the GTK main loop.
-    Functions decorated with this will not run if there's no main loop running. DO NOT use this decorator on functions
-    that need to return a value derived from a Gtk.Widget, use gtk_consumer instead.
+    Functions decorated with this will not run if there's no main loop running. Functions that create top-Level Windows
+    and Dialogs are a special case, they MOSTLY need to run before a Gtk.MainLoop has started, so GENERALLY don't
+    decorate such functions with this, it will cause lockups. DO NOT use this decorator on functions
+    that need to return a value derived from a Gtk.Widget, use @gtk_producer instead.
     @param func function to wrap.
     @type func: Callable
     """
@@ -61,11 +63,13 @@ def gtk_idle_add(func: Callable):
     return wrapper
 
 
-def gtk_consumer(func: Callable):
+def gtk_producer(func: Callable):
     """
     Decorator for functions that need to return a value derived from a function run in the GTK main loop. Use this on
     functions that read any values from Gtk.Widgets, even names, colors etc. DO NOT use this decorator on functions that
-    don't return a value, or always return None. Use the gtk_idle_add decorator instead.
+    don't return a value, or always return None. Use the @gtk_idle_add decorator instead.
+    Also, functions that create top-Level Windows and Dialogs are a special case, they MOSTLY need to run before a
+    Gtk.MainLoop has started, so GENERALLY don't decorate such functions with this, it will cause lockups.
     Functions decorated with this will not run, and might deadlock block if there's no main loop running.
     @param func function to wrap.
     @type func: Callable
@@ -119,7 +123,7 @@ def gtk_consumer(func: Callable):
 ##########################
 
 
-@gtk_consumer
+@gtk_producer
 def _name_of_widget(some_widget: Gtk.Widget) -> str:
     return some_widget.get_name()
 
@@ -132,7 +136,7 @@ def _print_widget_name(a_widget: Gtk.Widget):
     print(a_widget.get_name())
 
 
-@gtk_consumer
+@gtk_producer
 def _new_button() -> Gtk.Button:
     # Print order can get scrambled in multithreaded code
     sys.stdout.flush()
