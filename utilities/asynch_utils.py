@@ -34,7 +34,7 @@ gi.require_version('Gio', '2.0')
 gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk, GLib
-from typing import Any, List
+from typing import Any
 
 LOGGER_FORMAT_AU = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
 LOGGER_AU = logging.getLogger("asynch_utils")
@@ -91,25 +91,18 @@ def gtk_duty_performer(func):
                 LOGGER_AU.warning("Obtained non-null \"result[0]\" from read()")  # This is the last line seen...
             return False  # Remove idle callback
 
-        sys.stdout.flush()
-        sys.stderr.flush()
-        LOGGER_AU.warning("invoking  GLib.idle_add(idle_callback) ... ...")
         GLib.idle_add(idle_callback)
-        LOGGER_AU.warning("... ... GLib.idle_add(idle_callback) returned.")
-        sys.stdout.flush()
-        sys.stderr.flush()
-        # This is only supposed to loop until read assigns non None to result[0]
-        # Furthermore, "If no events are waiting to be processed GTK+ will block until the next event is noticed."
+
         counter: int = 0
         max_loops: int = 800
         LOGGER_AU.warning("Starting loop waiting on \"result[0]\"")
         sys.stdout.flush()
         sys.stderr.flush()
-        while result[0] is None:
+        while status == Status.UNFINISHED:
             # LOGGER_AU.warning(f" In wait Loop, counter={counter}")
             # noinspection PyUnresolvedReferences
             Gtk.main_iteration_do(False)
-            if result[0] is not None:
+            if status != Status.UNFINISHED:
                 sys.stdout.flush()
                 sys.stderr.flush()
                 LOGGER_AU.warning(f"\"result[0]\" not None, breaking loop at {counter}")
@@ -146,7 +139,7 @@ def new_button() -> Gtk.Button:
     sys.stderr.flush()
     LOGGER_AU.warning("Constructing another button")
     fresh_button = Gtk.Button(label="Another button")
-    fresh_button.set_name("bigus_dickus")
+    fresh_button.set_name("Sweet Paprika")
     fresh_button.connect("clicked", lambda txt: print(txt))
     return fresh_button
 
@@ -162,14 +155,13 @@ def insert_button(box: Gtk.Box, another_button: Gtk.Button):
 
 # Notice no decoration for this function
 def example_asynch_0():
-    LOGGER_AU.warning("Constructing Window")
     win = Gtk.Window()
-    win.connect("destroy", Gtk.main_quit)
+    win.connect("destroy", Gtk.main_quit)  # noqa
     vbox: Gtk.Box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     first_button = Gtk.Button(label="First button")
     vbox.add(first_button)
-    win.add(vbox)
-    win.show_all()
+    win.add(vbox)  # noqa
+    win.show_all()  # noqa
     return win, vbox
 
 
@@ -183,7 +175,7 @@ def in_another_thread(window: Gtk.Window, box: Gtk.Box):
     LOGGER_AU.warning("button obtained")
     LOGGER_AU.warning("Adding button to window.")
     insert_button(box=box, another_button=my_button)
-
+    window.show_all()  # noqa
     LOGGER_AU.warning("invoking print widget name")
     print_widget_name(my_button)
     LOGGER_AU.warning("print invoked")
@@ -194,17 +186,14 @@ def main() -> int:
     logging.basicConfig(format=LOGGER_FORMAT_AU, level=logging.DEBUG)
     window: Gtk.Window | None = None
     try:
-        LOGGER_AU.warning("try-block")
-        LOGGER_AU.warning("making window")
         # No decorations. This is invoked in the application thread, which MIGHT be the main thread, but no loop yet.
         window, vbox = example_asynch_0()
-        LOGGER_AU.warning("window obtained")
         # Now we start a new thread, but first thing it must do is wait for the MainLoop to start.
         # That's an unusual situation that is contrived for this example.
         thread: threading.Thread = threading.Thread(target=lambda: in_another_thread(window=window, box=vbox))
         thread.start()
-        LOGGER_AU.warning("Creating main loop")
-        Gtk.main()  # Does not return until quit
+        # Gtk.main() does not return until quit
+        Gtk.main()  # noqa
     except Exception as an_exception:
         logging.exception(an_exception)
         return -1
