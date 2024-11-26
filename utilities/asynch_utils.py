@@ -34,7 +34,7 @@ gi.require_version('Gio', '2.0')
 gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk, GLib
-from typing import Any
+from typing import Any, Callable
 
 LOGGER_FORMAT_AU = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
 LOGGER_AU = logging.getLogger("asynch_utils")
@@ -46,10 +46,13 @@ class Status(Enum):
     ERROR = auto()
 
 
-def gtk_idle_add(func):
+def gtk_idle_add(func: Callable):
     """
     Decorator to run a function in the GTK main loop.
-    functions decorated with this will not run if there's no main loop running.
+    Functions decorated with this will not run if there's no main loop running. DO NOT use this decorator on functions
+    that need to return a value derived from a Gtk.Widget, use gtk_consumer instead.
+    @param func function to wrap.
+    @type func: Callable
     """
 
     def wrapper(*args, **kwargs):
@@ -58,10 +61,14 @@ def gtk_idle_add(func):
     return wrapper
 
 
-def gtk_duty_performer(func):
+def gtk_consumer(func: Callable):
     """
-    Decorator to obtain a value from a function run in the GTK main loop.
-    functions decorated with this will block run if there's no main loop running.
+    Decorator for functions that need to return a value derived from a function run in the GTK main loop. Use this on
+    functions that read any values from Gtk.Widgets, even names, colors etc. DO NOT use this decorator on functions that
+    don't return a value, or always return None. Use the gtk_idle_add decorator instead.
+    Functions decorated with this will not run, and might deadlock block if there's no main loop running.
+    @param func function to wrap.
+    @type func: Callable
     """
 
     def accessor(reader, *args, **kwargs) -> Any:
@@ -83,36 +90,23 @@ def gtk_duty_performer(func):
 
         def idle_callback():
             nonlocal result
-            LOGGER_AU.warning("invoking read and assigning whatever to \"result[0]\"")
             result[0] = read()
             if result[0] is None:
-                raise ValueError("read returned None")
+                LOGGER_AU.debug("read() returned None")
             else:
-                LOGGER_AU.warning("Obtained non-null \"result[0]\" from read()")  # This is the last line seen...
+                # LOGGER_AU.debug("Obtained non-null \"result[0]\" from read()")
+                pass
             return False  # Remove idle callback
 
         GLib.idle_add(idle_callback)
 
-        counter: int = 0
-        max_loops: int = 800
-        LOGGER_AU.warning("Starting loop waiting on \"result[0]\"")
-        sys.stdout.flush()
-        sys.stderr.flush()
         while status == Status.UNFINISHED:
-            # LOGGER_AU.warning(f" In wait Loop, counter={counter}")
             # noinspection PyUnresolvedReferences
             Gtk.main_iteration_do(False)
             if status != Status.UNFINISHED:
-                sys.stdout.flush()
-                sys.stderr.flush()
-                LOGGER_AU.warning(f"\"result[0]\" not None, breaking loop at {counter}")
-                sys.stdout.flush()
-                sys.stderr.flush()
+                LOGGER_AU.debug(f"\"result[0]\" not None, breaking loop.")
                 break
-            counter += 1
-            if counter >= max_loops:
-                raise ValueError("Loop count exceeded.")
-        LOGGER_AU.warning("accessor() returning \"result[0]\"")
+        LOGGER_AU.debug("accessor() returning \"result[0]\"")
         return result[0]
 
     def wrapper(*args, **kwargs):
@@ -120,21 +114,27 @@ def gtk_duty_performer(func):
 
     return wrapper
 
+##########################
+#  Code below is for testing and debugging
+##########################
 
-@gtk_duty_performer
-def name_of_widget(some_widget: Gtk.Widget) -> str:
+
+@gtk_consumer
+def _name_of_widget(some_widget: Gtk.Widget) -> str:
     return some_widget.get_name()
 
 
 @gtk_idle_add
-def print_widget_name(a_widget: Gtk.Widget):
+def _print_widget_name(a_widget: Gtk.Widget):
+    # Print order can get scrambled in multithreaded code
     sys.stdout.flush()
     sys.stderr.flush()
     print(a_widget.get_name())
 
 
-@gtk_duty_performer
-def new_button() -> Gtk.Button:
+@gtk_consumer
+def _new_button() -> Gtk.Button:
+    # Print order can get scrambled in multithreaded code
     sys.stdout.flush()
     sys.stderr.flush()
     LOGGER_AU.warning("Constructing another button")
@@ -145,7 +145,8 @@ def new_button() -> Gtk.Button:
 
 
 @gtk_idle_add
-def insert_button(box: Gtk.Box, another_button: Gtk.Button):
+def _insert_button(box: Gtk.Box, another_button: Gtk.Button):
+    # Print order can get scrambled in multithreaded code
     sys.stdout.flush()
     sys.stderr.flush()
     LOGGER_AU.warning("Adding button to Box")
@@ -154,7 +155,7 @@ def insert_button(box: Gtk.Box, another_button: Gtk.Button):
 
 
 # Notice no decoration for this function
-def example_asynch_0():
+def _example_asynch_0():
     win = Gtk.Window()
     win.connect("destroy", Gtk.main_quit)  # noqa
     vbox: Gtk.Box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=0)
@@ -165,32 +166,35 @@ def example_asynch_0():
     return win, vbox
 
 
-def in_another_thread(window: Gtk.Window, box: Gtk.Box):
+def _in_another_thread(window: Gtk.Window, box: Gtk.Box):
     # Wait for Main loop to start, then all our thread safety stuff makes sense.
     time.sleep(4)
+    # Print order can get scrambled in multithreaded code
+    sys.stdout.flush()
+    sys.stderr.flush()
     LOGGER_AU.warning("making button")
-    my_button: Gtk.Button = new_button()
+    my_button: Gtk.Button = _new_button()
     if my_button is None:
         raise ValueError("my_button not obtained.")
     LOGGER_AU.warning("button obtained")
     LOGGER_AU.warning("Adding button to window.")
-    insert_button(box=box, another_button=my_button)
+    _insert_button(box=box, another_button=my_button)
     window.show_all()  # noqa
     LOGGER_AU.warning("invoking print widget name")
-    print_widget_name(my_button)
+    _print_widget_name(my_button)
     LOGGER_AU.warning("print invoked")
 
 
 def main() -> int:
     LOGGER_AU.warning("main")
-    logging.basicConfig(format=LOGGER_FORMAT_AU, level=logging.DEBUG)
+    logging.basicConfig(format=LOGGER_FORMAT_AU, level=logging.INFO)
     window: Gtk.Window | None = None
     try:
         # No decorations. This is invoked in the application thread, which MIGHT be the main thread, but no loop yet.
-        window, vbox = example_asynch_0()
-        # Now we start a new thread, but first thing it must do is wait for the MainLoop to start.
-        # That's an unusual situation that is contrived for this example.
-        thread: threading.Thread = threading.Thread(target=lambda: in_another_thread(window=window, box=vbox))
+        window, vbox = _example_asynch_0()
+        # Now we start a new thread, but the first thing it must do is wait for the MainLoop to start.
+        # That's an unusual situation that is contrived for testing.
+        thread: threading.Thread = threading.Thread(target=lambda: _in_another_thread(window=window, box=vbox))
         thread.start()
         # Gtk.main() does not return until quit
         Gtk.main()  # noqa
