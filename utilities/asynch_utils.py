@@ -53,8 +53,10 @@ def gtk_idle_add(func: Callable) -> Callable:
     and Dialogs are a special case, they MOSTLY need to run before a Gtk.MainLoop has started, so GENERALLY don't
     decorate such functions with this, it will cause lockups. DO NOT use this decorator on functions
     that need to return a value derived from a Gtk.Widget, use @gtk_producer instead.
-    @param func function to wrap.
+    @param func: function to wrap.
     @type func: Callable
+    @return: A new Callable wrapping the original Callable, that enqueues the original via GLib.idle_add() if the
+    current thread is not the main thread.
     """
 
     def wrapper(*args, **kwargs):
@@ -70,13 +72,17 @@ def gtk_idle_add(func: Callable) -> Callable:
 def gtk_producer(func: Callable) -> Callable:
     """
     Decorator for functions that need to return a value derived from a function run in the GTK main loop. Use this on
-    functions that read any values from Gtk.Widgets, even names, colors etc. DO NOT use this decorator on functions that
-    don't return a value, or always return None. Use the @gtk_idle_add decorator instead.
-    Also, functions that create top-Level Windows and Dialogs are a special case, they MOSTLY need to run before a
-    Gtk.MainLoop has started, so GENERALLY don't decorate such functions with this, it will cause lockups.
-    Functions decorated with this will not run, and might deadlock block if there's no main loop running.
-    @param func function to wrap.
+    functions that read any values from Gtk.Widgets, even names, colors etc.<p>
+    DO NOT use this decorator on functions that don't return a value, or always return None. Use the @gtk_idle_add
+    decorator instead. Also, functions that create top-Level Windows and Dialogs are special cases, they MOSTLY need to
+    run before a Gtk.MainLoop has started, so GENERALLY don't decorate such functions with this, it will cause lockups.
+    <p>
+    Functions decorated with this will not run, and might block, if there's no main loop running.
+    @param func: function to wrap.
     @type func: Callable
+    @return: A new Callable wrapping the original Callable, that enqueues the original via GLib.idle_add() and blocks
+    until it finishes, if the current thread is not the main thread. Returns None if the original Callable raised a
+    catchable Exception.
     """
 
     def accessor(reader, *args, **kwargs) -> Any:
@@ -130,10 +136,11 @@ def gtk_producer(func: Callable) -> Callable:
 def is_main_thread() -> bool:
     """
     Returns True if the current thread is the "main" Gtk thread. But this is more complex than it seems, because an app
-    can use GLib.idle_source_new() that "Creates a new idle source." The documentation is unclear.
+    can use GLib.idle_source_new() that "Creates a new idle source." The documentation is unclear.<p>
+
     The purpose of this function is to enable code to determine if a callable needs to be scheduled with GLib.idle_add()
     or if it can be invoked directly.
-    @return True if the current thread is the "main" Gtk thread, by comparing the current thread to the result of
+    @return: True if the current thread is the "main" Gtk thread, by comparing the current thread to the result of
     threading.main_thread().
     """
     return threading.current_thread() == threading.main_thread()
