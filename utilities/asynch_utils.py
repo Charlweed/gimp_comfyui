@@ -46,7 +46,7 @@ class Status(Enum):
     ERROR = auto()
 
 
-def gtk_idle_add(func: Callable):
+def gtk_idle_add(func: Callable) -> Callable:
     """
     Decorator to run a function in the GTK main loop.
     Functions decorated with this will not run if there's no main loop running. Functions that create top-Level Windows
@@ -60,10 +60,14 @@ def gtk_idle_add(func: Callable):
     def wrapper(*args, **kwargs):
         GLib.idle_add(lambda: func(*args, **kwargs))
 
+    # If already running on "the main thread", don't wrap the function. Instead, return the original.
+    if is_main_thread():
+        return func
+
     return wrapper
 
 
-def gtk_producer(func: Callable):
+def gtk_producer(func: Callable) -> Callable:
     """
     Decorator for functions that need to return a value derived from a function run in the GTK main loop. Use this on
     functions that read any values from Gtk.Widgets, even names, colors etc. DO NOT use this decorator on functions that
@@ -116,7 +120,23 @@ def gtk_producer(func: Callable):
     def wrapper(*args, **kwargs):
         return accessor(func, *args, **kwargs)
 
+    # If already running on "the main thread", don't wrap the function. Instead, return the original.
+    if is_main_thread():
+        return func
+
     return wrapper
+
+
+def is_main_thread() -> bool:
+    """
+    Returns True if the current thread is the "main" Gtk thread. But this is more complex than it seems, because an app
+    can use GLib.idle_source_new() that "Creates a new idle source." The documentation is unclear.
+    The purpose of this function is to enable code to determine if a callable needs to be scheduled with GLib.idle_add()
+    or if it can be invoked directly.
+    @return True if the current thread is the "main" Gtk thread, by comparing the current thread to the result of
+    threading.main_thread().
+    """
+    return threading.current_thread() == threading.main_thread()
 
 ##########################
 #  Code below is for testing and debugging

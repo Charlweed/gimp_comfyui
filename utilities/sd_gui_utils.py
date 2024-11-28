@@ -35,7 +35,7 @@ from gi.repository import Gdk, Gtk, GLib
 from urllib import request
 from utilities.cui_resources_utils import ModelType, get_models_list
 from utilities.long_term_storage_utils import *
-from utilities.asynch_utils import gtk_idle_add, gtk_producer
+from utilities.asynch_utils import gtk_idle_add, gtk_producer, is_main_thread
 from utilities.type_utils import *
 
 # Constants
@@ -1569,7 +1569,10 @@ class ProgressBarWindow(Gtk.Window):
     def activity_mode(self, activity: bool):
         self._activity_mode = activity
         if self._activity_mode:
-            GLib.idle_add(self._progressbar.pulse)
+            if is_main_thread():
+                self._progressbar.pulse()
+            else:
+                GLib.idle_add(self._progressbar.pulse)
         else:
             self.progress_value = 0.0
 
@@ -1584,9 +1587,9 @@ class ProgressBarWindow(Gtk.Window):
             new_total = value
         self._total = new_total
 
+    @gtk_producer
     @property
     def fraction(self) -> float:
-        # No good way to use idle_add here.
         return self._progressbar.get_fraction()
 
     @property
@@ -1609,11 +1612,16 @@ class ProgressBarWindow(Gtk.Window):
             nonlocal fraction
             self._progressbar.set_fraction(fraction=fraction)
 
-        GLib.idle_add(enclosure)
+        if is_main_thread():
+            enclosure()
+        else:
+            GLib.idle_add(enclosure)
 
+    @gtk_idle_add
     def pulse_progress(self):
-        GLib.idle_add(self._progressbar.pulse)
+        self._progressbar.pulse()
 
+    @gtk_idle_add
     # noinspection PyUnusedLocal
     def draw_progress(self, value: float, total: float):
         """
@@ -1622,22 +1630,13 @@ class ProgressBarWindow(Gtk.Window):
         @param total: The total count of steps in this job.
         @return:
         """
-
-        # Should not be necessary, because progress_value encloses its access to self._progressbar.
-        # But if that changes, this will not have to.
-        def enclosure():
-            nonlocal self
-            nonlocal value
-            nonlocal total
-            # LOGGER_SDGUIU.debug(f"argument value={value}; total={total}")
-            self.total = total
-            self.progress_value = value
-
-        GLib.idle_add(enclosure)
+        self.total = total
+        self.progress_value = value
 
     def conceal_and_dispose(self):
         """
         Call this when the task/process/job is done. Then never call anything on this instance again.
+        NOTE: This method does not use @gtk_idle_add, because it calls quit() on this instance's local event loop()
         @return:
         """
         # sys.stdout.flush()
