@@ -20,19 +20,22 @@ import pprint
 import random
 import re
 import site
+import string
 import sys
 import threading
 import time
 
+gi.require_version('Gdk', '3.0')
+gi.require_version("Gtk", "3.0")
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
 # noinspection PyUnresolvedReferences
-from gi.repository import Gdk, Gio, Gimp, GimpUi, Gtk, GLib, GObject
+from gi.repository import Gimp, GimpUi
+from gi.repository import Gdk, Gtk, GLib
 from urllib import request
 from utilities.cui_resources_utils import ModelType, get_models_list
 from utilities.long_term_storage_utils import *
+from utilities.asynch_utils import gtk_idle_add, gtk_producer, is_main_thread
 from utilities.type_utils import *
 
 # Constants
@@ -61,7 +64,7 @@ class SubjectType(Enum):
 
 
 # Global functions
-
+@gtk_producer
 def append_all_texts(combo_box: Gtk.ComboBoxText, items: List[str]) -> Gtk.ComboBoxText:
     for item in items:
         combo_box.append_text(item)
@@ -78,6 +81,7 @@ def asset_path(asset_name: str):
     return os.path.join(assets_dir_path(), asset_name)
 
 
+@gtk_idle_add
 def close_window_of_widget(source: Gtk.Widget):
     da_top = Gtk.Widget.get_toplevel(source)  # noqa
     Gtk.Window.close(da_top)
@@ -88,6 +92,7 @@ def config_combobox_dict_int_str(combo_box: Gtk.ComboBox, dictionary: Dict[str, 
     config_combobox_dict_str_int(combo_box, reciprocal_dict(dictionary), default_value)
 
 
+@gtk_idle_add
 def config_combobox_dict_str_int(combo_box: Gtk.ComboBox, dictionary: Dict[str, int], default_value: str):
     list_store: Gtk.ListStore = Gtk.ListStore.new(types=[int, str])  # noqa n_columns unfilled
     for key, value in dictionary.items():
@@ -105,6 +110,7 @@ def config_combobox_dict_str_int(combo_box: Gtk.ComboBox, dictionary: Dict[str, 
     config_combobox_liststore(combo_box, list_store, index)
 
 
+@gtk_idle_add
 def config_combobox_liststore(combo_box: Gtk.ComboBox, list_store: Gtk.ListStore, index: int):
     combo_box.set_model(list_store)
     combo_box.set_active(index)
@@ -165,6 +171,7 @@ def filt_widg(widget_type: type, widgets: List[Gtk.Widget]) -> List[Gtk.Widget]:
     return list(filter(widg_pred, widgets))
 
 
+@gtk_producer
 def find_all_widgets(widget: Gtk.Widget) -> List[Gtk.Widget]:
     contained: List[Gtk.Widget] = []
     if hasattr(widget, 'get_child') and callable(getattr(widget, 'get_child')):  # rare, but happens
@@ -187,6 +194,7 @@ def get_gtk_versions():
     return "Gtk used in GIMP is %s.%s.%s" % (major, minor, micro)
 
 
+@gtk_producer
 def get_selected_row(widget: Gtk.Widget) -> List[Any]:
     """
     Returns the selected row as a list. The list will be empty if there is no selection, but never None
@@ -263,6 +271,7 @@ def install_css_styles(style_bytes: bytes):
 
 
 # noinspection PyUnresolvedReferences
+@gtk_producer
 def new_box_of_radios(options: List[str], handler: Callable[[Any], None]) -> Gtk.Box:
     box_0: Gtk.Box = Gtk.Box.new(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
     i: int = 1
@@ -394,7 +403,7 @@ def new_dialog_info(title_in: str, blurb_in: str) -> GimpUi.Dialog:
     # GIMP does something to the layout in dialogs. I'm not sure if I should force it to look more conventional.
     dialog.add_button(GLib.dgettext(None, "OK"), Gtk.ResponseType.OK)
     geometry = Gdk.Geometry()  # noqa
-    # TODO: Far too much empty whitespace, but resizing toes not seem to work.
+    # TODO: Far too much empty whitespace, but resizing does not seem to work.
     geometry.min_aspect = 1.0
     geometry.max_aspect = 1.0
     dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
@@ -637,6 +646,7 @@ def open_dialog_daemon(title_in: str,
     my_thread.start()
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_list_store_images() -> Gtk.ListStore:
     """
     Returns a Gtk.ListStore of tuples image_id, index, image_name for the images open in GIMP
@@ -660,6 +670,7 @@ def new_list_store_images() -> Gtk.ListStore:
     return images_list_store
 
 
+# Don't decorate, it calls a slow process
 def new_list_store_models(model_type: ModelType, cu_origin: str) -> Gtk.ListStore:
     """
     Returns a Gtk.ListStore of tuples model_basename, index, model_path for models of the specified type currently
@@ -687,6 +698,7 @@ def new_list_store_models(model_type: ModelType, cu_origin: str) -> Gtk.ListStor
     return models_list_store
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_set_images() -> set[tuple[int, int, str]]:
     """
     Returns a set of tuples image_id, index, image_name for the images open in GIMP
@@ -723,6 +735,7 @@ def new_set_image_ids() -> set[int]:
     return image_ids
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_tree_store_images() -> Gtk.TreeStore:
     images_tree_store: Gtk.TreeStore = Gtk.TreeStore.new(types=[int, int, str])  # image_id, index, image_name
     image: Gimp.Image
@@ -742,6 +755,7 @@ def new_tree_store_images() -> Gtk.TreeStore:
     return images_tree_store
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_list_store_layers(image_in: Gimp.Image) -> Gtk.ListStore:
     if not image_in:
         raise ValueError("image_in argument cannot be None.")
@@ -757,6 +771,7 @@ def new_list_store_layers(image_in: Gimp.Image) -> Gtk.ListStore:
     return layers_list_store
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_list_store_all_layers() -> Gtk.TreeStore:
     all_layers_tree_store: Gtk.TreeStore = (
         Gtk.TreeStore.new(types=[str, int, int, str]))  # type_name, image_id, index, image_name
@@ -774,6 +789,7 @@ def new_list_store_all_layers() -> Gtk.TreeStore:
     return all_layers_tree_store
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_set_all_layers() -> set[tuple[int, int, str]]:  # layer_id, index, layer_name
     """
     Returns a set of tuples tuple[int, int, str]  # layer_id, index, layer_name for all root layers in all open images.
@@ -843,6 +859,7 @@ def print_row(store: Gtk.TreeStore, treepath: Gtk.TreePath, treeiter: Gtk.TreeIt
     print("\t" * (treepath.get_depth() - 1), store[treeiter][:], sep="")  # noqa
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_images_combobox(selection_changed_handler: Callable[[Any], None]) -> Gtk.ComboBox:
     image_store: Gtk.ListStore = Gtk.ListStore.new(types=[int, int, str])  # image_id, index, image_name
     try:
@@ -860,6 +877,7 @@ def new_images_combobox(selection_changed_handler: Callable[[Any], None]) -> Gtk
     return image_combo
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_all_layers_treeview(selection_changed_handler: Callable[[Any], None]) -> Gtk.TreeView:
     index_type_name = 0
     index_item_name = 3
@@ -907,6 +925,7 @@ def new_all_layers_treeview(selection_changed_handler: Callable[[Any], None]) ->
     return fresh_treeview
 
 
+# Don't decorate anything that calls the Gimp or GimpUI APIs
 def new_list_store_selected_drawables(image_in: Gimp.Image) -> Gtk.ListStore:
     if not image_in:
         raise ValueError("image_in argument cannot be None.")
@@ -922,7 +941,14 @@ def new_list_store_selected_drawables(image_in: Gimp.Image) -> Gtk.ListStore:
     return selected_drawables_list_store
 
 
+@gtk_producer
 def new_validation_css_bytes(widget: Gtk.Widget) -> bytes:
+    """
+    Provides css as bytes to decorate a widget differently as it is VALID(Green), INVALID(Red) or OK(Blue). Other code
+     needs to update the style class within the widget to reflect the state.
+    @param widget: The ProgressBar to decorate.
+    @return: the css bytes to insert into the style.
+    """
     widget_name: str = widget.get_name()
     if widget_name is None:
         raise ValueError("Widget does not have a name")
@@ -938,6 +964,73 @@ def new_validation_css_bytes(widget: Gtk.Widget) -> bytes:
     #%s.OK { border-color: Blue; }
     """ % (widget_name, widget_name, widget_name))
     # LOGGER_SDGUIU.debug("Generated CSS:\n%s" % css_string)
+    return css_string.encode('utf-8')
+
+
+def new_progressbar_css_bytes(widget: Gtk.ProgressBar | None = None) -> bytes:
+    if widget is not None:
+        return new_progressbar_css_bytes_4_named(widget)
+    else:
+        return new_progressbar_css_bytes_global()
+
+
+@gtk_producer
+def new_progressbar_css_bytes_4_named(widget: Gtk.ProgressBar) -> bytes:
+    """
+    Changes the ProgressBar text to DarkOrange, the "trough" to fuchsia, and the "progress" to a gradient.
+    @param widget: The ProgressBar to decorate.
+    @return: the css bytes to insert into the style.
+    """
+    widget_name: str = widget.get_name()
+    if widget_name is None:
+        raise ValueError("ProgressBar does not have a name")
+    if not widget_name.strip():
+        raise ValueError("ProgressBar name cannot be empty nor whitespace.")
+    if re.search(r"\s", widget_name):
+        raise ValueError("ProgressBar name cannot contain whitespace")
+    if widget_name in WIDGET_NAME_DEFAULTS:
+        raise ValueError("ProgressBar name cannot be default name \"%s\"" % widget_name)
+    # css code from
+    # https://stackoverflow.com/questions/48097764/gtkprogressbar-with-css-for-progress-colour-not-functioning
+    css_string = (f"""
+    progressbar#{widget_name} text {{
+        color: DarkOrange;
+        font-weight: bold;
+    }}
+    progressbar#{widget_name} > trough > progress {{
+      background-image: none;
+      background-color: fuchsia;
+    }}
+    progressbar#{widget_name} progress{{
+        background-image: linear-gradient(90deg, yellow, red);
+        background-color: blue;
+    }}
+    """)
+    # LOGGER_SDGUIU.debug("Generated CSS:\n%s" % css_string)
+    return css_string.encode('utf-8')
+
+
+def new_progressbar_css_bytes_global() -> bytes:
+    """
+    Changes the ProgressBar text to DarkOrange, the trough to fuchsia, and the "progress" to a gradient.
+    @return: the css bytes to insert into the style.
+    """
+    # css code from
+    # https://stackoverflow.com/questions/48097764/gtkprogressbar-with-css-for-progress-colour-not-functioning
+    css_string = (f"""
+    progressbar text {{
+        color: DarkOrange;
+        font-weight: bold;
+    }}
+    progressbar > trough > progress {{
+      background-image: none;
+      background-color: fuchsia;
+    }}
+    progressbar progress{{
+        background-image: linear-gradient(90deg, yellow, red);
+        background-color: fuchsia;
+    }}
+    """)
     return css_string.encode('utf-8')
 
 
@@ -1003,6 +1096,7 @@ def restrict_to_numbers(entry_widget: Gtk.Entry):
         entry_widget.connect(SIG_CHANGED, filter_numbers)
 
 
+# Expected to only be called by code on the MainLoop thread, so don't bother decorating.
 def validate_in_bounds(entry_widget: Gtk.Entry,
                        minimum: float = float('-inf'),
                        maximum: float = float('inf'),
@@ -1087,6 +1181,7 @@ def validate_in_bounds(entry_widget: Gtk.Entry,
     entry_widget.connect(SIG_CHANGED, handle_bounds_check)
 
 
+# Expected to only be called by code on the MainLoop thread, so don't bother decorating.
 def validate_int(entry_widget: Gtk.Entry,
                  track_invalid_widgets: Callable[[Gtk.Widget, bool], None] = None):
     if not isinstance(entry_widget, Gtk.Entry):
@@ -1144,6 +1239,7 @@ def validate_int(entry_widget: Gtk.Entry,
     entry_widget.connect(SIG_CHANGED, handle_is_int)
 
 
+# Expected to only be called by code on the MainLoop thread, so don't bother decorating.
 def validate_float(entry_widget: Gtk.Entry,
                    track_invalid_widgets: Callable[[Gtk.Widget, bool], None] = None):
     if not isinstance(entry_widget, Gtk.Entry):
@@ -1236,22 +1332,27 @@ def server_online(url_in: str, show_dialog: bool = True):
         return False
 
 
+@gtk_producer
 def val_combo_index(cbox: Gtk.ComboBox) -> int:
     return cbox.get_active()
 
 
+@gtk_producer
 def val_combo(cbox: Gtk.ComboBox):
     return cbox.get_model()[cbox.get_active_iter()][0]  # noqa
 
 
+@gtk_producer
 def val_entry(an_entry: Gtk.Entry):
     return an_entry.get_text()
 
 
+@gtk_producer
 def val_scale(a_scale: Gtk.Scale):
     return a_scale.get_value()
 
 
+@gtk_producer
 def val_text_view(a_text_view: Gtk.TextView):
     buffer: Gtk.TextBuffer = a_text_view.get_buffer()
     start: Gtk.TextIter = buffer.get_start_iter()
@@ -1259,6 +1360,7 @@ def val_text_view(a_text_view: Gtk.TextView):
     return buffer.get_text(start, end, False)
 
 
+@gtk_producer
 def val_widget(a_widget: Gtk.Widget):
     if isinstance(a_widget, GimpUi.LayerComboBox):
         result = val_combo(a_widget)  # noqa
@@ -1273,7 +1375,7 @@ def val_widget(a_widget: Gtk.Widget):
     if isinstance(a_widget, Gtk.ToggleButton): return a_widget.get_active()  # noqa
 
 
-def example_dialog_0() -> int:
+def _example_dialog_0() -> int:
     blurb: str = "Test run from main()"
     carry_on: bool = True
 
@@ -1316,57 +1418,15 @@ def example_dialog_0() -> int:
     return 0
 
 
-# noinspection PyUnresolvedReferences
-class ProgressBarWindow(Gtk.Window):
+class ProgressBarHelperGimp:
     """
-    GIMP does not currently provide a thread-safe way to open a "window", that responds to events and does not block
-    the procedure's thread. This is a problem when we want to show anything asynchronous, such as tracking the progress
-    of work on a separate server. This class's exhibit_window() method is a work-around for opening a window
-    that is interactive. So far, it seems OK for the use-case of showing progress.
+    Eases using GIMP's hard-to-see plug-in ProgressBar
     """
-    def __init__(self,
-                 title_in: str,
-                 blurb_in: str,
-                 total: float | None = None,
-                 activity_mode: bool = False
-                 ):
-        super().__init__(title=title_in)
-        self._total: float
-        self._activity_mode = activity_mode
 
-        if total is not None:
-            if total <= 0:
-                raise ValueError("\"total\" argument must be > 0 if given")
-            self._total = total
-        else:
-            self._total = 9999999999999.0  # A large number!
-        self._progressbar = Gtk.ProgressBar()
-        self._progressbar.set_fraction(fraction=0.0)
-        self.set_border_width(10)
-        vbox_0: Gtk.Box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        if blurb_in:
-            label_and_icon_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-            blurb_label: Gtk.Label = Gtk.Label(label=blurb_in)
-            label_and_icon_box.pack_start(child=blurb_label, expand=False, fill=False, padding=0)  # noqa
-            label_and_icon_box.set_margin_start(40)
-            label_and_icon_box.set_margin_end(40)
-            label_and_icon_box.show_all()  # noqa
-            vbox_0.add(label_and_icon_box)  # noqa
-        self.add(vbox_0)
-        self.set_default_size(512, 96)
-        vbox_0.pack_start(self._progressbar, True, True, 0)
-
-    @property
-    def activity_mode(self) -> bool:
-        return self._activity_mode
-
-    @activity_mode.setter
-    def activity_mode(self, activity: bool):
-        self._activity_mode = activity
-        if self._activity_mode:
-            self._progressbar.pulse()
-        else:
-            self.progress_value = 0.0
+    def __init__(self, text_in: str | None = None, total: float = 9999999999999.0):
+        self._total: float = total
+        self._fraction: float = 0
+        self._text: str | None = text_in
 
     @property
     def total(self) -> float:
@@ -1381,6 +1441,155 @@ class ProgressBarWindow(Gtk.Window):
 
     @property
     def fraction(self) -> float:
+        return self._fraction
+
+    @property
+    def progress_value(self) -> float:
+        return self.fraction * self.total
+
+    @progress_value.setter
+    def progress_value(self, value: float):
+        fraction: float = 0.0
+        if self.total == 0:
+            fraction = 1
+            LOGGER_SDGUIU.error(f"Total == 0. Fudged away division by 0")
+        else:
+            if value > 0.0:
+                fraction = value/self.total
+        LOGGER_SDGUIU.warning(f"argument value={value}; setting fraction={fraction}")
+        Gimp.progress_update(percentage=fraction)
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, text: str):
+        self._text = text
+        success = Gimp.progress_set_text(self._text)
+        if not success:
+            raise ValueError("Problem setting text for the Gimp ProgressBar")
+
+    def draw_progress(self, value: float, total: float):
+        """
+        Call this method to visually display work progress. When value == total, work is 100% done.
+        @param value: The index/count/number of the last step completed.
+        @param total: The total count of steps in this job.
+        @return:
+        """
+        # LOGGER_SDGUIU.debug(f"argument value={value}; total={total}")
+        self.total = total
+        self.progress_value = value
+
+    def init(self, text: str | None = None, total: float = 9999999999999.0):
+        self._total = total
+        self._fraction = 0
+        success = Gimp.progress_init(text)
+        if not success:
+            raise ValueError("Problem initializing the Gimp ProgressBar")
+        if self._text is not None:
+            success = Gimp.progress_set_text(self._text)
+            if not success:
+                raise ValueError("Problem setting text for the Gimp ProgressBar")
+        install_css_styles(new_progressbar_css_bytes_global())
+
+    def end(self):
+        self._fraction = 1
+        success = Gimp.progress_end()
+        if not success:
+            raise ValueError("Problem ending the Gimp ProgressBar")
+
+    @staticmethod
+    def pulse():
+        success = Gimp.progress_pulse()
+        if not success:
+            raise ValueError("Problem pulsing Gimp ProgressBar")
+
+
+class ProgressBarWindow(Gtk.Window):
+    """
+    GIMP does not currently provide an API to open a "window" that does not block the procedure's thread.
+    This is an issue when we want to show anything that happens AFTER a procedure dialog closes, such as
+    tracking the progress of work on a separate server. This class's exhibit_window() method opens a window
+    with a Gtk ProgressBar that can be updated like a plain ProgressBar. On Windows and Linux, it works as expected,
+    and as per the Gtk docs, but MainLoop.run() seems to hang on GIMP for Mac.
+    The unexpected behavior is in ProgressBarWindow::fly()::_meta_fork() "self._local_event_loop.run()"
+    """
+
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
+    def on_window_map(self, event, user_data=None):
+        LOGGER_SDGUIU.debug("ProgressBarWindow \"on-window-map\".\n"
+                            "     Window should be visible...")
+
+    def __init__(self,
+                 title_in: str,
+                 blurb_in: str,
+                 total: float | None = None,
+                 activity_mode: bool = False
+                 ):
+        super().__init__(title=title_in)
+        random_string: str = ''.join(random.choice(string.ascii_letters) for i in range(4))  # noqa
+        self.set_name(f"progressbar_window_{random_string}")
+        self._local_event_loop: GLib.MainLoop | None = None
+        self._total: float
+        self._activity_mode = activity_mode
+
+        if total is not None:
+            if total <= 0:
+                raise ValueError("\"total\" argument must be > 0 if given")
+            self._total = total
+        else:
+            self._total = 9999999999999.0  # A large number!
+        self._progressbar = Gtk.ProgressBar()
+        random_string = ''.join(random.choice(string.ascii_letters) for i in range(4))  # noqa
+        self._progressbar.set_name(f"embedded_progressbar_{random_string}")
+        self._progressbar.set_fraction(fraction=0.0)
+        progress_bar_css: bytes = new_progressbar_css_bytes(self._progressbar)
+        install_css_styles(progress_bar_css)
+        vbox_0: Gtk.Box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        if blurb_in:
+            label_and_icon_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            blurb_label: Gtk.Label = Gtk.Label(label=blurb_in)
+            label_and_icon_box.pack_start(child=blurb_label, expand=False, fill=False, padding=0)  # noqa
+            label_and_icon_box.set_margin_start(40)
+            label_and_icon_box.set_margin_end(40)
+            label_and_icon_box.show_all()  # noqa
+            vbox_0.add(label_and_icon_box)  # noqa
+        self.add(vbox_0)  # noqa
+        self.set_border_width(10)  # noqa
+        self.set_default_size(512, 96)
+        vbox_0.pack_start(self._progressbar, True, True, 0)
+        self.connect("map-event", self.on_window_map)  # Strange name for "widget shown" event.
+
+    @property
+    def activity_mode(self) -> bool:
+        return self._activity_mode
+
+    @activity_mode.setter
+    def activity_mode(self, activity: bool):
+        self._activity_mode = activity
+        if self._activity_mode:
+            if is_main_thread():
+                self._progressbar.pulse()
+            else:
+                GLib.idle_add(self._progressbar.pulse)
+        else:
+            self.progress_value = 0.0
+
+    @property
+    def total(self) -> float:
+        return self._total
+
+    @total.setter
+    def total(self, value: float):
+        new_total: float = 9999999999999.0  # A large number!
+        if value >= 0:
+            new_total = value
+        self._total = new_total
+
+    @gtk_producer
+    @property
+    def fraction(self) -> float:
         return self._progressbar.get_fraction()
 
     @property
@@ -1390,14 +1599,30 @@ class ProgressBarWindow(Gtk.Window):
     @progress_value.setter
     def progress_value(self, value: float):
         fraction: float = 0.0
-        if value > 0.0:
-            fraction = value/self.total
-        LOGGER_PRSTU.debug(f"argument value={value}; setting fraction={fraction}")
-        self._progressbar.set_fraction(fraction=fraction)
+        if self.total == 0:
+            fraction = 1
+            LOGGER_SDGUIU.error(f"Total == 0. Fudged away division by 0")
+        else:
+            if value > 0.0:
+                fraction = value/self.total
+        # LOGGER_SDGUIU.debug(f"argument value={value}; setting fraction={fraction}")
 
+        def enclosure():
+            nonlocal self
+            nonlocal fraction
+            self._progressbar.set_fraction(fraction=fraction)
+
+        if is_main_thread():
+            enclosure()
+        else:
+            GLib.idle_add(enclosure)
+
+    @gtk_idle_add
     def pulse_progress(self):
         self._progressbar.pulse()
 
+    @gtk_idle_add
+    # noinspection PyUnusedLocal
     def draw_progress(self, value: float, total: float):
         """
         Call this method to visually display work progress. When value == total, work is 100% done.
@@ -1405,24 +1630,64 @@ class ProgressBarWindow(Gtk.Window):
         @param total: The total count of steps in this job.
         @return:
         """
-        LOGGER_PRSTU.debug(f"argument value={value}; total={total}")
         self.total = total
         self.progress_value = value
 
     def conceal_and_dispose(self):
         """
         Call this when the task/process/job is done. Then never call anything on this instance again.
+        NOTE: This method does not use @gtk_idle_add, because it calls quit() on this instance's local event loop()
         @return:
         """
+        # sys.stdout.flush()
+        # sys.stderr.flush()
+        # LOGGER_SDGUIU.debug(f"conceal_and_dispose() invoked.")
         # Gtk.Window.close(self)
-        self.close()
-        self.destroy()
+        def enclosure():
+            nonlocal self
+            self.close()
+            self.destroy()
+        GLib.idle_add(enclosure)
+
+        if self._local_event_loop is not None:
+            self._local_event_loop.quit()
+        else:
+            LOGGER_SDGUIU.error("Local Event Loop is Unassigned.")
+
+    def fly(self):
+        # LOGGER_SDGUIU.debug(f"fly() invoked.")
+        if self._local_event_loop is not None:
+            raise ValueError("Local Event loop is already assigned.")
+
+        # LOGGER_SDGUIU.debug(f"Defining _meta_fork function.")
+
+        def _meta_fork():
+            nonlocal self
+            # sys.stdout.flush()
+            # sys.stderr.flush()
+            # LOGGER_SDGUIU.debug(f"Invoking _local_event_loop.run()")
+            # Likely GIMP or Mac or Python 3.10 bug. On Mac, MainLoop.run() does not process events, it seems
+            # to merely hang. Works as expected on Python 3.11 Windows and Linux
+            self._local_event_loop.run()  # Does not return until ._local_event_loop.quit() is called.
+            # LOGGER_SDGUIU.debug(f"_local_event_loop.run() returned")
+            # LOGGER_SDGUIU.debug(f"exiting meta_fork")
+
+        # LOGGER_SDGUIU.debug(f"Constructing and assigning _local_event_loop")
+        self._local_event_loop = GLib.MainLoop()
+        # LOGGER_SDGUIU.debug(f"Constructing my_thread")
+        my_thread: threading.Thread = threading.Thread(target=_meta_fork)
+        # LOGGER_SDGUIU.debug(f"Configuring my_thread")
+        my_thread.daemon = True  # Required so thread stops with GIMP
+        # LOGGER_SDGUIU.debug(f"Starting my_thread...")
+        my_thread.start()
+        # LOGGER_SDGUIU.debug(f"... my_thread started")
+        # LOGGER_SDGUIU.debug(f"exiting fly()")
 
     @staticmethod
     def exhibit_window(title_in: str,
                        blurb_in: str,
                        total: float | None = None,
-                       activity_mode: bool = False) -> Gtk.Window:  # Actually, a ProgressBarWindow, but that's a
+                       activity_mode: bool = False) -> Gtk.Window | None:  # Actually, a ProgressBarWindow, but that's a
         # circular reference
         """
          Constructs and opens a ProgressBarWindow on the correct Gtk threads, then returns it. "Doing anything" with the
@@ -1434,38 +1699,25 @@ class ProgressBarWindow(Gtk.Window):
         @param activity_mode: If true, staps are not tracked, the bar just shows that work is unfinished.
         @return: A ProgressBarWindow. Call draw_progress() on it to track work.
         """
-        # Construction off the event thread is a Bad Idea, but we have no choice.
+        # sys.stdout.flush()
+        # sys.stderr.flush()
+        # LOGGER_SDGUIU.debug(f"Constructing ProgressBarWindow.")
         pb_window: ProgressBarWindow = ProgressBarWindow(title_in=title_in,
                                                          blurb_in=blurb_in,
                                                          total=total,
                                                          activity_mode=activity_mode)
-
-        def _run_on_idle():
-            nonlocal title_in
-            nonlocal blurb_in
-            nonlocal total
-            nonlocal activity_mode
-            nonlocal pb_window
-            try:
-                pb_window.show_all()
-            except Exception as e_error_1:
-                LOGGER_SDGUIU.exception(e_error_1)
-
-        def _meta_fork():
-            GLib.idle_add(_run_on_idle)
-            # Invoking GLib.MainLoop().run() is ... unconventional. Beware locks and races, even in stuff like logging.
-            # The window created here should be closed by the user, or programmatically, with a function like
-            # close_window_of_widget()
-            GLib.MainLoop().run()  # Does not return, so needs new thread.
-
-        my_thread: threading.Thread = threading.Thread(target=_meta_fork)
-        my_thread.daemon = True  # Required so thread stops with GIMP
-        my_thread.start()
+        # LOGGER_SDGUIU.debug(f"Queueing pb_window.show_all()")
+        # noinspection PyUnresolvedReferences
+        GLib.idle_add(pb_window.show_all)
+        # LOGGER_SDGUIU.debug(f"Invoking pb_window.fly()")
+        pb_window.fly()
+        # LOGGER_SDGUIU.debug(f"pb_window.fly() returned.")
+        # LOGGER_SDGUIU.debug(f"exiting exhibit_window()")
         return pb_window
 
 
 # noinspection PyUnresolvedReferences
-def example_progress_0():
+def _example_progress_0():
     progress_window: ProgressBarWindow = ProgressBarWindow(title_in="Progress Demo",
                                                            blurb_in="Look at it go!",
                                                            total=10.0)
@@ -1494,12 +1746,14 @@ def example_progress_0():
     Gtk.main()
 
 
-def example_progress_1():
+def _example_progress_1():
     # The progress_window will appear before this call returns.
     # noinspection PyTypeChecker
-    progress_window: ProgressBarWindow = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
-                                                                          blurb_in="Look at it go!",
-                                                                          total=10.0)
+    progress_window: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
+                                                                                 blurb_in="Look at it go!",
+                                                                                 total=10.0)
+    if progress_window is None:
+        raise EnvironmentError("Failed to create ProgressBarWindow.")
     step: float = 0.0
     total: float = 10
     loops: int = 0
@@ -1546,9 +1800,53 @@ def example_progress_1():
         LOGGER_SDGUIU.exception(an_exception_1)
 
 
+def _example_progress_2():
+    # The progress_window will appear before this call returns.
+    # noinspection PyTypeChecker
+    progress_window: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
+                                                                                 blurb_in="Look at it go!",
+                                                                                 total=10.0)
+    if progress_window is None:
+        raise ValueError("Failed to create Window")
+    step: float = 0.0
+    total: float = 10
+    loops: int = 0
+    finish_at: int = 5
+
+    # noinspection PyUnusedLocal
+    def on_timeout(user_data=None):
+        nonlocal progress_window
+        nonlocal step
+        nonlocal total
+        nonlocal loops
+        nonlocal finish_at
+
+        step += 0.1
+        if step > total:
+            step = 0.0
+            loops += 1
+        progress_window.draw_progress(value=step, total=total)
+        if loops >= finish_at:
+            try:
+                progress_window.conceal_and_dispose()
+            except Exception as an_exception_0:
+                LOGGER_SDGUIU.exception(an_exception_0)
+            finally:
+                return False
+
+        # As this is a timeout function, return True so that it
+        # continues to get called
+        return True
+    timeout_id = GLib.timeout_add(50, on_timeout, None)  # noqa
+    try:
+        time.sleep(32)
+    except Exception as an_exception_1:
+        LOGGER_SDGUIU.exception(an_exception_1)
+
+
 def main() -> int:
     try:
-        example_progress_1()
+        _example_progress_2()
     except Exception as an_exception:
         LOGGER_SDGUIU.exception(an_exception)
         return -1

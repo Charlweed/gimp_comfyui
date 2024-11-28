@@ -28,9 +28,12 @@ export SD_DATA_DIR=$TMPDIR
 export GIMP_PLUGINS_DIR="$HOME/Library/Application Support/GIMP/3.0/plug-ins"
 export COMFY_CUSTOM_NODES_DIR="$SD_DATA_DIR""custom_nodes"
 
-
 function gimp3t(){
-    /Applications/GIMP.app/Contents/MacOS/gimp --console-messages --verbose ${IMAGES_4_GIMP[*]}
+    /Applications/GIMP.app/Contents/MacOS/gimp --console-messages --verbose "${IMAGES_4_GIMP[*]}"
+}
+
+function gcui_clear(){
+    rm -fv "$TMPDIR/GimpComfyUI_logfile.txt"
 }
 
 function gcui_log(){
@@ -50,9 +53,8 @@ mkdir -pv "$COMFY_CUSTOM_NODES_DIR"
 export GCUI_REPO
 
 
-INSTALLER_CMD_LITERAL='"$PYTHON_SYS_3_10 $GCUI_REPO/installer.py --gimp_plugins_dir "$GIMP_PLUGINS_DIR" --stable_diffusion_data_dir $SD_DATA_DIR --comfyui_custom_nodes_dir $COMFY_CUSTOM_NODES_DIR"'
+INSTALLER_CMD_LITERAL='"$PYTHON_SYS_3_10" "$GCUI_REPO/installer.py" --gimp_plugins_dir "$GIMP_PLUGINS_DIR" --stable_diffusion_data_dir "$SD_DATA_DIR" --comfyui_custom_nodes_dir "$COMFY_CUSTOM_NODES_DIR"'
 INSTALLER_CMD="$PYTHON_SYS_3_10 $GCUI_REPO/installer.py --gimp_plugins_dir $GIMP_PLUGINS_DIR --stable_diffusion_data_dir $SD_DATA_DIR --comfyui_custom_nodes_dir $COMFY_CUSTOM_NODES_DIR"
-
 
 echo "You should now be able to run this installer in cli-mode, but the GUI will not work. To test the cli, try pasting the text we just loaded into the clipboard."
 echo "When ready to actually install, you will need to choose and specify the correct --gimp_plugins_dir."

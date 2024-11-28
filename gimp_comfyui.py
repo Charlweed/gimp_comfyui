@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # The two lines above, the shebang and the encoding hint, are required!
-# Otherwise, GIMP for MacOS will fail to load this plugin. Inexplicable, hard to believe, but issue verified
-# on GIMP 2.99.18 for MacOS, Python 3.10.13 for MacOS, MacOS Monterey 12.7.6
+# Otherwise, GIMP for unix-like systems will fail to load this plug-in.
+# Also, verify that all plug-in python files have execute permissions.
+# 755 or 775 if you're social.
 #  Copyright (c) 2024. Charles Hymes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -40,13 +41,16 @@ import gettext
 import logging.config
 import os.path
 
+# gi.require_version("GObject", "2.0")
+gi.require_version('Gdk', '3.0')
+gi.require_version("Gtk", "3.0")
+gi.require_version("Gegl", "0.4")  # noqa: E402
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
-gi.require_version("GObject", "2.0")  # noqa: E402
-gi.require_version("Gegl", "0.4")  # noqa: E402
-from gi.repository import GLib, GObject, Gdk, GdkPixbuf, Gegl, Gimp, GimpUi, Gio, Gtk  # noqa
+
+# noinspection PyUnresolvedReferences
+from gi.repository import Gegl, Gimp, GimpUi
+# from gi.repository import GLib, GObject, Gdk, GdkPixbuf, Gio, Gtk
 from gimp3_concurrency.drawable_change_notifier import *
 from utilities.babl_gegl_utils import *
 from utilities.cui_net_utils import *
@@ -126,6 +130,14 @@ def images_from_pixbufs(pixbufs: List[GdkPixbuf.Pixbuf]) -> List[Gimp.Image]:
     return fresh_images
 
 
+def log_environment(lumberjack: logging.Logger):
+    site_pkg_pth: str = "    \n    ".join(site.getsitepackages())
+    sys_pth: str = "    \n    ".join(sys.path)
+    lumberjack.info(f"Python version={sys.version}")
+    lumberjack.info(f"GIMP Python3 site-packages path is:\n    {site_pkg_pth}")
+    lumberjack.info(f"GIMP Python3 sys.path is:\n    {sys_pth}")
+
+
 class ProcedureCategory(Enum):
     CONFIG = auto()
     LIVE_CONNECTION = auto()
@@ -165,7 +177,7 @@ class GimpComfyUI(Gimp.PlugIn):
     HOME: str = os.path.expanduser('~')
     MESSAGE_REGISTRATION = "Registering " + __file__ + ":" + PYTHON_PLUGIN_NAME
     MESSAGE_REGISTRATION_COMPLETED = __file__ + ":" + PYTHON_PLUGIN_NAME + " returned."
-    VERSION: str = "0.7.13"
+    VERSION: str = "0.8.0"
 
     # Procedure names.
     PROCEDURE_ABOUT_CONFIG = PYTHON_PLUGIN_NAME + "-About-Config"
@@ -173,6 +185,7 @@ class GimpComfyUI(Gimp.PlugIn):
     PROCEDURE_CONFIG_TRANSCEIVER_CONNECTION = PYTHON_PLUGIN_NAME + "-transceiver-URL"
     PROCEDURE_DEMO_CUI_NET = "demo-cui-net"
     PROCEDURE_DEMO_IMG_N_LAYERS_TREEVIEWS = "demo-img-n-layers-treeview"
+    PROCEDURE_DEMO_PROGRESSBAR_WINDOW = "demo-progressbar-window"
     PROCEDURE_INSTALL_COMFYUI = PYTHON_PLUGIN_NAME + "-install-comfyUI"
     PROCEDURE_INVOKE_DEFAULT_WF = "default"
     PROCEDURE_INVOKE_FLUX_NEG_WF = "flux-dev-neg"
@@ -187,6 +200,7 @@ class GimpComfyUI(Gimp.PlugIn):
         PROCEDURE_ABOUT_CONFIG,
         PROCEDURE_CONFIG_COMFY_SVR_CONNECTION,
         PROCEDURE_CONFIG_TRANSCEIVER_CONNECTION,
+        PROCEDURE_DEMO_PROGRESSBAR_WINDOW,
         PROCEDURE_WATCH_LAYER,
         PROCEDURE_INVOKE_DEFAULT_WF,
         PROCEDURE_INVOKE_FLUX_NEG_WF,
@@ -294,6 +308,7 @@ class GimpComfyUI(Gimp.PlugIn):
                 "level": logging.INFO
             }
         })
+        log_environment(lumberjack=LOGGER_GCUI)
 
     @classmethod
     def get_str(cls, key: str) -> str:
@@ -332,24 +347,18 @@ class GimpComfyUI(Gimp.PlugIn):
         GimpComfyUI.put_str(key="DEBUGGING", value=str(do_debugging))
 
     @classmethod
-    def __init_plugin(cls):
+    def __configure_plugin_class(cls):
         """
         A GIMP plugin is NOT AN APPLICATION.
         This class method is called by do_query_procedures(), and then all state is lost.
         To use the persisted state, it needs to be called whenever a procedure's function is invoked.
         :return:
         """
-        LOGGER_GCUI.debug(f"__init_plugin")
+        # LOGGER_GCUI.debug(f"__configure_plugin_class")
         if cls.is_initialized():
             raise SystemError("Class has already been initialized.")
         cls.set_initialized()
-        cls.__init_debugging(debug=True)
-        LOGGER_GCUI.info(sys.version)
-        LOGGER_GCUI.info("GimpComfyUI version %s" % GimpComfyUI.VERSION)
-        LOGGER_GCUI.info("GIMP Python3 site-packages paths are:")
-        LOGGER_GCUI.info("\n".join(site.getsitepackages()))
-        LOGGER_GCUI.info("GIMP Python3 sys.path is:")
-        LOGGER_GCUI.info("\n".join(sys.path))
+        cls.__init_debugging(debug=False)
 
         config: Dict[str, bool | int | str] = dict(cls.GCUI_PERSISTER.configuration)
         try:
@@ -385,6 +394,7 @@ class GimpComfyUI(Gimp.PlugIn):
             p = cls.GCUI_PERSISTER.storage_path
             LOGGER_GCUI.error(f"Corrupt config file {p}")
             LOGGER_GCUI.exception(k_err)
+        # LOGGER_GCUI.debug("__configure_plugin_class() returning.")
 
     @classmethod
     def __init_debugging(cls, debug: bool):
@@ -468,6 +478,7 @@ class GimpComfyUI(Gimp.PlugIn):
         # New instance is created every time an operation is selected ...
         # LOGGER_GCUI.debug("__init__()")
         self._name = GimpComfyUI.PYTHON_PLUGIN_NAME_LONG
+        self._node_progress_helper: ProgressBarHelperGimp | None = None
         self._default_accessor: ComfyuiDefaultAccessor = ComfyuiDefaultAccessor()
         self._flux_accessor: Flux1Dot0Accessor = Flux1Dot0Accessor()
         self._flux_neg_accessor: FluxNeg1Dot1Accessor = FluxNeg1Dot1Accessor()
@@ -611,13 +622,24 @@ class GimpComfyUI(Gimp.PlugIn):
         ret_values = procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
         return ret_values
 
+    def node_progress_update(self, node_number: int, node_count: int, workflow_name: str | None = None):
+        if self._node_progress_helper is None:
+            self._node_progress_helper = ProgressBarHelperGimp(text_in=workflow_name, total=node_count)
+        self._node_progress_helper.progress_value = node_number
+        message: str = f"Finished node {node_number} of {self._node_progress_helper.total} ..."
+        LOGGER_GCUI.info(message)
+
+    def node_progress_end(self):
+        self._node_progress_helper.end()
+
     # noinspection PyMethodMayBeStatic
     def do_query_procedures(self) -> List[str]:
-        # Documentation states "query happens only once in the life of a plug-in (right after installation or update)."
+        # Documentation states query happens only once in a GIMP session (right after installation or update).
+        # No plug-in instance is initialized
         LOGGER_GCUI.info(f"{self.__class__.__name__}")
         # First action is to remove temporary data from previous sessions.
         remove_temporary_dictionary(plugin_name_long=GimpComfyUI.PYTHON_PLUGIN_NAME_LONG)
-        GimpComfyUI.__init_plugin()  # This invocation will NOT provide state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will NOT provide state
         # This is the list of procedure names.
         return GimpComfyUI.PROCEDURE_NAMES
 
@@ -745,7 +767,15 @@ class GimpComfyUI(Gimp.PlugIn):
                                                   is_image_optional=True,  # Redundant with SubjectType.ANYTHING
                                                   proc_category=ProcedureCategory.TEST_ANY,
                                                   subject_type=SubjectType.ANYTHING)
-            
+            case GimpComfyUI.PROCEDURE_DEMO_PROGRESSBAR_WINDOW:
+                procedure = self.create_procedure(name_raw=name,
+                                                  docs="Demonstrate and test ProgressBarWindow",
+                                                  usage_hint="Watch for errors in console.",
+                                                  run_func_in=self.demo_progressbar_window,
+                                                  is_image_optional=True,  # Redundant with SubjectType.ANYTHING
+                                                  proc_category=ProcedureCategory.TEST_ANY,
+                                                  subject_type=SubjectType.ANYTHING)
+
             case GimpComfyUI.PROCEDURE_INVOKE_FLUX_NEG_UPSCALE_SDXL_0DOT5_WF:
                 procedure = self.create_procedure(name_raw=name,
                                                   docs="IFluxNegUpscaleSdxl05Json",
@@ -804,7 +834,8 @@ class GimpComfyUI(Gimp.PlugIn):
         procedure.set_icon_name(GimpUi.ICON_GEGL)
         procedure.set_attribution("Hymerfania", "Hymerfania", "2024")
 
-        LOGGER_GCUI.debug(f"proc_category={proc_category}")
+        if self.is_debugging():
+            LOGGER_GCUI.debug(f"proc_category={proc_category}")
         match proc_category:
             case ProcedureCategory.CONFIG:
                 menu_path = GimpComfyUI.LIMB_IMAGE_MENU_NAME + "/Config"
@@ -821,7 +852,8 @@ class GimpComfyUI(Gimp.PlugIn):
         LOGGER_GCUI.warning(f"Show information \"about\" {GimpComfyUI.PYTHON_PLUGIN_NAME}")
         ret_values: Gimp.ValueArray = procedure.new_return_values(Gimp.PDBStatusType.CANCEL)
         try:
-            GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+            if not GimpComfyUI.is_initialized():
+                GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
             all_config: MappingProxyType = GimpComfyUI.GCUI_PERSISTER.configuration
             transceiver_protocol: str = all_config.get("TRANSCEIVER_PROTOCOL", "ws")
             transceiver_host: str = all_config.get("TRANSCEIVER_HOST", "localhost")
@@ -909,12 +941,15 @@ class GimpComfyUI(Gimp.PlugIn):
                     if response == Gtk.ResponseType.OK:
                         dialog.destroy()
                         Gimp.displays_flush()
+                        # This is the "long-running" part. This can take minutes, or more to return.
                         pix_buffers: List[GdkPixbuf.Pixbuf] = send_workflow_data(cu_origin=GimpComfyUI.COMFYUI_ORIGIN,
                                                                                  client_id=PLUGIN_UUID_COMFYUI_STR,
+                                                                                 workflow_title=title_in,
                                                                                  nodes_dict=factory.workflow_data,
-                                                                                 node_progress=log_node_progress,
+                                                                                 node_progress=self.node_progress_update,  # noqa
                                                                                  step_progress=log_step_progress
                                                                                  )
+                        self.node_progress_end()
                         if pix_buffers is None:
                             raise ValueError("None value instead of List[GdkPixbuf.Pixbuf]")
                         if not pix_buffers:
@@ -958,7 +993,7 @@ class GimpComfyUI(Gimp.PlugIn):
                        drawables,  # noqa
                        args,  # noqa
                        ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         factory: ComfyuiDefaultDialogs = ComfyuiDefaultDialogs(accessor=self._default_accessor)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -975,7 +1010,7 @@ class GimpComfyUI(Gimp.PlugIn):
                        drawables,  # noqa
                        args,  # noqa
                        ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         factory: SytanSdxl1Dot0Dialogs = SytanSdxl1Dot0Dialogs(accessor=self._sytan_sdxl_accessor)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -992,7 +1027,7 @@ class GimpComfyUI(Gimp.PlugIn):
                          drawables,  # noqa
                          args,  # noqa
                          ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         factory: InpaintingSdxl0Dot4Dialogs = InpaintingSdxl0Dot4Dialogs(accessor=self.inpaint_accessor)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -1009,7 +1044,7 @@ class GimpComfyUI(Gimp.PlugIn):
                          drawables,  # noqa
                          args,  # noqa
                          ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         factory: Img2ImgSdxl0Dot3Dialogs = Img2ImgSdxl0Dot3Dialogs(accessor=self.img2img_accessor)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -1026,7 +1061,7 @@ class GimpComfyUI(Gimp.PlugIn):
                          drawables,  # noqa
                          args,  # noqa
                          ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()
+        GimpComfyUI.__configure_plugin_class()
         factory: Flux1Dot0Dialogs = Flux1Dot0Dialogs(accessor=self.flux_acc)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -1043,7 +1078,7 @@ class GimpComfyUI(Gimp.PlugIn):
                       drawables,  # noqa
                       args,  # noqa
                       ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()
+        GimpComfyUI.__configure_plugin_class()
         factory: FluxNeg1Dot1Dialogs = FluxNeg1Dot1Dialogs(accessor=self.flux_neg_acc)
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -1060,7 +1095,7 @@ class GimpComfyUI(Gimp.PlugIn):
                        drawables,  # noqa
                        args,  # noqa
                        ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()
+        GimpComfyUI.__configure_plugin_class()
         factory: FluxNegUpscaleSdxl0Dot5Dialogs = FluxNegUpscaleSdxl0Dot5Dialogs(accessor=self._flux_neg_upscale_sdxl_0dot5_accessor)  # noqa
         ret_values = self.invoke_workflow(procedure=procedure,
                                           factory=factory,
@@ -1080,13 +1115,12 @@ class GimpComfyUI(Gimp.PlugIn):
                      drawables,  # noqa
                      args,  # noqa
                      ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         ret_code = demonstrate_00()
         if ret_code == 0:
             return procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
         else:
             return procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
-    # noinspection PyMethodMayBeStatic
 
     # noinspection PyMethodMayBeStatic
     def demo_images_n_layers(self, procedure: Gimp.ImageProcedure,
@@ -1096,7 +1130,7 @@ class GimpComfyUI(Gimp.PlugIn):
                      drawables,  # noqa
                      args,  # noqa
                      ) -> Gimp.ValueArray:
-        GimpComfyUI.__init_plugin()  # This invocation will provide class-scoped state
+        GimpComfyUI.__configure_plugin_class()  # This invocation will provide class-scoped state
         # LOGGER_GCUI.debug(f"demo_images_n_layers(): ")
 
         def access_image(image_id):
@@ -1124,8 +1158,84 @@ class GimpComfyUI(Gimp.PlugIn):
             return procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
         else:
             return procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
-    # noinspection PyMethodMayBeStatic
 
+    # noinspection PyMethodMayBeStatic
+    def demo_progressbar_window(self, procedure: Gimp.ImageProcedure,
+                                run_mode,  # noqa
+                                image,  # noqa
+                                n_drawables,  # noqa
+                                drawables,  # noqa
+                                args,  # noqa
+                                ) -> Gimp.ValueArray:
+        LOGGER_GCUI.warning(f"demo_progressbar_window(): ")
+        Gimp.message(f"demo_progressbar_window(): ")
+        GimpUi.init(procedure.get_name())
+
+        return_values: Gimp.ValueArray = procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
+        step: float = 0.0
+        total: float = 10
+        loops: int = 0
+        finish_at: int = 5
+        progressbar_window: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(title_in="Progress Demo",
+                                                                                        blurb_in="Look at it go!",
+                                                                                        total=10.0)
+
+        progressbar_helper: ProgressBarHelperGimp = ProgressBarHelperGimp(total=10)
+        progressbar_helper.init("Procedure Progress")
+
+        # noinspection PyUnusedLocal
+        def on_timeout(user_data=None):
+            nonlocal progressbar_window
+            nonlocal progressbar_helper
+            nonlocal step
+            nonlocal total
+            nonlocal loops
+            nonlocal finish_at
+
+            step += 0.1
+            if step > total:
+                step = 0.0
+                loops += 1
+
+            # LOGGER_GCUI.debug(f"step={step}, total={total}")
+            progressbar_window.draw_progress(value=step, total=total)
+            progressbar_helper.draw_progress(value=step, total=total)
+            if loops >= finish_at:
+                try:
+                    progressbar_window.conceal_and_dispose()
+                    progressbar_helper.end()
+                except Exception as an_exception_0:
+                    LOGGER_SDGUIU.exception(an_exception_0)
+                finally:
+                    return False
+            # As this is a timeout function, return True so that on_timeout() continues to get called
+            return True
+
+        try:
+            if progressbar_window:
+                try:
+                    # Repeatedly calls on_timeout without blocking, until it returns False
+                    timeout_id = GLib.timeout_add(50, on_timeout, None)  # noqa
+                    time.sleep(32)  # Sleeps for the specified number of seconds.
+                except Exception as an_exception_1:
+                    Gimp.message(str(an_exception_1))
+                    LOGGER_SDGUIU.exception(an_exception_1)
+                    return_values = procedure.new_return_values(Gimp.PDBStatusType.CANCEL, GLib.Error())
+
+                return_values = procedure.new_return_values(Gimp.PDBStatusType.SUCCESS)
+            else:
+                no_window_message: str = f"Failed to build ProgressBarWindow"
+                Gimp.message(no_window_message)
+                LOGGER_SDGUIU.error(no_window_message)
+                return_values = procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
+        except Exception as some_problem:
+            Gimp.message(str(some_problem))
+            LOGGER_SDGUIU.exception(some_problem)
+            return_values = procedure.new_return_values(Gimp.PDBStatusType.EXECUTION_ERROR, GLib.Error())
+        finally:
+            return return_values
+
+    # noinspection PyMethodMayBeStatic
     def transceiver_queue_handler(self, source, data=None):
         source_type: type = type(source)
         source_type_name: str = source_type.__name__
@@ -1279,8 +1389,11 @@ class HandleLayerChange(DrawableChangeListener):
             LOGGER_GCUI.exception(png_err)
 
 
-# GIMP 2.99.18 is using Python 3.11.8 (main, Feb 13 2024, 07:18:52)  [GCC 13.2.0 64 bit (AMD64)]
+# GIMP 3.0-RC1 is using Python 3.11.10 (main, Sep 10 2024, 13:02:21)  [GCC Clang 18.1.8 64 bit (AMD64)]
 GimpComfyUI.configure_loggers()
+meta_log_message: str = f"   Log file path for {GimpComfyUI.PYTHON_PLUGIN_NAME} = \"{GimpComfyUI.LOG_FILE_PATH}\""
+logging.warning(meta_log_message)
+LOGGER_GCUI.warning(meta_log_message)
 # For Gimp.main invocation see source gimp_world\gimp\libgimp\gimp.c and
 # https://developer.gimp.org/api/3.0/libgimp/func.main.html
 Gimp.main(GimpComfyUI.__gtype__, sys.argv)

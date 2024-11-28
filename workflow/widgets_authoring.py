@@ -498,7 +498,7 @@ def new_label(node_index_str: str,
     label_declaration = "%s%s: Gtk.Label = Gtk.Label.new(\"%s\")" % (SP08, widget_id, input_name.title())
     margin_start: int = 8  # Should this sometimes be 2?
     label_configuration = (f"{SP08}{widget_id}.set_margin_start({margin_start})\n"
-                           f"{SP08}{widget_id}.set_alignment(0.95, 0)"
+                           f"{SP08}{widget_id}.set_alignment(0.95, 0)  # noqa"
                            )
     widgets_dict[widget_id] = f"{label_declaration}\n{label_configuration}"
     return widgets_dict

@@ -1,12 +1,12 @@
 
 import gi
 
+gi.require_version("Gegl", "0.4")  # noqa: E402
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
-gi.require_version("Gegl", "0.4")  # noqa: E402
-from gi.repository import Gdk, Gio, Gimp, GimpUi, Gtk, GLib, GObject, Gegl  # noqa
+
+# noinspection PyUnresolvedReferences
+from gi.repository import Gegl, Gimp, GimpUi
 from typing import Set
 from utilities.cui_resources_utils import *
 from utilities.heterogeneous import *
@@ -28,7 +28,6 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             wf_data_chassis_name="FluxNegUpscaleSdxl0Dot5Dialogs_wf_data",
         )
 
-    # GIMP is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
     def new_workflow_dialog(self, 
                             title_in: str,
                             role_in: str,
@@ -85,6 +84,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         widget_getters: Dict[str, Callable[[], Any]] = {}
         widget_setters: Dict[str, Callable[[Any], None]] = {}
 
+        @gtk_idle_add
         def fill_widget_values():
             for consumers in widget_setters.items():
                 key_name: str = consumers[0]
@@ -131,6 +131,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         def delete_results(subject: Any):  # noqa
             pass
 
+        @gtk_idle_add
         def assign_results(subject: Any):  # noqa
             for providers in widget_getters.items():
                 key_name: str = providers[0]
@@ -374,7 +375,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_emptylatentimage_049empty_latent_image.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_49_width: Gtk.Label = Gtk.Label.new("Width")
         label_49_width.set_margin_start(8)
-        label_49_width.set_alignment(0.95, 0)
+        label_49_width.set_alignment(0.95, 0)  # noqa
         entry_49_width: Gtk.Entry = Gtk.Entry.new()
         entry_49_width.set_text(str(1024))
         entry_49_width.set_name("entry_49_width")
@@ -398,7 +399,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_49_height: Gtk.Label = Gtk.Label.new("Height")
         label_49_height.set_margin_start(8)
-        label_49_height.set_alignment(0.95, 0)
+        label_49_height.set_alignment(0.95, 0)  # noqa
         entry_49_height: Gtk.Entry = Gtk.Entry.new()
         entry_49_height.set_text(str(1024))
         entry_49_height.set_name("entry_49_height")
@@ -422,7 +423,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_49_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_49_batch_size.set_margin_start(8)
-        label_49_batch_size.set_alignment(0.95, 0)
+        label_49_batch_size.set_alignment(0.95, 0)  # noqa
         entry_49_batch_size: Gtk.Entry = Gtk.Entry.new()
         entry_49_batch_size.set_text(str(1))
         entry_49_batch_size.set_name("entry_49_batch_size")
@@ -473,7 +474,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_97_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_97_noise_seed.set_margin_start(8)
-        label_97_noise_seed.set_alignment(0.95, 0)
+        label_97_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_97_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_97_noise_seed.set_text(str(197))
         entry_97_noise_seed.set_name("entry_97_noise_seed")
@@ -497,7 +498,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_97_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_97_steps.set_margin_start(8)
-        label_97_steps.set_alignment(0.95, 0)
+        label_97_steps.set_alignment(0.95, 0)  # noqa
         entry_97_steps: Gtk.Entry = Gtk.Entry.new()
         entry_97_steps.set_text(str(20))
         entry_97_steps.set_name("entry_97_steps")
@@ -521,7 +522,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_97_cfg: Gtk.Label = Gtk.Label.new("Cfg")
         label_97_cfg.set_margin_start(8)
-        label_97_cfg.set_alignment(0.95, 0)
+        label_97_cfg.set_alignment(0.95, 0)  # noqa
         adjustment_97_cfg: Gtk.Adjustment = Gtk.Adjustment(value=8.00000,
                                                            lower=1.00000,
                                                            upper=25.00000,
@@ -581,7 +582,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_97_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_97_start_at_step.set_margin_start(8)
-        label_97_start_at_step.set_alignment(0.95, 0)
+        label_97_start_at_step.set_alignment(0.95, 0)  # noqa
         entry_97_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_97_start_at_step.set_text(str(3))
         entry_97_start_at_step.set_name("entry_97_start_at_step")
@@ -605,7 +606,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_97_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_97_end_at_step.set_margin_start(8)
-        label_97_end_at_step.set_alignment(0.95, 0)
+        label_97_end_at_step.set_alignment(0.95, 0)  # noqa
         entry_97_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_97_end_at_step.set_text(str(10000))
         entry_97_end_at_step.set_name("entry_97_end_at_step")
@@ -679,7 +680,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_98_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_98_noise_seed.set_margin_start(8)
-        label_98_noise_seed.set_alignment(0.95, 0)
+        label_98_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_98_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_98_noise_seed.set_text(str(197))
         entry_98_noise_seed.set_name("entry_98_noise_seed")
@@ -703,7 +704,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_98_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_98_steps.set_margin_start(8)
-        label_98_steps.set_alignment(0.95, 0)
+        label_98_steps.set_alignment(0.95, 0)  # noqa
         entry_98_steps: Gtk.Entry = Gtk.Entry.new()
         entry_98_steps.set_text(str(20))
         entry_98_steps.set_name("entry_98_steps")
@@ -727,7 +728,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_98_cfg: Gtk.Label = Gtk.Label.new("Cfg")
         label_98_cfg.set_margin_start(8)
-        label_98_cfg.set_alignment(0.95, 0)
+        label_98_cfg.set_alignment(0.95, 0)  # noqa
         adjustment_98_cfg: Gtk.Adjustment = Gtk.Adjustment(value=8.00000,
                                                            lower=1.00000,
                                                            upper=25.00000,
@@ -787,7 +788,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_98_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_98_start_at_step.set_margin_start(8)
-        label_98_start_at_step.set_alignment(0.95, 0)
+        label_98_start_at_step.set_alignment(0.95, 0)  # noqa
         entry_98_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_98_start_at_step.set_text(str(0))
         entry_98_start_at_step.set_name("entry_98_start_at_step")
@@ -811,7 +812,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_98_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_98_end_at_step.set_margin_start(8)
-        label_98_end_at_step.set_alignment(0.95, 0)
+        label_98_end_at_step.set_alignment(0.95, 0)  # noqa
         entry_98_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_98_end_at_step.set_text(str(3))
         entry_98_end_at_step.set_name("entry_98_end_at_step")
@@ -872,7 +873,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_dynamicthresholdingfull_100dynamicthresholdingfull.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_100_mimic_scale: Gtk.Label = Gtk.Label.new("Mimic_Scale")
         label_100_mimic_scale.set_margin_start(8)
-        label_100_mimic_scale.set_alignment(0.95, 0)
+        label_100_mimic_scale.set_alignment(0.95, 0)  # noqa
         adjustment_100_mimic_scale: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                     lower=0.00000,
                                                                     upper=100.00000,
@@ -892,7 +893,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_100_threshold_percentile: Gtk.Label = Gtk.Label.new("Threshold_Percentile")
         label_100_threshold_percentile.set_margin_start(8)
-        label_100_threshold_percentile.set_alignment(0.95, 0)
+        label_100_threshold_percentile.set_alignment(0.95, 0)  # noqa
         adjustment_100_threshold_percentile: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                              lower=0.00000,
                                                                              upper=1.00000,
@@ -933,7 +934,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_100_mimic_scale_min: Gtk.Label = Gtk.Label.new("Mimic_Scale_Min")
         label_100_mimic_scale_min.set_margin_start(8)
-        label_100_mimic_scale_min.set_alignment(0.95, 0)
+        label_100_mimic_scale_min.set_alignment(0.95, 0)  # noqa
         adjustment_100_mimic_scale_min: Gtk.Adjustment = Gtk.Adjustment(value=0.00000,
                                                                         lower=0.00000,
                                                                         upper=1.00000,
@@ -974,7 +975,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_100_cfg_scale_min: Gtk.Label = Gtk.Label.new("Cfg_Scale_Min")
         label_100_cfg_scale_min.set_margin_start(8)
-        label_100_cfg_scale_min.set_alignment(0.95, 0)
+        label_100_cfg_scale_min.set_alignment(0.95, 0)  # noqa
         adjustment_100_cfg_scale_min: Gtk.Adjustment = Gtk.Adjustment(value=0.00000,
                                                                       lower=0.00000,
                                                                       upper=1.00000,
@@ -995,7 +996,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_100_sched_val: Gtk.Label = Gtk.Label.new("Sched_Val")
         label_100_sched_val.set_margin_start(8)
-        label_100_sched_val.set_alignment(0.95, 0)
+        label_100_sched_val.set_alignment(0.95, 0)  # noqa
         adjustment_100_sched_val: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                   lower=0.00000,
                                                                   upper=1.00000,
@@ -1016,7 +1017,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_100_separate_feature_channels: Gtk.Label = Gtk.Label.new("Separate_Feature_Channels")
         label_100_separate_feature_channels.set_margin_start(8)
-        label_100_separate_feature_channels.set_alignment(0.95, 0)
+        label_100_separate_feature_channels.set_alignment(0.95, 0)  # noqa
         comboboxtext_100_separate_feature_channels: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
         combo_values_100_separate_feature_channels: list[str] = ["enable", "disable"]  # noqa
         for combo_item_path in combo_values_100_separate_feature_channels:
@@ -1078,7 +1079,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_100_interpolate_phi: Gtk.Label = Gtk.Label.new("Interpolate_Phi")
         label_100_interpolate_phi.set_margin_start(8)
-        label_100_interpolate_phi.set_alignment(0.95, 0)
+        label_100_interpolate_phi.set_alignment(0.95, 0)  # noqa
         adjustment_100_interpolate_phi: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                         lower=0.00000,
                                                                         upper=1.00000,
@@ -1272,7 +1273,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_122_clip_skip: Gtk.Label = Gtk.Label.new("Clip_Skip")
         label_122_clip_skip.set_margin_start(8)
-        label_122_clip_skip.set_alignment(0.95, 0)
+        label_122_clip_skip.set_alignment(0.95, 0)  # noqa
         entry_122_clip_skip: Gtk.Entry = Gtk.Entry.new()
         entry_122_clip_skip.set_text(str(-1))
         entry_122_clip_skip.set_name("entry_122_clip_skip")
@@ -1323,7 +1324,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_122_lora_model_strength: Gtk.Label = Gtk.Label.new("Lora_Model_Strength")
         label_122_lora_model_strength.set_margin_start(8)
-        label_122_lora_model_strength.set_alignment(0.95, 0)
+        label_122_lora_model_strength.set_alignment(0.95, 0)  # noqa
         adjustment_122_lora_model_strength: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                             lower=0.00000,
                                                                             upper=20.00000,
@@ -1343,7 +1344,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_122_lora_clip_strength: Gtk.Label = Gtk.Label.new("Lora_Clip_Strength")
         label_122_lora_clip_strength.set_margin_start(8)
-        label_122_lora_clip_strength.set_alignment(0.95, 0)
+        label_122_lora_clip_strength.set_alignment(0.95, 0)  # noqa
         adjustment_122_lora_clip_strength: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                            lower=0.00000,
                                                                            upper=20.00000,
@@ -1459,7 +1460,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_122_empty_latent_width: Gtk.Label = Gtk.Label.new("Empty_Latent_Width")
         label_122_empty_latent_width.set_margin_start(8)
-        label_122_empty_latent_width.set_alignment(0.95, 0)
+        label_122_empty_latent_width.set_alignment(0.95, 0)  # noqa
         entry_122_empty_latent_width: Gtk.Entry = Gtk.Entry.new()
         entry_122_empty_latent_width.set_text(str(512))
         entry_122_empty_latent_width.set_name("entry_122_empty_latent_width")
@@ -1483,7 +1484,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_122_empty_latent_height: Gtk.Label = Gtk.Label.new("Empty_Latent_Height")
         label_122_empty_latent_height.set_margin_start(8)
-        label_122_empty_latent_height.set_alignment(0.95, 0)
+        label_122_empty_latent_height.set_alignment(0.95, 0)  # noqa
         entry_122_empty_latent_height: Gtk.Entry = Gtk.Entry.new()
         entry_122_empty_latent_height.set_text(str(512))
         entry_122_empty_latent_height.set_name("entry_122_empty_latent_height")
@@ -1507,7 +1508,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_122_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_122_batch_size.set_margin_start(8)
-        label_122_batch_size.set_alignment(0.95, 0)
+        label_122_batch_size.set_alignment(0.95, 0)  # noqa
         entry_122_batch_size: Gtk.Entry = Gtk.Entry.new()
         entry_122_batch_size.set_text(str(1))
         entry_122_batch_size.set_name("entry_122_batch_size")
@@ -1565,7 +1566,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         frame_ultimatesdupscale_123ultimate_sd_upscale.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_123_upscale_by: Gtk.Label = Gtk.Label.new("Upscale_By")
         label_123_upscale_by.set_margin_start(8)
-        label_123_upscale_by.set_alignment(0.95, 0)
+        label_123_upscale_by.set_alignment(0.95, 0)  # noqa
         adjustment_123_upscale_by: Gtk.Adjustment = Gtk.Adjustment(value=2.00000,
                                                                    lower=0.00001,
                                                                    upper=10.00000,
@@ -1586,7 +1587,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_123_seed: Gtk.Label = Gtk.Label.new("Seed")
         label_123_seed.set_margin_start(8)
-        label_123_seed.set_alignment(0.95, 0)
+        label_123_seed.set_alignment(0.95, 0)  # noqa
         entry_123_seed: Gtk.Entry = Gtk.Entry.new()
         entry_123_seed.set_text(str(587444286529169))
         entry_123_seed.set_name("entry_123_seed")
@@ -1610,7 +1611,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_123_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_123_steps.set_margin_start(8)
-        label_123_steps.set_alignment(0.95, 0)
+        label_123_steps.set_alignment(0.95, 0)  # noqa
         entry_123_steps: Gtk.Entry = Gtk.Entry.new()
         entry_123_steps.set_text(str(10))
         entry_123_steps.set_name("entry_123_steps")
@@ -1634,7 +1635,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_123_cfg: Gtk.Label = Gtk.Label.new("Cfg")
         label_123_cfg.set_margin_start(8)
-        label_123_cfg.set_alignment(0.95, 0)
+        label_123_cfg.set_alignment(0.95, 0)  # noqa
         adjustment_123_cfg: Gtk.Adjustment = Gtk.Adjustment(value=2.00000,
                                                             lower=1.00000,
                                                             upper=25.00000,
@@ -1734,7 +1735,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_123_mask_blur: Gtk.Label = Gtk.Label.new("Mask_Blur")
         label_123_mask_blur.set_margin_start(8)
-        label_123_mask_blur.set_alignment(0.95, 0)
+        label_123_mask_blur.set_alignment(0.95, 0)  # noqa
         entry_123_mask_blur: Gtk.Entry = Gtk.Entry.new()
         entry_123_mask_blur.set_text(str(8))
         entry_123_mask_blur.set_name("entry_123_mask_blur")
@@ -1758,7 +1759,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_123_tile_padding: Gtk.Label = Gtk.Label.new("Tile_Padding")
         label_123_tile_padding.set_margin_start(8)
-        label_123_tile_padding.set_alignment(0.95, 0)
+        label_123_tile_padding.set_alignment(0.95, 0)  # noqa
         entry_123_tile_padding: Gtk.Entry = Gtk.Entry.new()
         entry_123_tile_padding.set_text(str(32))
         entry_123_tile_padding.set_name("entry_123_tile_padding")
@@ -1802,7 +1803,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_123_seam_fix_denoise: Gtk.Label = Gtk.Label.new("Seam_Fix_Denoise")
         label_123_seam_fix_denoise.set_margin_start(8)
-        label_123_seam_fix_denoise.set_alignment(0.95, 0)
+        label_123_seam_fix_denoise.set_alignment(0.95, 0)  # noqa
         adjustment_123_seam_fix_denoise: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                          lower=0.00001,
                                                                          upper=1.00000,
@@ -1823,7 +1824,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_123_seam_fix_width: Gtk.Label = Gtk.Label.new("Seam_Fix_Width")
         label_123_seam_fix_width.set_margin_start(8)
-        label_123_seam_fix_width.set_alignment(0.95, 0)
+        label_123_seam_fix_width.set_alignment(0.95, 0)  # noqa
         entry_123_seam_fix_width: Gtk.Entry = Gtk.Entry.new()
         entry_123_seam_fix_width.set_text(str(64))
         entry_123_seam_fix_width.set_name("entry_123_seam_fix_width")
@@ -1847,7 +1848,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_123_seam_fix_mask_blur: Gtk.Label = Gtk.Label.new("Seam_Fix_Mask_Blur")
         label_123_seam_fix_mask_blur.set_margin_start(8)
-        label_123_seam_fix_mask_blur.set_alignment(0.95, 0)
+        label_123_seam_fix_mask_blur.set_alignment(0.95, 0)  # noqa
         entry_123_seam_fix_mask_blur: Gtk.Entry = Gtk.Entry.new()
         entry_123_seam_fix_mask_blur.set_text(str(8))
         entry_123_seam_fix_mask_blur.set_name("entry_123_seam_fix_mask_blur")
@@ -1871,7 +1872,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
 
         label_123_seam_fix_padding: Gtk.Label = Gtk.Label.new("Seam_Fix_Padding")
         label_123_seam_fix_padding.set_margin_start(8)
-        label_123_seam_fix_padding.set_alignment(0.95, 0)
+        label_123_seam_fix_padding.set_alignment(0.95, 0)  # noqa
         entry_123_seam_fix_padding: Gtk.Entry = Gtk.Entry.new()
         entry_123_seam_fix_padding.set_text(str(16))
         entry_123_seam_fix_padding.set_name("entry_123_seam_fix_padding")
@@ -2060,16 +2061,6 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         button_apply.connect("clicked", assign_results)
         button_ok.connect("clicked", assign_results)
 
-        progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
-        progress_bar.set_hexpand(True)
-        progress_bar.set_show_text(True)
-        dialog_box.add(progress_bar)
-        progress_bar.show()
-
-        geometry = Gdk.Geometry()  # noqa
-        geometry.min_aspect = 0.5
-        geometry.max_aspect = 1.0
-        dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
         fill_widget_values()
         dialog.show_all()
         return dialog

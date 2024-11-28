@@ -10,6 +10,7 @@ $PSNativeCommandUseErrorActionPreference = $true # might be true by default
 # This is an associative array containing other associative arrays. It allows the Start-Gimp function to
 # take the major, minor and patch version as arguments. Just ensure that the path strings are correct for
 # Each version for GIMP you have.
+
 # CHANGE THESE FOR YOUR GIMPs:
 $global:GIMP_EXEs = @{
     2 = @{
@@ -22,9 +23,11 @@ $global:GIMP_EXEs = @{
         }
     }
 }
+
 $PYTHON_GIMP_3_11 = "L:\bin\gimp\GIMP-3.0-RC1\bin\python3.11.exe"
 $PYTHON_GIMP_3_11_BIN = "L:\bin\gimp\GIMP-3.0-RC1\bin"
 $PYTHON_GIMP_3_11_HOME = "L:\bin\gimp\GIMP-3.0-RC1\bin"
+$ENV:GCUI_REPO = $PSScriptRoot
 
 # Background constants. Mostly for reference and future functionality, but you should update to match your system
 $PYTHON_GIMP_3_11_PATH = (
@@ -36,12 +39,12 @@ $PYTHON_GIMP_3_11_PATH = (
 )
 $PYTHON_GIMP_3_11_SITE_PACKAGES = "L:\bin\gimp\GIMP-3.0-RC1\lib\python3.11\site-packages"
 
-$IMAGES_4_GIMP=(
-        "M:\stills\A_I\misc\Pictures\example.png",
-        "M:\stills\A_I\misc\Pictures\1962_TR3B_mask_scaled.png",
-        "M:\stills\A_I\misc\Pictures\1962_TR3B_scaled.png",
-        "M:\stills\A_I\misc\Pictures\Kuo-toa_05.png"
-    )
+$IMAGES_4_GIMP = (
+    "M:\stills\A_I\misc\Pictures\example.png",
+    "M:\stills\A_I\misc\Pictures\1962_TR3B_mask_scaled.png",
+    "M:\stills\A_I\misc\Pictures\1962_TR3B_scaled.png",
+    "M:\stills\A_I\misc\Pictures\Kuo-toa_05.png"
+)
 
 function Start-Gimp(
     [Parameter(Mandatory)][int]$MajorVersion,
@@ -80,15 +83,13 @@ function Start-Gimp(
 
 function Start-Gimp2([Switch] $Quiet,
     [Switch]$DebugGimp,
-    [parameter(mandatory = $false, ValueFromRemainingArguments = $true)]$Remaining
-) {
+    [parameter(mandatory = $false, ValueFromRemainingArguments = $true)]$Remaining) {
     Start-Gimp -MajorVersion 2 -MinorVersion 10 -Quiet:$Quiet -DebugGimp:$DebugGimp -Remaining $Remaining
 }
 
 function Start-Gimp3([Switch] $Quiet,
     [Switch]$DebugGimp,
-    [parameter(mandatory = $false, ValueFromRemainingArguments = $true)]$Remaining
-) {
+    [parameter(mandatory = $false, ValueFromRemainingArguments = $true)]$Remaining) {
     Start-Gimp -MajorVersion 3 -MinorVersion 0 -PatchVersion "RC1" -Quiet:$Quiet -DebugGimp:$DebugGimp -Remaining $Remaining
 }
 
@@ -96,14 +97,47 @@ function gimp3t() {
     Start-Gimp3 -DebugGimp $IMAGES_4_GIMP
 }
 
+function gcui_clear() {
+    if ((Test-Path -Path "$ENV:TEMP\GimpComfyUI_logfile.txt")) {
+        Remove-Item -force -verbose "$ENV:TEMP\GimpComfyUI_logfile.txt"
+    }
+    else {
+        Write-Error "Could not find $ENV:TEMP\GimpComfyUI_logfile.txt"
+    }
+}
+
+function gcui_log() {
+    if ((Test-Path -Path "$ENV:TEMP\GimpComfyUI_logfile.txt")) {
+        less "$ENV:TEMP\GimpComfyUI_logfile.txt"
+    }
+    else {
+        Write-Error "Could not find $ENV:TEMP\GimpComfyUI_logfile.txt"
+    }
+}
+
+function gcui_tail() {
+    if ((Test-Path -Path "$ENV:TEMP\GimpComfyUI_logfile.txt")) {
+        Get-Content -wait "$ENV:TEMP\GimpComfyUI_logfile.txt"
+    }
+    else {
+        Write-Error "Could not find $ENV:TEMP\GimpComfyUI_logfile.txt"
+    }
+}
+
 # CHANGE THESE FOR YOUR GIMP:
-New-Item -ItemType Directory -Path $ENV:TMP\gimp_plugins
-New-Item -ItemType Directory -Path $ENV:TMP\stable_diffusion\models
-New-Item -ItemType Directory -Path $ENV:TMP\stable_diffusion\custom_nodes
-$ENV:GCUI_REPO=$PSScriptRoot
+if (-Not (Test-Path -Path $ENV:TEMP\gimp_plugins)) {
+    New-Item -ItemType Directory -Path $ENV:TEMP\gimp_plugins
+}
+if (-Not (Test-Path -Path $ENV:TEMP\stable_diffusion\models)) {
+    New-Item -ItemType Directory -Path $ENV:TEMP\stable_diffusion\models
+}
+if (-Not (Test-Path -Path $ENV:TEMP\stable_diffusion\custom_nodes)) {
+    New-Item -ItemType Directory -Path $ENV:TEMP\stable_diffusion\custom_nodes
+}
+
 # The separator inconsistencies are because the command is executed by the shell, but the arguments are parsed by python
-$INSTALLER_CMD="$ENV:GCUI_REPO\installer.py --gimp_plugins_dir $ENV:TMP/gimp_plugins --stable_diffusion_data_dir $ENV:TMP/stable_diffusion --comfyui_custom_nodes_dir $ENV:TMP/stable_diffusion/custom_nodes"
-$InformationPreference="Continue"
+$INSTALLER_CMD = "$ENV:GCUI_REPO\installer.py --gimp_plugins_dir $ENV:TEMP\gimp_plugins --stable_diffusion_data_dir $ENV:TEMP\stable_diffusion --comfyui_custom_nodes_dir $ENV:TEMP\stable_diffusion/custom_nodes"
+$InformationPreference = "Continue"
 
 Write-Information "You should now be able to run the installer. To test the cli, try pasting the text we just loaded into the clipboard."
 Write-Information "When ready to actually install, you will need to choose and specify the correct --gimp_plugins_dir."

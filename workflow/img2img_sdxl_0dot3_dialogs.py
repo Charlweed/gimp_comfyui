@@ -1,12 +1,12 @@
 
 import gi
 
+gi.require_version("Gegl", "0.4")  # noqa: E402
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
-gi.require_version("Gegl", "0.4")  # noqa: E402
-from gi.repository import Gdk, Gio, Gimp, GimpUi, Gtk, GLib, GObject, Gegl  # noqa
+
+# noinspection PyUnresolvedReferences
+from gi.repository import Gegl, Gimp, GimpUi
 from typing import Set
 from utilities.cui_resources_utils import *
 from utilities.heterogeneous import *
@@ -28,7 +28,6 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
             wf_data_chassis_name="Img2ImgSdxl0Dot3Dialogs_wf_data",
         )
 
-    # GIMP is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
     def new_workflow_dialog(self, 
                             title_in: str,
                             role_in: str,
@@ -85,6 +84,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
         widget_getters: Dict[str, Callable[[], Any]] = {}
         widget_setters: Dict[str, Callable[[Any], None]] = {}
 
+        @gtk_idle_add
         def fill_widget_values():
             for consumers in widget_setters.items():
                 key_name: str = consumers[0]
@@ -131,6 +131,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
         def delete_results(subject: Any):  # noqa
             pass
 
+        @gtk_idle_add
         def assign_results(subject: Any):  # noqa
             for providers in widget_getters.items():
                 key_name: str = providers[0]
@@ -209,7 +210,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
         frame_cliptextencodesdxl_016positivetextencodesdxl.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_16_width: Gtk.Label = Gtk.Label.new("Width")
         label_16_width.set_margin_start(8)
-        label_16_width.set_alignment(0.95, 0)
+        label_16_width.set_alignment(0.95, 0)  # noqa
         entry_16_width: Gtk.Entry = Gtk.Entry.new()
         entry_16_width.set_text(str(4096))
         entry_16_width.set_name("entry_16_width")
@@ -233,7 +234,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_16_height: Gtk.Label = Gtk.Label.new("Height")
         label_16_height.set_margin_start(8)
-        label_16_height.set_alignment(0.95, 0)
+        label_16_height.set_alignment(0.95, 0)  # noqa
         entry_16_height: Gtk.Entry = Gtk.Entry.new()
         entry_16_height.set_text(str(4096))
         entry_16_height.set_name("entry_16_height")
@@ -257,7 +258,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_16_crop_w: Gtk.Label = Gtk.Label.new("Crop_W")
         label_16_crop_w.set_margin_start(8)
-        label_16_crop_w.set_alignment(0.95, 0)
+        label_16_crop_w.set_alignment(0.95, 0)  # noqa
         entry_16_crop_w: Gtk.Entry = Gtk.Entry.new()
         entry_16_crop_w.set_text(str(0))
         entry_16_crop_w.set_name("entry_16_crop_w")
@@ -281,7 +282,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_16_crop_h: Gtk.Label = Gtk.Label.new("Crop_H")
         label_16_crop_h.set_margin_start(8)
-        label_16_crop_h.set_alignment(0.95, 0)
+        label_16_crop_h.set_alignment(0.95, 0)  # noqa
         entry_16_crop_h: Gtk.Entry = Gtk.Entry.new()
         entry_16_crop_h.set_text(str(0))
         entry_16_crop_h.set_name("entry_16_crop_h")
@@ -305,7 +306,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_16_target_width: Gtk.Label = Gtk.Label.new("Target_Width")
         label_16_target_width.set_margin_start(8)
-        label_16_target_width.set_alignment(0.95, 0)
+        label_16_target_width.set_alignment(0.95, 0)  # noqa
         entry_16_target_width: Gtk.Entry = Gtk.Entry.new()
         entry_16_target_width.set_text(str(4096))
         entry_16_target_width.set_name("entry_16_target_width")
@@ -329,7 +330,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_16_target_height: Gtk.Label = Gtk.Label.new("Target_Height")
         label_16_target_height.set_margin_start(8)
-        label_16_target_height.set_alignment(0.95, 0)
+        label_16_target_height.set_alignment(0.95, 0)  # noqa
         entry_16_target_height: Gtk.Entry = Gtk.Entry.new()
         entry_16_target_height.set_text(str(4096))
         entry_16_target_height.set_name("entry_16_target_height")
@@ -433,7 +434,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
         frame_cliptextencodesdxl_019negativetextencodesdxl.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_19_width: Gtk.Label = Gtk.Label.new("Width")
         label_19_width.set_margin_start(8)
-        label_19_width.set_alignment(0.95, 0)
+        label_19_width.set_alignment(0.95, 0)  # noqa
         entry_19_width: Gtk.Entry = Gtk.Entry.new()
         entry_19_width.set_text(str(4096))
         entry_19_width.set_name("entry_19_width")
@@ -457,7 +458,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_19_height: Gtk.Label = Gtk.Label.new("Height")
         label_19_height.set_margin_start(8)
-        label_19_height.set_alignment(0.95, 0)
+        label_19_height.set_alignment(0.95, 0)  # noqa
         entry_19_height: Gtk.Entry = Gtk.Entry.new()
         entry_19_height.set_text(str(4096))
         entry_19_height.set_name("entry_19_height")
@@ -481,7 +482,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_19_crop_w: Gtk.Label = Gtk.Label.new("Crop_W")
         label_19_crop_w.set_margin_start(8)
-        label_19_crop_w.set_alignment(0.95, 0)
+        label_19_crop_w.set_alignment(0.95, 0)  # noqa
         entry_19_crop_w: Gtk.Entry = Gtk.Entry.new()
         entry_19_crop_w.set_text(str(0))
         entry_19_crop_w.set_name("entry_19_crop_w")
@@ -505,7 +506,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_19_crop_h: Gtk.Label = Gtk.Label.new("Crop_H")
         label_19_crop_h.set_margin_start(8)
-        label_19_crop_h.set_alignment(0.95, 0)
+        label_19_crop_h.set_alignment(0.95, 0)  # noqa
         entry_19_crop_h: Gtk.Entry = Gtk.Entry.new()
         entry_19_crop_h.set_text(str(0))
         entry_19_crop_h.set_name("entry_19_crop_h")
@@ -529,7 +530,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_19_target_width: Gtk.Label = Gtk.Label.new("Target_Width")
         label_19_target_width.set_margin_start(8)
-        label_19_target_width.set_alignment(0.95, 0)
+        label_19_target_width.set_alignment(0.95, 0)  # noqa
         entry_19_target_width: Gtk.Entry = Gtk.Entry.new()
         entry_19_target_width.set_text(str(4096))
         entry_19_target_width.set_name("entry_19_target_width")
@@ -553,7 +554,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_19_target_height: Gtk.Label = Gtk.Label.new("Target_Height")
         label_19_target_height.set_margin_start(8)
-        label_19_target_height.set_alignment(0.95, 0)
+        label_19_target_height.set_alignment(0.95, 0)  # noqa
         entry_19_target_height: Gtk.Entry = Gtk.Entry.new()
         entry_19_target_height.set_text(str(4096))
         entry_19_target_height.set_name("entry_19_target_height")
@@ -657,7 +658,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
         frame_ksampler_036ksampler.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_36_seed: Gtk.Label = Gtk.Label.new("Seed")
         label_36_seed.set_margin_start(8)
-        label_36_seed.set_alignment(0.95, 0)
+        label_36_seed.set_alignment(0.95, 0)  # noqa
         entry_36_seed: Gtk.Entry = Gtk.Entry.new()
         entry_36_seed.set_text(str(906619873857830))
         entry_36_seed.set_name("entry_36_seed")
@@ -681,7 +682,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_36_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_36_steps.set_margin_start(8)
-        label_36_steps.set_alignment(0.95, 0)
+        label_36_steps.set_alignment(0.95, 0)  # noqa
         entry_36_steps: Gtk.Entry = Gtk.Entry.new()
         entry_36_steps.set_text(str(20))
         entry_36_steps.set_name("entry_36_steps")
@@ -892,7 +893,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_40_width: Gtk.Label = Gtk.Label.new("Width")
         label_40_width.set_margin_start(8)
-        label_40_width.set_alignment(0.95, 0)
+        label_40_width.set_alignment(0.95, 0)  # noqa
         entry_40_width: Gtk.Entry = Gtk.Entry.new()
         entry_40_width.set_text(str(1024))
         entry_40_width.set_name("entry_40_width")
@@ -916,7 +917,7 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
 
         label_40_height: Gtk.Label = Gtk.Label.new("Height")
         label_40_height.set_margin_start(8)
-        label_40_height.set_alignment(0.95, 0)
+        label_40_height.set_alignment(0.95, 0)  # noqa
         entry_40_height: Gtk.Entry = Gtk.Entry.new()
         entry_40_height.set_text(str(1024))
         entry_40_height.set_name("entry_40_height")
@@ -996,16 +997,6 @@ class Img2ImgSdxl0Dot3Dialogs(WorkflowDialogFactory):
         button_apply.connect("clicked", assign_results)
         button_ok.connect("clicked", assign_results)
 
-        progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
-        progress_bar.set_hexpand(True)
-        progress_bar.set_show_text(True)
-        dialog_box.add(progress_bar)
-        progress_bar.show()
-
-        geometry = Gdk.Geometry()  # noqa
-        geometry.min_aspect = 0.5
-        geometry.max_aspect = 1.0
-        dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
         fill_widget_values()
         dialog.show_all()
         return dialog

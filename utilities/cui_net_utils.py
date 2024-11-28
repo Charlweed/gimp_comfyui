@@ -128,6 +128,7 @@ def get_image(cu_origin: str, filename: str, subfolder: str, folder_type=None) -
 def get_images(cu_origin: str,
                client_id: str,
                socket: WebSocket,
+               workflow_title: str,
                workflow_data: Dict,
                node_progress: Callable[[int, int, str | None], None],
                step_progress: Callable[[int, int, str | None], None],
@@ -147,6 +148,7 @@ def get_images(cu_origin: str,
     _track_progress(workflow_data=workflow_data,
                     ws=socket,
                     prompt_id=prompt_id,
+                    workflow_title=workflow_title,
                     step_progress=step_progress,
                     node_progress=node_progress
                     )
@@ -190,16 +192,16 @@ def get_images(cu_origin: str,
     return output_images
 
 
-def log_node_progress(finished: int, total: int, message: str = str | None):
+def log_node_progress(node_number: int, total: int, message: str = str | None):
     if message is None:
-        LGR_CNU.info(f"Node {finished} of {total} ...")
+        LGR_CNU.info(f"Node {node_number} of {total} ...")
     else:
         LGR_CNU.info(message)
 
 
-def log_step_progress(finished: int, total: int, message: str = str | None):
+def log_step_progress(step: int, total: int, message: str = str | None):
     if message is None:
-        LGR_CNU.info(f"... step {finished} of {total} completed.")
+        LGR_CNU.info(f"... step {step} of {total} completed.")
     else:
         LGR_CNU.info(message)
 
@@ -276,6 +278,7 @@ def make_pixbuf_png(p_bytes: bytes) -> GdkPixbuf.Pixbuf | None:
 
 def send_workflow_data(cu_origin: str,
                        client_id: str,
+                       workflow_title: str,
                        nodes_dict: Dict,
                        node_progress: Callable[[int, int, str | None], None],
                        step_progress: Callable[[int, int, str | None], None],
@@ -284,6 +287,7 @@ def send_workflow_data(cu_origin: str,
     Uses Websocket module to send workflow data to ComfyUI server
     :param cu_origin: The origin part of the final constructed URL
     :param client_id: An identifier for this client, here a UUID for this comfyUI plugin.
+    :param workflow_title: The workflow's name or title
     :param nodes_dict: The workflow data.
     :param step_progress: a Callable[[int, int, str | None], None] to track the progress of steps in the Sampler. You
     can pass log_step_progress as an argument.
@@ -300,6 +304,7 @@ def send_workflow_data(cu_origin: str,
     image_dict_of_lists: Dict = get_images(cu_origin=cu_origin,
                                            client_id=client_id,
                                            socket=socket,
+                                           workflow_title=workflow_title,
                                            workflow_data=nodes_dict,
                                            node_progress=node_progress,
                                            step_progress=step_progress
@@ -326,17 +331,19 @@ def send_workflow_data(cu_origin: str,
 def _track_progress(workflow_data: Dict[str, Any],
                     ws: WebSocket,
                     prompt_id: str,
+                    workflow_title: str,
                     node_progress: Callable[[int, int, str | None], None],
                     step_progress: Callable[[int, int, str | None], None],
                     ):
+    LGR_CNU.warning("_track_progress invoked.")
     node_ids: List[str] = list(workflow_data.keys())
     finished_nodes = []
     # noinspection PyTypeChecker
-    steps_progress_win: ProgressBarWindow = ProgressBarWindow.exhibit_window(
+    steps_progress_win: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(
         title_in="Steps Progress",
         blurb_in="Processing steps")
     # noinspection PyTypeChecker
-    nodes_progress_win: ProgressBarWindow = ProgressBarWindow.exhibit_window(
+    nodes_progress_win: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(
         title_in="Nodes Progress",
         blurb_in="Workflow nodes"
     )
@@ -356,7 +363,8 @@ def _track_progress(workflow_data: Dict[str, Any],
                         current_step = data['value']
                         total = data['max']
                         step_progress(current_step, total, None)
-                        steps_progress_win.draw_progress(current_step, total)
+                        if steps_progress_win:
+                            steps_progress_win.draw_progress(current_step, total)
                     case 'execution_cached':
                         data: Dict[str, Any] = server_reply['data']
                         for itm in data['nodes']:
@@ -364,16 +372,18 @@ def _track_progress(workflow_data: Dict[str, Any],
                                 finished_nodes.append(itm)
                                 current = len(finished_nodes) - 1
                                 total = len(node_ids)
-                                node_progress(current, total, None)
-                                nodes_progress_win.draw_progress(current, total)
+                                node_progress(current, total, workflow_title)
+                                if nodes_progress_win:
+                                    nodes_progress_win.draw_progress(current, total)
                     case 'executing':
                         data: Dict[str, Any] = server_reply['data']
                         if data['node'] not in finished_nodes:
                             finished_nodes.append(data['node'])
                             current = len(finished_nodes) - 1
                             total = len(node_ids)
-                            node_progress(current, total, None)
-                            nodes_progress_win.draw_progress(current, total)
+                            node_progress(current, total, workflow_title)
+                            if nodes_progress_win:
+                                nodes_progress_win.draw_progress(current, total)
                         if data['node'] is None and data['prompt_id'] == prompt_id:
                             break  # Execution is done
                     case _:
@@ -465,6 +475,7 @@ def demonstrate_00() -> int:
         send_workflow_data(cu_origin=comfyui_origin,
                            nodes_dict=workflow_data,
                            client_id=demo_uuid,
+                           workflow_title="demonstrate_00",
                            node_progress=log_node_progress,
                            step_progress=log_step_progress
                            )
