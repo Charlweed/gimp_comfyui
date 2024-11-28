@@ -342,7 +342,6 @@ def _track_progress(workflow_data: Dict[str, Any],
     steps_progress_win: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(
         title_in="Steps Progress",
         blurb_in="Processing steps")
-    # FIXME This progress window does not update correctly. Might be locked up.
     # noinspection PyTypeChecker
     nodes_progress_win: ProgressBarWindow | None = ProgressBarWindow.exhibit_window(
         title_in="Nodes Progress",
