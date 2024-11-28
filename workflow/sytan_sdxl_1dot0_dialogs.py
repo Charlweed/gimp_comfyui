@@ -1,12 +1,15 @@
 
 import gi
 
+gi.require_version("Gegl", "0.4")  # noqa: E402
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
-gi.require_version("Gegl", "0.4")  # noqa: E402
-from gi.repository import Gdk, Gio, Gimp, GimpUi, Gtk, GLib, GObject, Gegl  # noqa
+# gi.require_version('Gdk', '3.0')  # noqa: E402
+# gi.require_version("Gtk", "3.0")  # noqa: E402
+
+# noinspection PyUnresolvedReferences
+from gi.repository import Gegl, Gimp, GimpUi
+# from gi.repository import Gdk, Gio, Gtk, GLib, GObject
 from typing import Set
 from utilities.cui_resources_utils import *
 from utilities.heterogeneous import *
@@ -28,7 +31,6 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
             wf_data_chassis_name="SytanSdxl1Dot0Dialogs_wf_data",
         )
 
-    # GIMP is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
     def new_workflow_dialog(self, 
                             title_in: str,
                             role_in: str,
@@ -85,6 +87,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         widget_getters: Dict[str, Callable[[], Any]] = {}
         widget_setters: Dict[str, Callable[[Any], None]] = {}
 
+        @gtk_idle_add
         def fill_widget_values():
             for consumers in widget_setters.items():
                 key_name: str = consumers[0]
@@ -131,6 +134,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         def delete_results(subject: Any):  # noqa
             pass
 
+        @gtk_idle_add
         def assign_results(subject: Any):  # noqa
             for providers in widget_getters.items():
                 key_name: str = providers[0]
@@ -191,7 +195,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         frame_emptylatentimage_005image_resolution.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_5_width: Gtk.Label = Gtk.Label.new("Width")
         label_5_width.set_margin_start(8)
-        label_5_width.set_alignment(0.95, 0)
+        label_5_width.set_alignment(0.95, 0)  # noqa
         entry_5_width: Gtk.Entry = Gtk.Entry.new()
         entry_5_width.set_text(str(1024))
         entry_5_width.set_name("entry_5_width")
@@ -215,7 +219,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_5_height: Gtk.Label = Gtk.Label.new("Height")
         label_5_height.set_margin_start(8)
-        label_5_height.set_alignment(0.95, 0)
+        label_5_height.set_alignment(0.95, 0)  # noqa
         entry_5_height: Gtk.Entry = Gtk.Entry.new()
         entry_5_height.set_text(str(1024))
         entry_5_height.set_name("entry_5_height")
@@ -239,7 +243,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_5_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_5_batch_size.set_margin_start(8)
-        label_5_batch_size.set_alignment(0.95, 0)
+        label_5_batch_size.set_alignment(0.95, 0)  # noqa
         entry_5_batch_size: Gtk.Entry = Gtk.Entry.new()
         entry_5_batch_size.set_text(str(1))
         entry_5_batch_size.set_name("entry_5_batch_size")
@@ -326,7 +330,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_22_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_22_noise_seed.set_margin_start(8)
-        label_22_noise_seed.set_alignment(0.95, 0)
+        label_22_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_22_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_22_noise_seed.set_text(str(423))
         entry_22_noise_seed.set_name("entry_22_noise_seed")
@@ -350,7 +354,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_22_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_22_steps.set_margin_start(8)
-        label_22_steps.set_alignment(0.95, 0)
+        label_22_steps.set_alignment(0.95, 0)  # noqa
         entry_22_steps: Gtk.Entry = Gtk.Entry.new()
         entry_22_steps.set_text(str(25))
         entry_22_steps.set_name("entry_22_steps")
@@ -433,7 +437,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_22_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_22_start_at_step.set_margin_start(8)
-        label_22_start_at_step.set_alignment(0.95, 0)
+        label_22_start_at_step.set_alignment(0.95, 0)  # noqa
         entry_22_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_22_start_at_step.set_text(str(0))
         entry_22_start_at_step.set_name("entry_22_start_at_step")
@@ -457,7 +461,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_22_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_22_end_at_step.set_margin_start(8)
-        label_22_end_at_step.set_alignment(0.95, 0)
+        label_22_end_at_step.set_alignment(0.95, 0)  # noqa
         entry_22_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_22_end_at_step.set_text(str(20))
         entry_22_end_at_step.set_name("entry_22_end_at_step")
@@ -531,7 +535,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_23_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_23_noise_seed.set_margin_start(8)
-        label_23_noise_seed.set_alignment(0.95, 0)
+        label_23_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_23_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_23_noise_seed.set_text(str(423))
         entry_23_noise_seed.set_name("entry_23_noise_seed")
@@ -555,7 +559,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_23_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_23_steps.set_margin_start(8)
-        label_23_steps.set_alignment(0.95, 0)
+        label_23_steps.set_alignment(0.95, 0)  # noqa
         entry_23_steps: Gtk.Entry = Gtk.Entry.new()
         entry_23_steps.set_text(str(25))
         entry_23_steps.set_name("entry_23_steps")
@@ -638,7 +642,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_23_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_23_start_at_step.set_margin_start(8)
-        label_23_start_at_step.set_alignment(0.95, 0)
+        label_23_start_at_step.set_alignment(0.95, 0)  # noqa
         entry_23_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_23_start_at_step.set_text(str(20))
         entry_23_start_at_step.set_name("entry_23_start_at_step")
@@ -662,7 +666,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_23_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_23_end_at_step.set_margin_start(8)
-        label_23_end_at_step.set_alignment(0.95, 0)
+        label_23_end_at_step.set_alignment(0.95, 0)  # noqa
         entry_23_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_23_end_at_step.set_text(str(1000))
         entry_23_end_at_step.set_name("entry_23_end_at_step")
@@ -723,7 +727,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         frame_cliptextencodesdxl_075positive_base.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_75_width: Gtk.Label = Gtk.Label.new("Width")
         label_75_width.set_margin_start(8)
-        label_75_width.set_alignment(0.95, 0)
+        label_75_width.set_alignment(0.95, 0)  # noqa
         entry_75_width: Gtk.Entry = Gtk.Entry.new()
         entry_75_width.set_text(str(2048))
         entry_75_width.set_name("entry_75_width")
@@ -747,7 +751,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_75_height: Gtk.Label = Gtk.Label.new("Height")
         label_75_height.set_margin_start(8)
-        label_75_height.set_alignment(0.95, 0)
+        label_75_height.set_alignment(0.95, 0)  # noqa
         entry_75_height: Gtk.Entry = Gtk.Entry.new()
         entry_75_height.set_text(str(2048))
         entry_75_height.set_name("entry_75_height")
@@ -771,7 +775,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_75_crop_w: Gtk.Label = Gtk.Label.new("Crop_W")
         label_75_crop_w.set_margin_start(8)
-        label_75_crop_w.set_alignment(0.95, 0)
+        label_75_crop_w.set_alignment(0.95, 0)  # noqa
         entry_75_crop_w: Gtk.Entry = Gtk.Entry.new()
         entry_75_crop_w.set_text(str(0))
         entry_75_crop_w.set_name("entry_75_crop_w")
@@ -795,7 +799,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_75_crop_h: Gtk.Label = Gtk.Label.new("Crop_H")
         label_75_crop_h.set_margin_start(8)
-        label_75_crop_h.set_alignment(0.95, 0)
+        label_75_crop_h.set_alignment(0.95, 0)  # noqa
         entry_75_crop_h: Gtk.Entry = Gtk.Entry.new()
         entry_75_crop_h.set_text(str(0))
         entry_75_crop_h.set_name("entry_75_crop_h")
@@ -819,7 +823,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_75_target_width: Gtk.Label = Gtk.Label.new("Target_Width")
         label_75_target_width.set_margin_start(8)
-        label_75_target_width.set_alignment(0.95, 0)
+        label_75_target_width.set_alignment(0.95, 0)  # noqa
         entry_75_target_width: Gtk.Entry = Gtk.Entry.new()
         entry_75_target_width.set_text(str(2048))
         entry_75_target_width.set_name("entry_75_target_width")
@@ -843,7 +847,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_75_target_height: Gtk.Label = Gtk.Label.new("Target_Height")
         label_75_target_height.set_margin_start(8)
-        label_75_target_height.set_alignment(0.95, 0)
+        label_75_target_height.set_alignment(0.95, 0)  # noqa
         entry_75_target_height: Gtk.Entry = Gtk.Entry.new()
         entry_75_target_height.set_text(str(2048))
         entry_75_target_height.set_name("entry_75_target_height")
@@ -947,7 +951,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         frame_cliptextencodesdxlrefiner_081negative_refiner.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_81_ascore: Gtk.Label = Gtk.Label.new("Ascore")
         label_81_ascore.set_margin_start(8)
-        label_81_ascore.set_alignment(0.95, 0)
+        label_81_ascore.set_alignment(0.95, 0)  # noqa
         entry_81_ascore: Gtk.Entry = Gtk.Entry.new()
         entry_81_ascore.set_text(str(2))
         entry_81_ascore.set_name("entry_81_ascore")
@@ -971,7 +975,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_81_width: Gtk.Label = Gtk.Label.new("Width")
         label_81_width.set_margin_start(8)
-        label_81_width.set_alignment(0.95, 0)
+        label_81_width.set_alignment(0.95, 0)  # noqa
         entry_81_width: Gtk.Entry = Gtk.Entry.new()
         entry_81_width.set_text(str(2048))
         entry_81_width.set_name("entry_81_width")
@@ -995,7 +999,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_81_height: Gtk.Label = Gtk.Label.new("Height")
         label_81_height.set_margin_start(8)
-        label_81_height.set_alignment(0.95, 0)
+        label_81_height.set_alignment(0.95, 0)  # noqa
         entry_81_height: Gtk.Entry = Gtk.Entry.new()
         entry_81_height.set_text(str(2048))
         entry_81_height.set_name("entry_81_height")
@@ -1063,7 +1067,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         frame_cliptextencodesdxl_082negative_base.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_82_width: Gtk.Label = Gtk.Label.new("Width")
         label_82_width.set_margin_start(8)
-        label_82_width.set_alignment(0.95, 0)
+        label_82_width.set_alignment(0.95, 0)  # noqa
         entry_82_width: Gtk.Entry = Gtk.Entry.new()
         entry_82_width.set_text(str(2048))
         entry_82_width.set_name("entry_82_width")
@@ -1087,7 +1091,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_82_height: Gtk.Label = Gtk.Label.new("Height")
         label_82_height.set_margin_start(8)
-        label_82_height.set_alignment(0.95, 0)
+        label_82_height.set_alignment(0.95, 0)  # noqa
         entry_82_height: Gtk.Entry = Gtk.Entry.new()
         entry_82_height.set_text(str(2048))
         entry_82_height.set_name("entry_82_height")
@@ -1111,7 +1115,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_82_crop_w: Gtk.Label = Gtk.Label.new("Crop_W")
         label_82_crop_w.set_margin_start(8)
-        label_82_crop_w.set_alignment(0.95, 0)
+        label_82_crop_w.set_alignment(0.95, 0)  # noqa
         entry_82_crop_w: Gtk.Entry = Gtk.Entry.new()
         entry_82_crop_w.set_text(str(0))
         entry_82_crop_w.set_name("entry_82_crop_w")
@@ -1135,7 +1139,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_82_crop_h: Gtk.Label = Gtk.Label.new("Crop_H")
         label_82_crop_h.set_margin_start(8)
-        label_82_crop_h.set_alignment(0.95, 0)
+        label_82_crop_h.set_alignment(0.95, 0)  # noqa
         entry_82_crop_h: Gtk.Entry = Gtk.Entry.new()
         entry_82_crop_h.set_text(str(0))
         entry_82_crop_h.set_name("entry_82_crop_h")
@@ -1159,7 +1163,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_82_target_width: Gtk.Label = Gtk.Label.new("Target_Width")
         label_82_target_width.set_margin_start(8)
-        label_82_target_width.set_alignment(0.95, 0)
+        label_82_target_width.set_alignment(0.95, 0)  # noqa
         entry_82_target_width: Gtk.Entry = Gtk.Entry.new()
         entry_82_target_width.set_text(str(2048))
         entry_82_target_width.set_name("entry_82_target_width")
@@ -1183,7 +1187,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_82_target_height: Gtk.Label = Gtk.Label.new("Target_Height")
         label_82_target_height.set_margin_start(8)
-        label_82_target_height.set_alignment(0.95, 0)
+        label_82_target_height.set_alignment(0.95, 0)  # noqa
         entry_82_target_height: Gtk.Entry = Gtk.Entry.new()
         entry_82_target_height.set_text(str(2048))
         entry_82_target_height.set_name("entry_82_target_height")
@@ -1287,7 +1291,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         frame_cliptextencodesdxlrefiner_120positive_refiner.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_120_ascore: Gtk.Label = Gtk.Label.new("Ascore")
         label_120_ascore.set_margin_start(8)
-        label_120_ascore.set_alignment(0.95, 0)
+        label_120_ascore.set_alignment(0.95, 0)  # noqa
         entry_120_ascore: Gtk.Entry = Gtk.Entry.new()
         entry_120_ascore.set_text(str(6))
         entry_120_ascore.set_name("entry_120_ascore")
@@ -1311,7 +1315,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_120_width: Gtk.Label = Gtk.Label.new("Width")
         label_120_width.set_margin_start(8)
-        label_120_width.set_alignment(0.95, 0)
+        label_120_width.set_alignment(0.95, 0)  # noqa
         entry_120_width: Gtk.Entry = Gtk.Entry.new()
         entry_120_width.set_text(str(2048))
         entry_120_width.set_name("entry_120_width")
@@ -1335,7 +1339,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_120_height: Gtk.Label = Gtk.Label.new("Height")
         label_120_height.set_margin_start(8)
-        label_120_height.set_alignment(0.95, 0)
+        label_120_height.set_alignment(0.95, 0)  # noqa
         entry_120_height: Gtk.Entry = Gtk.Entry.new()
         entry_120_height.set_text(str(2048))
         entry_120_height.set_name("entry_120_height")
@@ -1543,7 +1547,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_216_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_216_noise_seed.set_margin_start(8)
-        label_216_noise_seed.set_alignment(0.95, 0)
+        label_216_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_216_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_216_noise_seed.set_text(str(423))
         entry_216_noise_seed.set_name("entry_216_noise_seed")
@@ -1567,7 +1571,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_216_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_216_steps.set_margin_start(8)
-        label_216_steps.set_alignment(0.95, 0)
+        label_216_steps.set_alignment(0.95, 0)  # noqa
         entry_216_steps: Gtk.Entry = Gtk.Entry.new()
         entry_216_steps.set_text(str(30))
         entry_216_steps.set_name("entry_216_steps")
@@ -1650,7 +1654,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_216_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_216_start_at_step.set_margin_start(8)
-        label_216_start_at_step.set_alignment(0.95, 0)
+        label_216_start_at_step.set_alignment(0.95, 0)  # noqa
         entry_216_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_216_start_at_step.set_text(str(20))
         entry_216_start_at_step.set_name("entry_216_start_at_step")
@@ -1674,7 +1678,7 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
 
         label_216_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_216_end_at_step.set_margin_start(8)
-        label_216_end_at_step.set_alignment(0.95, 0)
+        label_216_end_at_step.set_alignment(0.95, 0)  # noqa
         entry_216_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_216_end_at_step.set_text(str(1000))
         entry_216_end_at_step.set_name("entry_216_end_at_step")
@@ -1817,16 +1821,22 @@ class SytanSdxl1Dot0Dialogs(WorkflowDialogFactory):
         button_apply.connect("clicked", assign_results)
         button_ok.connect("clicked", assign_results)
 
-        progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
-        progress_bar.set_hexpand(True)
-        progress_bar.set_show_text(True)
-        dialog_box.add(progress_bar)
-        progress_bar.show()
+        # Useless. The delays are BEFORE this dialog opens, and AFTER it closes.
+        # progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
+        # progress_bar.set_name("gimp_procedure_progressbar_00")
+        # progress_bar.set_hexpand(True)
+        # progress_bar.set_vexpand(True)
+        # progress_bar.set_show_text(True)
+        # progressbar_style_bytes: bytes = new_progressbar_css_bytes(widget=progress_bar)
+        # install_css_styles(style_bytes=progressbar_style_bytes)
+        # dialog_box.add(progress_bar)
+        # progress_bar.show()
 
-        geometry = Gdk.Geometry()  # noqa
-        geometry.min_aspect = 0.5
-        geometry.max_aspect = 1.0
-        dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
+        # min_aspect and max_aspect must be the same on Mac
+        # geometry = Gdk.Geometry()  # noqa
+        # geometry.min_aspect = 1.0
+        # geometry.max_aspect = 1.0
+        # dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
         fill_widget_values()
         dialog.show_all()
         return dialog

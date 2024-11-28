@@ -1,12 +1,15 @@
 
 import gi
 
+gi.require_version("Gegl", "0.4")  # noqa: E402
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
-gi.require_version("Gegl", "0.4")  # noqa: E402
-from gi.repository import Gdk, Gio, Gimp, GimpUi, Gtk, GLib, GObject, Gegl  # noqa
+# gi.require_version('Gdk', '3.0')  # noqa: E402
+# gi.require_version("Gtk", "3.0")  # noqa: E402
+
+# noinspection PyUnresolvedReferences
+from gi.repository import Gegl, Gimp, GimpUi
+# from gi.repository import Gdk, Gio, Gtk, GLib, GObject
 from typing import Set
 from utilities.cui_resources_utils import *
 from utilities.heterogeneous import *
@@ -28,7 +31,6 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
             wf_data_chassis_name="Flux1Dot0Dialogs_wf_data",
         )
 
-    # GIMP is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
     def new_workflow_dialog(self, 
                             title_in: str,
                             role_in: str,
@@ -85,6 +87,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
         widget_getters: Dict[str, Callable[[], Any]] = {}
         widget_setters: Dict[str, Callable[[Any], None]] = {}
 
+        @gtk_idle_add
         def fill_widget_values():
             for consumers in widget_setters.items():
                 key_name: str = consumers[0]
@@ -131,6 +134,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
         def delete_results(subject: Any):  # noqa
             pass
 
+        @gtk_idle_add
         def assign_results(subject: Any):  # noqa
             for providers in widget_getters.items():
                 key_name: str = providers[0]
@@ -442,7 +446,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         label_17_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_17_steps.set_margin_start(8)
-        label_17_steps.set_alignment(0.95, 0)
+        label_17_steps.set_alignment(0.95, 0)  # noqa
         entry_17_steps: Gtk.Entry = Gtk.Entry.new()
         entry_17_steps.set_text(str(20))
         entry_17_steps.set_name("entry_17_steps")
@@ -466,7 +470,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         label_17_denoise: Gtk.Label = Gtk.Label.new("Denoise")
         label_17_denoise.set_margin_start(8)
-        label_17_denoise.set_alignment(0.95, 0)
+        label_17_denoise.set_alignment(0.95, 0)  # noqa
         adjustment_17_denoise: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                lower=0.00001,
                                                                upper=1.00000,
@@ -501,7 +505,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
         frame_randomnoise_025randomnoise.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_25_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_25_noise_seed.set_margin_start(8)
-        label_25_noise_seed.set_alignment(0.95, 0)
+        label_25_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_25_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_25_noise_seed.set_text(str(219670278747233))
         entry_25_noise_seed.set_name("entry_25_noise_seed")
@@ -564,7 +568,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
         frame_emptysd3latentimage_027emptysd3latentimage.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_27_width: Gtk.Label = Gtk.Label.new("Width")
         label_27_width.set_margin_start(8)
-        label_27_width.set_alignment(0.95, 0)
+        label_27_width.set_alignment(0.95, 0)  # noqa
         entry_27_width: Gtk.Entry = Gtk.Entry.new()
         entry_27_width.set_text(str(1024))
         entry_27_width.set_name("entry_27_width")
@@ -588,7 +592,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         label_27_height: Gtk.Label = Gtk.Label.new("Height")
         label_27_height.set_margin_start(8)
-        label_27_height.set_alignment(0.95, 0)
+        label_27_height.set_alignment(0.95, 0)  # noqa
         entry_27_height: Gtk.Entry = Gtk.Entry.new()
         entry_27_height.set_text(str(1024))
         entry_27_height.set_name("entry_27_height")
@@ -612,7 +616,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         label_27_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_27_batch_size.set_margin_start(8)
-        label_27_batch_size.set_alignment(0.95, 0)
+        label_27_batch_size.set_alignment(0.95, 0)  # noqa
         entry_27_batch_size: Gtk.Entry = Gtk.Entry.new()
         entry_27_batch_size.set_text(str(1))
         entry_27_batch_size.set_name("entry_27_batch_size")
@@ -690,7 +694,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         label_30_width: Gtk.Label = Gtk.Label.new("Width")
         label_30_width.set_margin_start(8)
-        label_30_width.set_alignment(0.95, 0)
+        label_30_width.set_alignment(0.95, 0)  # noqa
         entry_30_width: Gtk.Entry = Gtk.Entry.new()
         entry_30_width.set_text(str(1024))
         entry_30_width.set_name("entry_30_width")
@@ -714,7 +718,7 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
 
         label_30_height: Gtk.Label = Gtk.Label.new("Height")
         label_30_height.set_margin_start(8)
-        label_30_height.set_alignment(0.95, 0)
+        label_30_height.set_alignment(0.95, 0)  # noqa
         entry_30_height: Gtk.Entry = Gtk.Entry.new()
         entry_30_height.set_text(str(1024))
         entry_30_height.set_name("entry_30_height")
@@ -777,16 +781,22 @@ class Flux1Dot0Dialogs(WorkflowDialogFactory):
         button_apply.connect("clicked", assign_results)
         button_ok.connect("clicked", assign_results)
 
-        progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
-        progress_bar.set_hexpand(True)
-        progress_bar.set_show_text(True)
-        dialog_box.add(progress_bar)
-        progress_bar.show()
+        # Useless. The delays are BEFORE this dialog opens, and AFTER it closes.
+        # progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
+        # progress_bar.set_name("gimp_procedure_progressbar_00")
+        # progress_bar.set_hexpand(True)
+        # progress_bar.set_vexpand(True)
+        # progress_bar.set_show_text(True)
+        # progressbar_style_bytes: bytes = new_progressbar_css_bytes(widget=progress_bar)
+        # install_css_styles(style_bytes=progressbar_style_bytes)
+        # dialog_box.add(progress_bar)
+        # progress_bar.show()
 
-        geometry = Gdk.Geometry()  # noqa
-        geometry.min_aspect = 0.5
-        geometry.max_aspect = 1.0
-        dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
+        # min_aspect and max_aspect must be the same on Mac
+        # geometry = Gdk.Geometry()  # noqa
+        # geometry.min_aspect = 1.0
+        # geometry.max_aspect = 1.0
+        # dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
         fill_widget_values()
         dialog.show_all()
         return dialog

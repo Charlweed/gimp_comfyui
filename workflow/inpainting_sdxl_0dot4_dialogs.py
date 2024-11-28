@@ -1,12 +1,15 @@
 
 import gi
 
+gi.require_version("Gegl", "0.4")  # noqa: E402
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
-gi.require_version("Gegl", "0.4")  # noqa: E402
-from gi.repository import Gdk, Gio, Gimp, GimpUi, Gtk, GLib, GObject, Gegl  # noqa
+# gi.require_version('Gdk', '3.0')  # noqa: E402
+# gi.require_version("Gtk", "3.0")  # noqa: E402
+
+# noinspection PyUnresolvedReferences
+from gi.repository import Gegl, Gimp, GimpUi
+# from gi.repository import Gdk, Gio, Gtk, GLib, GObject
 from typing import Set
 from utilities.cui_resources_utils import *
 from utilities.heterogeneous import *
@@ -28,7 +31,6 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
             wf_data_chassis_name="InpaintingSdxl0Dot4Dialogs_wf_data",
         )
 
-    # GIMP is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
     def new_workflow_dialog(self, 
                             title_in: str,
                             role_in: str,
@@ -85,6 +87,7 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
         widget_getters: Dict[str, Callable[[], Any]] = {}
         widget_setters: Dict[str, Callable[[Any], None]] = {}
 
+        @gtk_idle_add
         def fill_widget_values():
             for consumers in widget_setters.items():
                 key_name: str = consumers[0]
@@ -131,6 +134,7 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
         def delete_results(subject: Any):  # noqa
             pass
 
+        @gtk_idle_add
         def assign_results(subject: Any):  # noqa
             for providers in widget_getters.items():
                 key_name: str = providers[0]
@@ -217,7 +221,7 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
         frame_vaeencodeforinpaint_004vae_encode_for_inpainting.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_4_grow_mask_by: Gtk.Label = Gtk.Label.new("Grow_Mask_By")
         label_4_grow_mask_by.set_margin_start(8)
-        label_4_grow_mask_by.set_alignment(0.95, 0)
+        label_4_grow_mask_by.set_alignment(0.95, 0)  # noqa
         adjustment_4_grow_mask_by: Gtk.Adjustment = Gtk.Adjustment(value=12.00000,
                                                                    lower=1.00000,
                                                                    upper=16.00000,
@@ -368,7 +372,7 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
 
         label_7_strength_model: Gtk.Label = Gtk.Label.new("Strength_Model")
         label_7_strength_model.set_margin_start(8)
-        label_7_strength_model.set_alignment(0.95, 0)
+        label_7_strength_model.set_alignment(0.95, 0)  # noqa
         adjustment_7_strength_model: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                      lower=0.00000,
                                                                      upper=20.00000,
@@ -388,7 +392,7 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
 
         label_7_strength_clip: Gtk.Label = Gtk.Label.new("Strength_Clip")
         label_7_strength_clip.set_margin_start(8)
-        label_7_strength_clip.set_alignment(0.95, 0)
+        label_7_strength_clip.set_alignment(0.95, 0)  # noqa
         adjustment_7_strength_clip: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                     lower=0.00000,
                                                                     upper=20.00000,
@@ -542,7 +546,7 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
         frame_ksampler_012ksampler.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_12_seed: Gtk.Label = Gtk.Label.new("Seed")
         label_12_seed.set_margin_start(8)
-        label_12_seed.set_alignment(0.95, 0)
+        label_12_seed.set_alignment(0.95, 0)  # noqa
         entry_12_seed: Gtk.Entry = Gtk.Entry.new()
         entry_12_seed.set_text(str(175199165615730))
         entry_12_seed.set_name("entry_12_seed")
@@ -566,7 +570,7 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
 
         label_12_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_12_steps.set_margin_start(8)
-        label_12_steps.set_alignment(0.95, 0)
+        label_12_steps.set_alignment(0.95, 0)  # noqa
         entry_12_steps: Gtk.Entry = Gtk.Entry.new()
         entry_12_steps.set_text(str(40))
         entry_12_steps.set_name("entry_12_steps")
@@ -649,7 +653,7 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
 
         label_12_denoise: Gtk.Label = Gtk.Label.new("Denoise")
         label_12_denoise.set_margin_start(8)
-        label_12_denoise.set_alignment(0.95, 0)
+        label_12_denoise.set_alignment(0.95, 0)  # noqa
         adjustment_12_denoise: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                lower=0.00001,
                                                                upper=1.00000,
@@ -731,16 +735,22 @@ class InpaintingSdxl0Dot4Dialogs(WorkflowDialogFactory):
         button_apply.connect("clicked", assign_results)
         button_ok.connect("clicked", assign_results)
 
-        progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
-        progress_bar.set_hexpand(True)
-        progress_bar.set_show_text(True)
-        dialog_box.add(progress_bar)
-        progress_bar.show()
+        # Useless. The delays are BEFORE this dialog opens, and AFTER it closes.
+        # progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
+        # progress_bar.set_name("gimp_procedure_progressbar_00")
+        # progress_bar.set_hexpand(True)
+        # progress_bar.set_vexpand(True)
+        # progress_bar.set_show_text(True)
+        # progressbar_style_bytes: bytes = new_progressbar_css_bytes(widget=progress_bar)
+        # install_css_styles(style_bytes=progressbar_style_bytes)
+        # dialog_box.add(progress_bar)
+        # progress_bar.show()
 
-        geometry = Gdk.Geometry()  # noqa
-        geometry.min_aspect = 0.5
-        geometry.max_aspect = 1.0
-        dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
+        # min_aspect and max_aspect must be the same on Mac
+        # geometry = Gdk.Geometry()  # noqa
+        # geometry.min_aspect = 1.0
+        # geometry.max_aspect = 1.0
+        # dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
         fill_widget_values()
         dialog.show_all()
         return dialog

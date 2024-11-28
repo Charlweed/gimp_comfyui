@@ -1,12 +1,15 @@
 
 import gi
 
+gi.require_version("Gegl", "0.4")  # noqa: E402
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
-gi.require_version("Gegl", "0.4")  # noqa: E402
-from gi.repository import Gdk, Gio, Gimp, GimpUi, Gtk, GLib, GObject, Gegl  # noqa
+# gi.require_version('Gdk', '3.0')  # noqa: E402
+# gi.require_version("Gtk", "3.0")  # noqa: E402
+
+# noinspection PyUnresolvedReferences
+from gi.repository import Gegl, Gimp, GimpUi
+# from gi.repository import Gdk, Gio, Gtk, GLib, GObject
 from typing import Set
 from utilities.cui_resources_utils import *
 from utilities.heterogeneous import *
@@ -28,8 +31,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
             wf_data_chassis_name="FluxNegUpscaleSdxl0Dot5Dialogs_wf_data",
         )
 
-    # GIMP is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
-    def new_workflow_dialog(self,
+    def new_workflow_dialog(self, 
                             title_in: str,
                             role_in: str,
                             blurb_in: str,
@@ -85,6 +87,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         widget_getters: Dict[str, Callable[[], Any]] = {}
         widget_setters: Dict[str, Callable[[Any], None]] = {}
 
+        @gtk_idle_add
         def fill_widget_values():
             for consumers in widget_setters.items():
                 key_name: str = consumers[0]
@@ -131,6 +134,7 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         def delete_results(subject: Any):  # noqa
             pass
 
+        @gtk_idle_add
         def assign_results(subject: Any):  # noqa
             for providers in widget_getters.items():
                 key_name: str = providers[0]
@@ -2071,8 +2075,9 @@ class FluxNegUpscaleSdxl0Dot5Dialogs(WorkflowDialogFactory):
         # dialog_box.add(progress_bar)
         # progress_bar.show()
 
+        # min_aspect and max_aspect must be the same on Mac
         # geometry = Gdk.Geometry()  # noqa
-        # geometry.min_aspect = 0.5
+        # geometry.min_aspect = 1.0
         # geometry.max_aspect = 1.0
         # dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
         fill_widget_values()

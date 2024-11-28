@@ -1,12 +1,15 @@
 
 import gi
 
+gi.require_version("Gegl", "0.4")  # noqa: E402
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-gi.require_version("Gtk", "3.0")  # noqa: E402
-gi.require_version('Gdk', '3.0')  # noqa: E402
-gi.require_version("Gegl", "0.4")  # noqa: E402
-from gi.repository import Gdk, Gio, Gimp, GimpUi, Gtk, GLib, GObject, Gegl  # noqa
+# gi.require_version('Gdk', '3.0')  # noqa: E402
+# gi.require_version("Gtk", "3.0")  # noqa: E402
+
+# noinspection PyUnresolvedReferences
+from gi.repository import Gegl, Gimp, GimpUi
+# from gi.repository import Gdk, Gio, Gtk, GLib, GObject
 from typing import Set
 from utilities.cui_resources_utils import *
 from utilities.heterogeneous import *
@@ -28,7 +31,6 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
             wf_data_chassis_name="FluxNeg1Dot1Dialogs_wf_data",
         )
 
-    # GIMP is preventing subclassing GimpUI.Dialog by preventing access to the constructors. This might be accidental.
     def new_workflow_dialog(self, 
                             title_in: str,
                             role_in: str,
@@ -85,6 +87,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
         widget_getters: Dict[str, Callable[[], Any]] = {}
         widget_setters: Dict[str, Callable[[Any], None]] = {}
 
+        @gtk_idle_add
         def fill_widget_values():
             for consumers in widget_setters.items():
                 key_name: str = consumers[0]
@@ -131,6 +134,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
         def delete_results(subject: Any):  # noqa
             pass
 
+        @gtk_idle_add
         def assign_results(subject: Any):  # noqa
             for providers in widget_getters.items():
                 key_name: str = providers[0]
@@ -374,7 +378,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
         frame_emptylatentimage_049empty_latent_image.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_49_width: Gtk.Label = Gtk.Label.new("Width")
         label_49_width.set_margin_start(8)
-        label_49_width.set_alignment(0.95, 0)
+        label_49_width.set_alignment(0.95, 0)  # noqa
         entry_49_width: Gtk.Entry = Gtk.Entry.new()
         entry_49_width.set_text(str(1040))
         entry_49_width.set_name("entry_49_width")
@@ -398,7 +402,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_49_height: Gtk.Label = Gtk.Label.new("Height")
         label_49_height.set_margin_start(8)
-        label_49_height.set_alignment(0.95, 0)
+        label_49_height.set_alignment(0.95, 0)  # noqa
         entry_49_height: Gtk.Entry = Gtk.Entry.new()
         entry_49_height.set_text(str(1200))
         entry_49_height.set_name("entry_49_height")
@@ -422,7 +426,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_49_batch_size: Gtk.Label = Gtk.Label.new("Batch_Size")
         label_49_batch_size.set_margin_start(8)
-        label_49_batch_size.set_alignment(0.95, 0)
+        label_49_batch_size.set_alignment(0.95, 0)  # noqa
         entry_49_batch_size: Gtk.Entry = Gtk.Entry.new()
         entry_49_batch_size.set_text(str(1))
         entry_49_batch_size.set_name("entry_49_batch_size")
@@ -473,7 +477,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_97_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_97_noise_seed.set_margin_start(8)
-        label_97_noise_seed.set_alignment(0.95, 0)
+        label_97_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_97_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_97_noise_seed.set_text(str(101))
         entry_97_noise_seed.set_name("entry_97_noise_seed")
@@ -497,7 +501,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_97_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_97_steps.set_margin_start(8)
-        label_97_steps.set_alignment(0.95, 0)
+        label_97_steps.set_alignment(0.95, 0)  # noqa
         entry_97_steps: Gtk.Entry = Gtk.Entry.new()
         entry_97_steps.set_text(str(20))
         entry_97_steps.set_name("entry_97_steps")
@@ -580,7 +584,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_97_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_97_start_at_step.set_margin_start(8)
-        label_97_start_at_step.set_alignment(0.95, 0)
+        label_97_start_at_step.set_alignment(0.95, 0)  # noqa
         entry_97_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_97_start_at_step.set_text(str(3))
         entry_97_start_at_step.set_name("entry_97_start_at_step")
@@ -604,7 +608,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_97_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_97_end_at_step.set_margin_start(8)
-        label_97_end_at_step.set_alignment(0.95, 0)
+        label_97_end_at_step.set_alignment(0.95, 0)  # noqa
         entry_97_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_97_end_at_step.set_text(str(10000))
         entry_97_end_at_step.set_name("entry_97_end_at_step")
@@ -678,7 +682,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_98_noise_seed: Gtk.Label = Gtk.Label.new("Noise_Seed")
         label_98_noise_seed.set_margin_start(8)
-        label_98_noise_seed.set_alignment(0.95, 0)
+        label_98_noise_seed.set_alignment(0.95, 0)  # noqa
         entry_98_noise_seed: Gtk.Entry = Gtk.Entry.new()
         entry_98_noise_seed.set_text(str(101))
         entry_98_noise_seed.set_name("entry_98_noise_seed")
@@ -702,7 +706,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_98_steps: Gtk.Label = Gtk.Label.new("Steps")
         label_98_steps.set_margin_start(8)
-        label_98_steps.set_alignment(0.95, 0)
+        label_98_steps.set_alignment(0.95, 0)  # noqa
         entry_98_steps: Gtk.Entry = Gtk.Entry.new()
         entry_98_steps.set_text(str(20))
         entry_98_steps.set_name("entry_98_steps")
@@ -785,7 +789,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_98_start_at_step: Gtk.Label = Gtk.Label.new("Start_At_Step")
         label_98_start_at_step.set_margin_start(8)
-        label_98_start_at_step.set_alignment(0.95, 0)
+        label_98_start_at_step.set_alignment(0.95, 0)  # noqa
         entry_98_start_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_98_start_at_step.set_text(str(0))
         entry_98_start_at_step.set_name("entry_98_start_at_step")
@@ -809,7 +813,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_98_end_at_step: Gtk.Label = Gtk.Label.new("End_At_Step")
         label_98_end_at_step.set_margin_start(8)
-        label_98_end_at_step.set_alignment(0.95, 0)
+        label_98_end_at_step.set_alignment(0.95, 0)  # noqa
         entry_98_end_at_step: Gtk.Entry = Gtk.Entry.new()
         entry_98_end_at_step.set_text(str(3))
         entry_98_end_at_step.set_name("entry_98_end_at_step")
@@ -870,7 +874,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
         frame_dynamicthresholdingfull_100dynamicthresholdingfull.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)  # noqa
         label_100_mimic_scale: Gtk.Label = Gtk.Label.new("Mimic_Scale")
         label_100_mimic_scale.set_margin_start(8)
-        label_100_mimic_scale.set_alignment(0.95, 0)
+        label_100_mimic_scale.set_alignment(0.95, 0)  # noqa
         adjustment_100_mimic_scale: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                     lower=0.00000,
                                                                     upper=100.00000,
@@ -890,7 +894,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_100_threshold_percentile: Gtk.Label = Gtk.Label.new("Threshold_Percentile")
         label_100_threshold_percentile.set_margin_start(8)
-        label_100_threshold_percentile.set_alignment(0.95, 0)
+        label_100_threshold_percentile.set_alignment(0.95, 0)  # noqa
         adjustment_100_threshold_percentile: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                              lower=0.00000,
                                                                              upper=1.00000,
@@ -931,7 +935,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_100_mimic_scale_min: Gtk.Label = Gtk.Label.new("Mimic_Scale_Min")
         label_100_mimic_scale_min.set_margin_start(8)
-        label_100_mimic_scale_min.set_alignment(0.95, 0)
+        label_100_mimic_scale_min.set_alignment(0.95, 0)  # noqa
         adjustment_100_mimic_scale_min: Gtk.Adjustment = Gtk.Adjustment(value=0.00000,
                                                                         lower=0.00000,
                                                                         upper=1.00000,
@@ -972,7 +976,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_100_cfg_scale_min: Gtk.Label = Gtk.Label.new("Cfg_Scale_Min")
         label_100_cfg_scale_min.set_margin_start(8)
-        label_100_cfg_scale_min.set_alignment(0.95, 0)
+        label_100_cfg_scale_min.set_alignment(0.95, 0)  # noqa
         adjustment_100_cfg_scale_min: Gtk.Adjustment = Gtk.Adjustment(value=0.00000,
                                                                       lower=0.00000,
                                                                       upper=1.00000,
@@ -993,7 +997,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_100_sched_val: Gtk.Label = Gtk.Label.new("Sched_Val")
         label_100_sched_val.set_margin_start(8)
-        label_100_sched_val.set_alignment(0.95, 0)
+        label_100_sched_val.set_alignment(0.95, 0)  # noqa
         adjustment_100_sched_val: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                   lower=0.00000,
                                                                   upper=1.00000,
@@ -1014,7 +1018,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_100_separate_feature_channels: Gtk.Label = Gtk.Label.new("Separate_Feature_Channels")
         label_100_separate_feature_channels.set_margin_start(8)
-        label_100_separate_feature_channels.set_alignment(0.95, 0)
+        label_100_separate_feature_channels.set_alignment(0.95, 0)  # noqa
         comboboxtext_100_separate_feature_channels: Gtk.ComboBoxText = Gtk.ComboBoxText.new()
         combo_values_100_separate_feature_channels: list[str] = ["enable", "disable"]  # noqa
         for combo_item_path in combo_values_100_separate_feature_channels:
@@ -1076,7 +1080,7 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
 
         label_100_interpolate_phi: Gtk.Label = Gtk.Label.new("Interpolate_Phi")
         label_100_interpolate_phi.set_margin_start(8)
-        label_100_interpolate_phi.set_alignment(0.95, 0)
+        label_100_interpolate_phi.set_alignment(0.95, 0)  # noqa
         adjustment_100_interpolate_phi: Gtk.Adjustment = Gtk.Adjustment(value=1.00000,
                                                                         lower=0.00000,
                                                                         upper=1.00000,
@@ -1205,16 +1209,22 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
         button_apply.connect("clicked", assign_results)
         button_ok.connect("clicked", assign_results)
 
-        progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
-        progress_bar.set_hexpand(True)
-        progress_bar.set_show_text(True)
-        dialog_box.add(progress_bar)
-        progress_bar.show()
+        # Useless. The delays are BEFORE this dialog opens, and AFTER it closes.
+        # progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
+        # progress_bar.set_name("gimp_procedure_progressbar_00")
+        # progress_bar.set_hexpand(True)
+        # progress_bar.set_vexpand(True)
+        # progress_bar.set_show_text(True)
+        # progressbar_style_bytes: bytes = new_progressbar_css_bytes(widget=progress_bar)
+        # install_css_styles(style_bytes=progressbar_style_bytes)
+        # dialog_box.add(progress_bar)
+        # progress_bar.show()
 
-        geometry = Gdk.Geometry()  # noqa
-        geometry.min_aspect = 0.5
-        geometry.max_aspect = 1.0
-        dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
+        # min_aspect and max_aspect must be the same on Mac
+        # geometry = Gdk.Geometry()  # noqa
+        # geometry.min_aspect = 1.0
+        # geometry.max_aspect = 1.0
+        # dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
         fill_widget_values()
         dialog.show_all()
         return dialog
