@@ -29,7 +29,8 @@ export GIMP_PLUGINS_DIR="$HOME/Library/Application Support/GIMP/3.0/plug-ins"
 export COMFY_CUSTOM_NODES_DIR="$SD_DATA_DIR""custom_nodes"
 
 function gimp3t(){
-    /Applications/GIMP.app/Contents/MacOS/gimp --console-messages --verbose "${IMAGES_4_GIMP[*]}"
+  # Do NOT use quotes, it will turn it into a single argument.
+    /Applications/GIMP.app/Contents/MacOS/gimp --console-messages --verbose ${IMAGES_4_GIMP[*]}
 }
 
 function gcui_clear(){
