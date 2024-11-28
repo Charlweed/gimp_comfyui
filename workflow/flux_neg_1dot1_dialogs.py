@@ -4,12 +4,9 @@ import gi
 gi.require_version("Gegl", "0.4")  # noqa: E402
 gi.require_version('Gimp', '3.0')  # noqa: E402
 gi.require_version('GimpUi', '3.0')  # noqa: E402
-# gi.require_version('Gdk', '3.0')  # noqa: E402
-# gi.require_version("Gtk", "3.0")  # noqa: E402
 
 # noinspection PyUnresolvedReferences
 from gi.repository import Gegl, Gimp, GimpUi
-# from gi.repository import Gdk, Gio, Gtk, GLib, GObject
 from typing import Set
 from utilities.cui_resources_utils import *
 from utilities.heterogeneous import *
@@ -1209,22 +1206,6 @@ class FluxNeg1Dot1Dialogs(WorkflowDialogFactory):
         button_apply.connect("clicked", assign_results)
         button_ok.connect("clicked", assign_results)
 
-        # Useless. The delays are BEFORE this dialog opens, and AFTER it closes.
-        # progress_bar: GimpUi.ProgressBar = GimpUi.ProgressBar.new()
-        # progress_bar.set_name("gimp_procedure_progressbar_00")
-        # progress_bar.set_hexpand(True)
-        # progress_bar.set_vexpand(True)
-        # progress_bar.set_show_text(True)
-        # progressbar_style_bytes: bytes = new_progressbar_css_bytes(widget=progress_bar)
-        # install_css_styles(style_bytes=progressbar_style_bytes)
-        # dialog_box.add(progress_bar)
-        # progress_bar.show()
-
-        # min_aspect and max_aspect must be the same on Mac
-        # geometry = Gdk.Geometry()  # noqa
-        # geometry.min_aspect = 1.0
-        # geometry.max_aspect = 1.0
-        # dialog.set_geometry_hints(None, geometry, Gdk.WindowHints.ASPECT)  # noqa
         fill_widget_values()
         dialog.show_all()
         return dialog
