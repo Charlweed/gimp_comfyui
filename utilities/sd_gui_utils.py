@@ -1691,16 +1691,25 @@ class ProgressBarWindow(Gtk.Window):
         # circular reference
         """
          Constructs and opens a ProgressBarWindow on the correct Gtk threads, then returns it. "Doing anything" with the
-         returned ProgressBarWindow is RISKY, because none of its methods are thread safe! Just call draw_progress()
+         returned ProgressBarWindow is RISKY, because some of its methods are not thread safe! Just call draw_progress()
          until you are done, then call conceal_and_dispose().
+         IMPORTANT: This method returns None on macOS. An unidentified upstream bug currently prevents opening
+         stand-alone Gtk windows on GIMP for macOS. The plug-in will crash upon attempting to invoke Gtk.MainLoop.run()
         @param title_in: The title of the progress window.
         @param blurb_in: An explanation of what work is being tracked.
         @param total: The total count of steps this job is performing. may be null.
         @param activity_mode: If true, staps are not tracked, the bar just shows that work is unfinished.
         @return: A ProgressBarWindow. Call draw_progress() on it to track work.
         """
-        # sys.stdout.flush()
-        # sys.stderr.flush()
+
+        if platform.system().lower() == 'darwin':
+            LOGGER_SDGUIU.error(f"Unidentified upstream bug currently prevents opening stand-alone Gtk windows on"
+                                f" GIMP for macOS.\n"
+                                f"   plug-in will crash upon attempting to invoke Gtk.MainLoop.run()\n")
+            sys.stdout.flush()
+            sys.stderr.flush()
+            return None
+
         # LOGGER_SDGUIU.debug(f"Constructing ProgressBarWindow.")
         pb_window: ProgressBarWindow = ProgressBarWindow(title_in=title_in,
                                                          blurb_in=blurb_in,
