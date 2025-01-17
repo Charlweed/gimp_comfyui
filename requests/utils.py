@@ -9,7 +9,6 @@ that are also useful for external consumption.
 
 """
 
-import cgi
 import codecs
 import collections
 import io
@@ -20,6 +19,7 @@ import sys
 import socket
 import struct
 import warnings
+from email.message import Message
 
 from . import __version__
 from . import certs
@@ -310,19 +310,22 @@ def get_encoding_from_headers(headers):
 
     :param headers: dictionary to extract encoding from.
     """
-
-    content_type = headers.get('content-type')
+    content_type = headers.get("content-type")
 
     if not content_type:
         return None
 
-    content_type, params = cgi.parse_header(content_type)
+    msg = Message()
+    msg["Content-Type"] = content_type
 
-    if 'charset' in params:
-        return params['charset'].strip("'\"")
+    params = dict(msg.get_params())
+    if "charset" in params:
+        return params["charset"].strip("'\"")
 
-    if 'text' in content_type:
-        return 'ISO-8859-1'
+    if "text" in msg.get_content_type():
+        return "ISO-8859-1"
+
+    return None
 
 
 def stream_decode_response_unicode(iterator, r):
